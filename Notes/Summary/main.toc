@@ -1,0 +1,14 @@
+\contentsline {chapter}{\numberline {1}Year 2016-2022}{2}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Regression tables}{3}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}WG, BG, Random effect, Correalted random effect(Mundlak)}{3}{subsection.1.1.1}%
+\contentsline {paragraph}{Notation}{3}{section*.2}%
+\contentsline {paragraph}{Estimators}{3}{section*.3}%
+\contentsline {subsection}{\numberline {1.1.2}Specification}{4}{subsection.1.1.2}%
+\contentsline {paragraph}{Model 1}{4}{section*.4}%
+\contentsline {paragraph}{Reference}{4}{section*.5}%
+\contentsline {paragraph}{Model 2}{5}{section*.6}%
+\contentsline {section}{\numberline {1.2}Descriptive Statistics}{10}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Stays per labor input}{10}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Share of outpatient stays}{10}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Average length of stay}{16}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}Selection of patients}{17}{subsection.1.2.4}%
