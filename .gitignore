@@ -1,5 +1,5 @@
 Data/
 Reference/
-*.md
-*.doc
-*.txt
+Notes/*.md
+Notes/*.txt
+Notes/*.docx
