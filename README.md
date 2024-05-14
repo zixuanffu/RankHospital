@@ -12,6 +12,6 @@ Remarks:
 4. Currently, the LHS is only the full time equivalent registered nurses. The RHS is STAC_inpatient, STAC_outpatient, Sessions. The RHS control is CASEMIX index provided by Hospidiag. *There is issue with zero values in some of the inputs. therefore removing observations with zero value in any one of the inputs. Observations drastically reduced.* **TO BE SOLVED**
 5. The fixed effect can be added to the establishment level (FI, aka geographical level, more granular than FI_EJ) or the legal level (FI_EJ). for the figures produced, it is at the FI level. **TO BE DECIDED**
 ![log linear OLS estimates, FE on each FI](Figures/2016-2022/FE_ols_FI.png)
-![log linear OLS estimates, exp(FE) on each FI](Figures/2016-2022/FE_ols_FI_e.png)
-**SUPER PRELIMINARY RESULTS# **
+![log linear OLS estimates, exp(FE) on each FI](/Figures/2016-2022/FE_ols_FI_e.png)
+**SUPER PRELIMINARY RESULTS**
 ## Ranking and selection based on Empirical Bayes (borrowing strength from the ensemble)
