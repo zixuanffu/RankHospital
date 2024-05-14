@@ -4,8 +4,7 @@ See the preliminary results: [here](Notes/Summary/main.pdf)
 Remarks:
 1. The panel starts from 2016 and ends in 2022, with 2020 missing (nothing recorded in the year of 2020). Though it is also possible to extend it to 2013 with a bit more effort since the data summary is not availble before 2016, I need to construct it manually, to be completed later. (Before 2013 the data collection is not consistent). **TO BE COMPLETED**
 2. Since the fixed effect is multiplicative, two estimation methods are considered. 
-   $$
-        y_{it} =x_{it1}^{\beta_1}x_{it2}^{\beta_2}x_{it3}^{\beta_3}\theta_i\epsilon_{it}\\
+   $$y_{it} =x_{it1}^{\beta_1}x_{it2}^{\beta_2}x_{it3}^{\beta_3}\theta_i\epsilon_{it}\\
          = f(x_{it};\beta)\theta_i\epsilon_{it}$$
    1. Pseudo Poisson 
    2. Log linear OLS 

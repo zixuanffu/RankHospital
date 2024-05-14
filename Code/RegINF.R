@@ -90,11 +90,13 @@ p_olg_FI <- ggplot(dt_ols_FI_status, aes(x = Rank, y = FixedEffect)) +
     geom_point(aes(color = STJR_LABEL), size = 1) +
     theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5))
 ggsave("Figures/2016-2022/FE_ols_FI.pdf", p_olg_FI, width = 6, height = 4, dpi = 300)
+ggsave("Figures/2016-2022/FE_ols_FI.png", p_olg_FI, width = 6, height = 4, dpi = 300)
 
 p_olg_FI_e <- ggplot(dt_ols_FI_status, aes(x = Rank, y = exp(FixedEffect))) +
     geom_point(aes(color = STJR_LABEL), size = 1) +
     theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5))
 ggsave("Figures/2016-2022/FE_ols_FI_e.pdf", p_olg_FI_e, width = 6, height = 4, dpi = 300)
+ggsave("Figures/2016-2022/FE_ols_FI_e.png", p_olg_FI_e, width = 6, height = 4, dpi = 300)
 
 FE_ols_FIEJ <- fixef(reg_inf_ols_FIEJ)
 dt_ols_FIEJ <- data.table(FI_EJ = names(FE_ols_FIEJ$FI_EJ), FixedEffect = unlist(FE_ols_FIEJ$FI_EJ))
