@@ -43,10 +43,37 @@ Often, the dual formulation of a convex objective is more efficient than the pri
 \subsection{Scale mixture}
 The model is the following:
 \begin{equation*}
-
+    y_{it}=\sigma_i\epsilon_{it} \quad \text{where} \quad \epsilon_{it}\sim N(0,1)
 \end{equation*}
-
-\subsection{Location-scale mixture}
+Similarly \begin{equation*}
+    s_i=\hat{\sigma}_i^2=\frac{1}{m_i}\sum_{t=1}^{T_i}y_{it}^2
+\end{equation*}
+But what's the distribution of $\hat{\sigma}_i$ (which is not so obvious relative to $\hat{\theta}_i$)?
+Well, $\frac{\sum y_{it}^2}{\sigma_i^2}$ follows a Gamma distribution with shape parameter $r_i=(T_i)/2$ and scale parameter $s_i=\sigma_i^2/r_i=2\sigma_i^2/T_i$.
+\textbf{Why is it gamma distribution?}
+Thus the likelihood function is \begin{align*}
+    L(F|y) & =\prod_{i=1}^N\int \gamma(s_i|r_i,\sigma_i)dF(\sigma_i)    \\
+    l(F|y) & =\sum_{i=1}^N\log\int \gamma(s_i|r_i,\sigma_i)dF(\sigma_i)
+\end{align*}
+which we can proceed just as in the location mixture case.
+\subsection{Location-scale mixture (independent)}
+The model is \begin{equation*}
+    y_{it}=\theta_i+\sigma_i\epsilon_{it} \quad \text{where} \quad \epsilon_{it}\sim N(0,1)
+\end{equation*}
+The sufficient statistics $\hat{\theta}_i$ and $\hat{\sigma}_i$ are \begin{align*}
+    \hat{\theta}_i & =\frac{1}{T_i}\sum_{t=1}^{T_i}y_{it} \sim N(\theta_i, \sigma_i^2/T_i)                                       \\
+    \hat{\sigma}_i & =\frac{1}{T_i}\sum_{t=1}^{T_i}(y_{it}-\hat{\theta}_i)^2\sim \gamma(s_i | \alpha= r_i, \beta=\sigma_i^2/r_i)\end{align*}
+Just as in the previous two cases, we can write the (log) likelihood as \begin{equation*}
+    l(G_{\theta},F_{\sigma}|y)=\sum_{i=1}^N\log\int \int \bra{\phi((\hat{\theta}_i-\theta_i)\sqrt{T_i})\sqrt{T_i}} \bra{\gamma(s_i|r_i,\sigma_i)} dG_{\theta}(\theta_i) dF_{\sigma}(\sigma_i)
+\end{equation*}
+For \textbf{estimation}, we can first solve for $\hat{F}_{\sigma}$ and solve for $\hat{G}_{\theta}$ given $\hat{F}_{\sigma}$. There are two compuatation methods.
+\begin{itemize}
+    \item Reexpress the Gaussian component as Student's $t$ therefore eliminating the
+          dependence on $\sigma_i$.
+    \item Iterate between the Gamma and Gaussian component of the likelihood. (Specific
+          to this independent prior assumption.)
+\end{itemize}
+\subsection{Location-scale mixture (general)}
 The most general Gaussian location-scale mixture withw covariate effects
 \begin{equation*}
     y_{it}=x_{it}\beta+\theta_i+\sigma_i\epsilon_{it} \quad \text{where} \quad \epsilon_{it}\sim N(0,1)
@@ -71,3 +98,4 @@ The sufficient statistics for
 \begin{remark}
     The orthogonality between the within and between information no longer holds here. (Why does it hold in the classical Gaussian panel data?)
 \end{remark}
+
