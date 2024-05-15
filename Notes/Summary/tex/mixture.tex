@@ -1,0 +1,73 @@
+\section{Mixture model}
+
+\subsection{Location mixture}
+The model is the following
+\begin{equation*}
+    y_{it}=\theta_i+\epsilon_{it} \quad \text{where} \quad \epsilon_{it}\sim N(0,1)
+\end{equation*}
+Thus \begin{equation*}
+    \hat{\theta}_i=\frac{1}{T_i}\sum y_{it} \sim N(\theta_i,1/T_i)
+\end{equation*}
+\end{equation*}
+The likelihood function $L(F|y)$ (optimizing over distribution function $F$ given the observed $y$) is
+\begin{equation*}
+    \begin{split}
+        L(F|y)&=\prod_{i=1}^N\int \prod_{1}^{T_i} \phi(y_{it}-\theta_i)dF(\theta_i)
+    \end{split}
+\end{equation*}
+Instead of focusing on each observation $y_{it}$ we can also focus on the mean $\hat{\theta}_i=\bar{y}_i$.
+If we utilize $\hat{\theta}_i-\theta_i \sim N(0,1/T_i)$, we can write the likelihood function as \begin{align*}
+
+    L(F|y) & =\prod_{i=1}^N\int
+    \phi((\hat{\theta}_i-\theta_i)\sqrt{T_i})\sqrt(T_i)dF \\
+    l(F|y)=\sum_{i=1}^N\log\int
+    \phi((\hat{\theta}_i-\theta_i)\sqrt{T_i})\sqrt(T_i)dF
+\end{align*}
+Optimizing over all possible function $F$ neccesitates some kind of discrete approximation. The most common one is the grid approximation. We can also use the EM algorithm to optimize the likelihood function.
+Let $f_j$ approximate the value of $d F$ on the grid
+\begin{equation*}
+    \max_f \set{ \sum_{i=1}^N\log g_i \big| g=Af, \sum_j f_j\Delta_j =1, f\ge 0}
+\end{equation*}
+
+\begin{remark}
+    For a reader not as versed in mathematics as she should be. $A_{i*}f = \sum \sqrt{T_i}\phi((\hat{\theta}_i-\theta_j)\sqrt{T_i})f_j\Delta_j$.
+    We use $\sum f_j\Delta_j$ to approximate the integral $\int dF$ as one can imagine.
+\end{remark}
+This a convex objective function subject to linear equality  and inequality constraints. The EM algorithm is a natural choice to optimize this function. The E-step is to calculate the expectation of the log-likelihood function given the observed data and the current estimate of the parameter. The M-step is to maximize the expectation of the log-likelihood function with respect to the parameter. The algorithm iterates between these two steps until convergence.
+Often, the dual formulation of a convex objective is more efficient than the primal.
+\begin{equation*}
+    \max_f \set{ \sum_{i=1}^N\log (v_i)|A^T v = n 1_p, v\ge 0}
+\end{equation*}
+\textbf{Derive on your own for practice}
+
+\subsection{Scale mixture}
+The model is the following:
+\begin{equation*}
+
+\end{equation*}
+
+\subsection{Location-scale mixture}
+The most general Gaussian location-scale mixture withw covariate effects
+\begin{equation*}
+    y_{it}=x_{it}\beta+\theta_i+\sigma_i\epsilon_{it} \quad \text{where} \quad \epsilon_{it}\sim N(0,1)
+\end{equation*}
+Given a true $\beta$, it is straightforward that \begin{equation*}
+    y_{it}|\mu_i,\sigma_i,\beta \sim N(x_{it}\beta+\mu_i,\sigma_i^2)
+\end{equation*}
+The sufficient statistics for
+\begin{itemize}
+    \item $\mu_i$: $\bar{y}_i-\bar{x}_i\beta$
+          \begin{quote}
+              contains the between information
+          \end{quote}
+    \item $\sigma_i^2$: $\frac{1}{T_i-1}\sum_{t=1}^{T_i}(y_{it}-x_{it}\beta-\mu_i)^2$
+          It is worth mentioning that \begin{equation*}
+              S_i|\mu_i,\sigma_i^2,\beta \sim \gamma(r_i,\sigma_i^2/r_i) \quad \text{where} \quad r_i=(m_i-1)/2
+          \end{equation*}
+          \begin{quote}
+              contains the within information (deviations from the individual means)
+          \end{quote}
+\end{itemize}
+\begin{remark}
+    The orthogonality between the within and between information no longer holds here. (Why does it hold in the classical Gaussian panel data?)
+\end{remark}
