@@ -361,3 +361,15 @@ sygen_2019[is.na(sygen_2019)] <- 0
 library(texreg)
 # install.packages("texreg")
 etable()
+
+library(data.table)
+status <- readRDS("Data/Out/status_2016_2022.rds")
+fi <- unique(status$FI) # 4426
+fiej <- unique(status$FI_EJ) # 2561
+stat <- unique(status[, c("FI", "FI_EJ", "STJR", "STJR_LABEL")]) # 4450 why???
+stat_n <- stat[, .N, by = FI]
+fi_2 <- stat_n[stat_n$N == 2, ]$FI
+check <- status[FI %in% fi_2, .(AN, FI, STJR, STJR_LABEL)]
+# some hospitals change status over the year...is that a good
+dt <- readRDS("Data/Out/combineddata_2016_2022.rds")
+check <- dt[FI %in% fi_2, .(AN, FI, STJR, STJR_LABEL)]

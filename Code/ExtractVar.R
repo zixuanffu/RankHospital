@@ -118,3 +118,12 @@ control_stat <- rbind(control_stat_01, control_stat_23)
 colnames(control_stat)
 control_stat <- unique(control_stat, by = c("AN", "FI", "FI_EJ"))
 saveRDS(control_stat, "Data/Out/control_stat_2016_2022.rds")
+
+# extract those with stable legal status
+status <- readRDS("Data/Out/status_2016_2022.rds")
+stat_unique <- unique(status[, .(FI, FI_EJ, STJR)])
+stat_unique <- stat_unique[, .N, by = .(FI)]
+stat_unique <- stat_unique[N == 1]
+fi <- stat_unique$FI
+status <- unique(status[FI %in% fi, .(FI, FI_EJ, STJR, STJR_LABEL)])
+saveRDS(status, "Data/Out/status_stable_2016_2022.rds")

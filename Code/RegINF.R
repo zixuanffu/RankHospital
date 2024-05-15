@@ -3,13 +3,14 @@ rm(list = ls())
 pacman::p_load(data.table, fixest, ggplot2)
 
 dt <- readRDS("Data/Out/combineddata_2016_2022.rds")
-dt <- dt[AN != 2020]
+FI_stat_change <- unique(dt[, .(FI, STJR)])
+FI_stat_change <- FI_stat_change[, .N, by = .(FI)]
+FI_stat_change <- FI_stat_change[N > 1]
+dt <- dt[!FI %in% FI_stat_change$FI]
 dt$FI <- as.factor(dt$FI)
 dt$AN <- as.numeric(dt$AN)
 dt[is.na(dt)] <- 0
-dt[, VEN_TOT := VEN_HDJ_TOT + VEN_HDN_TOT]
-dt[, ENTSSR := ENT + SEJHC_SSR]
-dt[, PASSU := PASSU_PED + PASSU_GEN]
+
 pdt <- panel(dt, panel.id = ~ FI + AN, time.step = "consecutive", duplicate.method = "first")
 pdt[, `:=`(SEJHC_MCO_l1 = l(SEJHC_MCO, 1), SEJHP_MCO_l1 = l(SEJHP_MCO, 1), SEANCES_MED_l1 = l(SEANCES_MED, 1))]
 varl <- c("EFF_MD", "EFF_INF", "EFF_AID", "EFF_TOT_HORS_SOINS")
@@ -61,24 +62,17 @@ reg_inf_lag_FIEJ <- feols(log(ETP_INF) ~ CASEMIX | FI_EJ | ..RHS_less ~ ..RHS_IV
 etable(reg_inf_lag_FI, reg_inf_lag_FIEJ)
 etable(reg_inf_lag_FI, reg_inf_lag_FIEJ, sdBelow = TRUE, digits = 3, fitstat = ~ n + sq.cor + pr2, digits.stats = 3, tex = TRUE, file = "Tables/2016-2022/reg_inf_lag.tex", signif.code = "letters", replace = TRUE)
 
-# # with only PUB and PLU hostpitals
-# pdt_pub <- pdt[STJR==1|STJR==2]
-# reg_inf_ols_FI <- feols(log(ETP_INF) ~ ..RHS_less + CASEMIX | FI, data = pdt_pub, vcov = ~FI)
-# reg_inf_ols_FIEJ <- feols(log(ETP_INF) ~ ..RHS_less + CASEMIX | FI_EJ, data = pdt_pub, vcov = ~FI_EJ)
-# etable(reg_inf_ols_FI, reg_inf_ols_FIEJ)
-# etable(reg_inf_ols_FI, reg_inf_ols_FIEJ, sdBelow = TRUE, digits = 3, fitstat = ~ n + sq.cor + pr2, digits.stats = 3, tex = TRUE, file = "Tables/2016-2022/Pub/reg_inf_ols.tex", signif.code = "letters", replace = TRUE)
+# what about with only PUB and PLU hostpitals?
+pdt_pub <- pdt[STJR == 1 | STJR == 2]
+reg_inf_ols_FI_pub <- feols(log(ETP_INF) ~ ..RHS_less + CASEMIX | FI, data = pdt_pub, vcov = ~FI)
+reg_inf_ols_FIEJ_pub <- feols(log(ETP_INF) ~ ..RHS_less + CASEMIX | FI_EJ, data = pdt_pub, vcov = ~FI_EJ)
+etable(reg_inf_ols_FI_pub, reg_inf_ols_FIEJ_pub)
 
-# # 2. one year lagged value with log(SEJHC_MCO) + log(SEJHP_MCO) + log(SEANCES_MED)+CASEMIX
-
-# reg_inf_lag_FI <- feols(log(ETP_INF) ~ CASEMIX | FI | ..RHS_less ~ ..RHS_IV, data = pdt_pub, vcov = ~FI)
-# reg_inf_lag_FIEJ <- feols(log(ETP_INF) ~ CASEMIX | FI_EJ | ..RHS_less ~ ..RHS_IV, data = pdt_pub, vcov = ~FI_EJ)
-# etable(reg_inf_lag_FI, reg_inf_lag_FIEJ)
-# etable(reg_inf_lag_FI, reg_inf_lag_FIEJ, sdBelow = TRUE, digits = 3, fitstat = ~ n + sq.cor + pr2, digits.stats = 3, tex = TRUE, file = "Tables/2016-2022/Pub/reg_inf_lag.tex", signif.code = "letters", replace = TRUE)
 
 
 ## Section 2: fixed effect
 FE_ols_FI <- fixef(reg_inf_ols_FI)
-plot(FE_ols_FI)
+# plot(FE_ols_FI)
 dt_ols_FI <- data.table(FI = names(FE_ols_FI$FI), FixedEffect = unlist(FE_ols_FI$FI))
 status <- readRDS("Data/Out/status_2016_2022.rds")
 status <- unique(status[, c("FI", "FI_EJ", "STJR", "STJR_LABEL")])

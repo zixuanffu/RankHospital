@@ -36,8 +36,12 @@ dt <- dt[control_status, on = .(AN, FI, FI_EJ), nomatch = 0]
 colnames(dt)
 
 dt[is.na(dt)] <- 0
+dt <- dt[AN != 2020]
 dt[, EFF_MD := EFFSAL_TOT + EFFLIB_TOT]
 dt[, ETP_INF := ETP_INFAVECSPE + ETP_INFSANSSPE + ETP_DIRINF]
 dt[, ETP_NONMED := ETP_CAD + ETP_DIR + ETP_AUTADM]
-
+dt[, VEN_TOT := VEN_HDJ_TOT + VEN_HDN_TOT]
+dt[, ENTSSR := ENT + SEJHC_SSR]
+dt[, PASSU := PASSU_PED + PASSU_GEN]
+colnames(dt)
 saveRDS(dt, "Data/Out/combineddata_2016_2022.rds")
