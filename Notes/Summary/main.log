@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.13)  14 MAY 2024 19:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.13)  17 MAY 2024 10:08
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"c:/Users/16429/OneDrive/TSE/Memoire/SAE/Notes/replication result/main.tex"
-(c:/Users/16429/OneDrive/TSE/Memoire/SAE/Notes/replication result/main.tex
+**c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Summary/main.tex
+(c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Summary/main.tex
 LaTeX2e <2022-06-01> patch level 5
 L3 programming layer <2022-08-05> (c:/texlive/2022/texmf-dist/tex/latex/base/report.cls
 Document Class: report 2021/10/04 v1.4n Standard LaTeX document class
@@ -438,7 +438,7 @@ Package hyperref Info: Link coloring OFF on input line 22.
 \@outlinefile=\write4
 \openout4 = `main.out'.
 
-<../../Figures/ihaveaquestion.jpg, id=40, 240.9pt x 240.9pt>
+<../../Figures/ihaveaquestion.jpg, id=44, 240.9pt x 240.9pt>
 File: ../../Figures/ihaveaquestion.jpg Graphic file (type jpg)
 <use ../../Figures/ihaveaquestion.jpg>
 Package pdftex.def Info: ../../Figures/ihaveaquestion.jpg  used on input line 24.
@@ -470,85 +470,66 @@ Chapter 1.
 (./tex/reg.tex [2
 
 ]
-Overfull \hbox (8.97112pt too wide) in paragraph at lines 4--4
-[]\OT1/cmr/bx/n/14.4 WG, BG, Ran-dom ef-fect, Cor-re-alted ran-dom ef-fect(Mundlak) 
+LaTeX Font Info:    Trying to load font information for TS1+cmss on input line 7.
+ (c:/texlive/2022/texmf-dist/tex/latex/base/ts1cmss.fd
+File: ts1cmss.fd 2019/12/16 v2.5j Standard LaTeX font definitions
+) [3]
+Overfull \hbox (5.04428pt too wide) in paragraph at lines 92--97
+\OT1/cmss/m/n/12 The mo-ment con-di-ton is of-ten called pseudo-poisson es-ti-ma-tor (as if as-sum-ing $\OML/cmm/m/it/12 y[]t\OMS/cmsy/m/n/12 j\OML/cmm/m/it/12 x[]; [] ; x[]; ^^R[] \OMS/cmsy/m/n/12 ^^X
  []
 
-[3]
-Overfull \hbox (22.76965pt too wide) in paragraph at lines 92--97
-\OT1/cmr/m/n/12 The mo-ment con-di-ton is of-ten called pseudo-poisson es-ti-ma-tor (as if as-sum-ing $\OML/cmm/m/it/12 y[]t\OMS/cmsy/m/n/12 j\OML/cmm/m/it/12 x[]; [] ; x[]; ^^R[] \OMS/cmsy/m/n/12 ^^X
- []
-
-[4] [5] (../../Tables/2016-2022/reg_inf_pois.tex) [6] (../../Tables/2016-2022/reg_inf_ols.tex) [7] (../../Tables/2016-2022/reg_inf_lag.tex) [8]
-<../../Figures/2016-2022/FE_ols_FI.pdf, id=121, 433.62pt x 289.08pt>
+[4]
+LaTeX Font Info:    Font shape `OT1/cmss/m/it' in size <12> not available
+(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 108.
+ [5] (../../Tables/2016-2022/reg_inf_pois.tex) [6] (../../Tables/2016-2022/reg_inf_ols.tex) [7] (../../Tables/2016-2022/reg_inf_lag.tex) [8]
+<../../Figures/2016-2022/FE_ols_FI.pdf, id=128, 433.62pt x 289.08pt>
 File: ../../Figures/2016-2022/FE_ols_FI.pdf Graphic file (type pdf)
 <use ../../Figures/2016-2022/FE_ols_FI.pdf>
 Package pdftex.def Info: ../../Figures/2016-2022/FE_ols_FI.pdf  used on input line 143.
 (pdftex.def)             Requested size: 375.80544pt x 250.5492pt.
-<../../Figures/2016-2022/FE_ols_FI_e.pdf, id=122, 433.62pt x 289.08pt>
+<../../Figures/2016-2022/FE_ols_FI_e.pdf, id=129, 433.62pt x 289.08pt>
 File: ../../Figures/2016-2022/FE_ols_FI_e.pdf Graphic file (type pdf)
 <use ../../Figures/2016-2022/FE_ols_FI_e.pdf>
 Package pdftex.def Info: ../../Figures/2016-2022/FE_ols_FI_e.pdf  used on input line 144.
 (pdftex.def)             Requested size: 375.80544pt x 250.5492pt.
-) [9 <../../Figures/2016-2022/FE_ols_FI.pdf> <../../Figures/2016-2022/FE_ols_FI_e.pdf>] (./tex/descriptive_stat_2016_2022.tex (../../Tables/2016-2022/SJMD_MCO.tex) (../../Tables/2016-2022/SJMD_TOT.tex) (../../Tables/2016-2022/SJINF_MCO.tex) (../../Tables/2016-2022/SJINF_TOT.tex) (../../Tables/2016-2022/SJAS_MCO.tex) (../../Tables/2016-2022/SJAS_TOT.tex)
-<../../Figures/2016-2022/STAC_share_pool.pdf, id=139, 578.16pt x 433.62pt>
-File: ../../Figures/2016-2022/STAC_share_pool.pdf Graphic file (type pdf)
-<use ../../Figures/2016-2022/STAC_share_pool.pdf>
-Package pdftex.def Info: ../../Figures/2016-2022/STAC_share_pool.pdf  used on input line 17.
-(pdftex.def)             Requested size: 375.80544pt x 281.84966pt.
-<../../Figures/2016-2022/STAC_share_PUB.pdf, id=140, 578.16pt x 433.62pt>
-File: ../../Figures/2016-2022/STAC_share_PUB.pdf Graphic file (type pdf)
-<use ../../Figures/2016-2022/STAC_share_PUB.pdf>
-Package pdftex.def Info: ../../Figures/2016-2022/STAC_share_PUB.pdf  used on input line 23.
-(pdftex.def)             Requested size: 375.80544pt x 281.84966pt.
-<../../Figures/2016-2022/STAC_share_PLU.pdf, id=141, 578.16pt x 433.62pt>
-File: ../../Figures/2016-2022/STAC_share_PLU.pdf Graphic file (type pdf)
-<use ../../Figures/2016-2022/STAC_share_PLU.pdf>
-Package pdftex.def Info: ../../Figures/2016-2022/STAC_share_PLU.pdf  used on input line 28.
-(pdftex.def)             Requested size: 375.80544pt x 281.84966pt.
-<../../Figures/2016-2022/STAC_share_PNL.pdf, id=142, 578.16pt x 433.62pt>
-File: ../../Figures/2016-2022/STAC_share_PNL.pdf Graphic file (type pdf)
-<use ../../Figures/2016-2022/STAC_share_PNL.pdf>
-Package pdftex.def Info: ../../Figures/2016-2022/STAC_share_PNL.pdf  used on input line 34.
-(pdftex.def)             Requested size: 375.80544pt x 281.84966pt.
-<../../Figures/2016-2022/STAC_share_CHU.pdf, id=143, 578.16pt x 433.62pt>
-File: ../../Figures/2016-2022/STAC_share_CHU.pdf Graphic file (type pdf)
-<use ../../Figures/2016-2022/STAC_share_CHU.pdf>
-Package pdftex.def Info: ../../Figures/2016-2022/STAC_share_CHU.pdf  used on input line 39.
-(pdftex.def)             Requested size: 375.80544pt x 281.84966pt.
- [10] [11 <../../Figures/2016-2022/STAC_share_pool.pdf>] [12 <../../Figures/2016-2022/STAC_share_PUB.pdf>] [13 <../../Figures/2016-2022/STAC_share_PLU.pdf> <../../Figures/2016-2022/STAC_share_PNL.pdf>] [14 <../../Figures/2016-2022/STAC_share_CHU.pdf>]
-<../../Figures/2016-2022/STAC_share_all.pdf, id=223, 578.16pt x 433.62pt>
-File: ../../Figures/2016-2022/STAC_share_all.pdf Graphic file (type pdf)
-<use ../../Figures/2016-2022/STAC_share_all.pdf>
-Package pdftex.def Info: ../../Figures/2016-2022/STAC_share_all.pdf  used on input line 45.
-(pdftex.def)             Requested size: 375.80544pt x 281.84966pt.
- [15
+) [9 <../../Figures/2016-2022/FE_ols_FI.pdf> <../../Figures/2016-2022/FE_ols_FI_e.pdf>] (./tex/mixture.tex [10]
+Overfull \hbox (17.81325pt too wide) in paragraph at lines 81--84
+\OT1/cmss/m/n/12 The mean of n in-de-pen-dent $\OML/cmm/m/it/12 ^^_[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 k\OT1/cmr/m/n/12 )$ \OT1/cmss/m/n/12 dis-tri-bu-tion vari-ables $\OML/cmm/m/it/12 K$ \OT1/cmss/m/n/12 fol-lows a gamma dis-tri-bu-tion $\OML/cmm/m/it/12 ^^M\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 nk=\OT1/cmr/m/n/12 2\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 2\OML/cmm/m/it/12 =n\OT1/cmr/m/n/12 )$\OT1/cmss/m/n/12 . 
+ []
 
- <../../Figures/2016-2022/STAC_share_all.pdf>] (../../Tables/2016-2022/ALOS.tex)
-<../../Figures/2016-2022/ALOS.pdf, id=238, 578.16pt x 433.62pt>
-File: ../../Figures/2016-2022/ALOS.pdf Graphic file (type pdf)
-<use ../../Figures/2016-2022/ALOS.pdf>
-Package pdftex.def Info: ../../Figures/2016-2022/ALOS.pdf  used on input line 53.
-(pdftex.def)             Requested size: 375.80544pt x 281.84966pt.
- [16
-
- <../../Figures/2016-2022/ALOS.pdf>] (../../Tables/2016-2022/casemix_bed.tex)) [17] (./main.aux)
+[11] [12]) (./tex/nonpara_results.tex
+<../../Figures/2016-2022/WGLVmix.png, id=166, 803.0pt x 501.875pt>
+File: ../../Figures/2016-2022/WGLVmix.png Graphic file (type png)
+<use ../../Figures/2016-2022/WGLVmix.png>
+Package pdftex.def Info: ../../Figures/2016-2022/WGLVmix.png  used on input line 5.
+(pdftex.def)             Requested size: 375.80544pt x 234.88574pt.
+<../../Figures/2016-2022/WTLVmix_u.pdf, id=167, 578.16pt x 361.35pt>
+File: ../../Figures/2016-2022/WTLVmix_u.pdf Graphic file (type pdf)
+<use ../../Figures/2016-2022/WTLVmix_u.pdf>
+Package pdftex.def Info: ../../Figures/2016-2022/WTLVmix_u.pdf  used on input line 11.
+(pdftex.def)             Requested size: 375.80544pt x 234.87471pt.
+<../../Figures/2016-2022/WTLVmix_v.pdf, id=168, 578.16pt x 361.35pt>
+File: ../../Figures/2016-2022/WTLVmix_v.pdf Graphic file (type pdf)
+<use ../../Figures/2016-2022/WTLVmix_v.pdf>
+Package pdftex.def Info: ../../Figures/2016-2022/WTLVmix_v.pdf  used on input line 12.
+(pdftex.def)             Requested size: 375.80544pt x 234.87471pt.
+) [13] [14 <../../Figures/2016-2022/WGLVmix.png>] [15 <../../Figures/2016-2022/WTLVmix_u.pdf> <../../Figures/2016-2022/WTLVmix_v.pdf>] (./main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: D184D0BF33914D51D76D2A59FD25263F;1638.
+(rerunfilecheck)             Checksum: C78B624A48F1F151CE97AB461AF36561;1846.
  ) 
 Here is how much of TeX's memory you used:
- 13056 strings out of 479560
- 216803 string characters out of 5876399
- 519582 words of memory out of 5000000
- 31314 multiletter control sequences out of 15000+600000
- 481337 words of font info for 74 fonts, out of 8000000 for 9000
+ 13008 strings out of 479560
+ 214630 string characters out of 5876399
+ 511583 words of memory out of 5000000
+ 31293 multiletter control sequences out of 15000+600000
+ 482840 words of font info for 79 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 72i,15n,77p,1134b,559s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{c:/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on main.pdf (18 pages, 394443 bytes).
+ 72i,17n,77p,1130b,559s stack positions out of 10000i,1000n,20000p,200000b,200000s
+{c:/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfss1200.pfb>
+Output written on main.pdf (16 pages, 358637 bytes).
 PDF statistics:
- 343 PDF objects out of 1000 (max. 8388607)
- 269 compressed objects within 3 object streams
- 55 named destinations out of 1000 (max. 500000)
- 123 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 297 PDF objects out of 1000 (max. 8388607)
+ 225 compressed objects within 3 object streams
+ 46 named destinations out of 1000 (max. 500000)
+ 111 words of extra memory for PDF output out of 10000 (max. 10000000)
 

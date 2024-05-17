@@ -8,7 +8,6 @@ The model is the following
 Thus \begin{equation*}
     \hat{\theta}_i=\frac{1}{T_i}\sum y_{it} \sim N(\theta_i,1/T_i)
 \end{equation*}
-\end{equation*}
 The likelihood function $L(F|y)$ (optimizing over distribution function $F$ given the observed $y$) is
 \begin{equation*}
     \begin{split}
@@ -17,10 +16,9 @@ The likelihood function $L(F|y)$ (optimizing over distribution function $F$ give
 \end{equation*}
 Instead of focusing on each observation $y_{it}$ we can also focus on the mean $\hat{\theta}_i=\bar{y}_i$.
 If we utilize $\hat{\theta}_i-\theta_i \sim N(0,1/T_i)$, we can write the likelihood function as \begin{align*}
-
     L(F|y) & =\prod_{i=1}^N\int
     \phi((\hat{\theta}_i-\theta_i)\sqrt{T_i})\sqrt(T_i)dF \\
-    l(F|y)=\sum_{i=1}^N\log\int
+    l(F|y) & =\sum_{i=1}^N\log\int
     \phi((\hat{\theta}_i-\theta_i)\sqrt{T_i})\sqrt(T_i)dF
 \end{align*}
 Optimizing over all possible function $F$ neccesitates some kind of discrete approximation. The most common one is the grid approximation. We can also use the EM algorithm to optimize the likelihood function.
@@ -38,8 +36,34 @@ Often, the dual formulation of a convex objective is more efficient than the pri
 \begin{equation*}
     \max_f \set{ \sum_{i=1}^N\log (v_i)|A^T v = n 1_p, v\ge 0}
 \end{equation*}
-\textbf{Derive on your own for practice}
-
+\begin{question}
+    Derive on your own for practice
+\end{question}
+\begin{sol}
+    We define the multiplier $\mu_1', \mu_2, \lambda'$ for the two equality and one inequality contstraints.
+    The dual objective function is \begin{equation*}
+        \min_{f,g} \set{-\sum_{i=1}^N\log g_i + \mu_1'(g-Af) + \mu_2(\sum_j f_j\Delta_j-1) - \lambda' f}
+    \end{equation*}
+    Minimize over each $g_i$ gives the condition \begin{equation*}
+        \frac{1}{g_i}=\mu_{1i}
+    \end{equation*}
+    Minimize over each $f_i$ gives the condition \begin{equation*}
+        -(\mu_1'A)_j+\mu_2-\lambda_j=0
+    \end{equation*}
+    Therefore the objective is \begin{equation*}
+        \begin{array}{ll}
+                              & \set{\sum \log \mu_{1i} + n - \mu_2 } \\
+            \text{subject to} & -\mu_1'A+\mu_2 1_p-\lambda=0          \\
+                              & \lambda\ge 0
+        \end{array}
+    \end{equation*} Thus the dual problem is \begin{equation*}
+        \begin{array}{ll}
+            \text{maximize}_{\mu_1',\mu_2} & \set{\sum \log \mu_{1i}+n-\mu_2} \\
+            \text{subject to}              & \mu_1'A\le \mu_2 1_p             \\
+                                           & \mu_1\ge 0
+        \end{array}
+    \end{equation*}
+\end{sol}
 \subsection{Scale mixture}
 The model is the following:
 \begin{equation*}
@@ -50,7 +74,19 @@ Similarly \begin{equation*}
 \end{equation*}
 But what's the distribution of $\hat{\sigma}_i$ (which is not so obvious relative to $\hat{\theta}_i$)?
 Well, $\frac{\sum y_{it}^2}{\sigma_i^2}$ follows a Gamma distribution with shape parameter $r_i=(T_i)/2$ and scale parameter $s_i=\sigma_i^2/r_i=2\sigma_i^2/T_i$.
-\textbf{Why is it gamma distribution?}
+\begin{question}
+    Why is it gamma distribution?
+\end{question}
+\begin{sol}
+    The sum of k independent standard normal variable  $X$ follows a $\chi^2(k)$ distribution. \\
+    The mean of n independent $\chi^2(k)$ distribution variables $K$ follows a gamma distribution $\gamma(nk/2,2/n)$.\\
+    The equivalence lies in \href{https://en.wikipedia.org/wiki/Gamma_distribution}{here}: if $X \sim \gamma(v/2, 2)$ (in the shape-scale parametrization), then $X$ is identical to $\chi^2(v)$, the chi-squared distribution with $v$ degrees of freedom. Conversely, if $Q\sim \chi^2(v)$ and c is a positive constant, then $cQ ~ \gamma(v/2, 2c)$.
+\end{sol}
+\begin{remark}
+    The Gamma distribution $\gamma(k, \theta)$ (shape, scale) has the following distribution function \begin{equation*}
+        f(x|k,\theta)=\frac{1}{\Gamma(k)\theta^k}x^{k-1}e^{-x/\theta} \quad F(x|k,\theta)=\frac{1}{\Gamma(k)}\gamma(k,x/\theta)
+    \end{equation*} where $\Gamma(z)=\int_0^{\infty}t^{z-1}e^{-t}dt$.
+\end{remark}
 Thus the likelihood function is \begin{align*}
     L(F|y) & =\prod_{i=1}^N\int \gamma(s_i|r_i,\sigma_i)dF(\sigma_i)    \\
     l(F|y) & =\sum_{i=1}^N\log\int \gamma(s_i|r_i,\sigma_i)dF(\sigma_i)
@@ -74,7 +110,7 @@ For \textbf{estimation}, we can first solve for $\hat{F}_{\sigma}$ and solve for
           to this independent prior assumption.)
 \end{itemize}
 \subsection{Location-scale mixture (general)}
-The most general Gaussian location-scale mixture withw covariate effects
+The most general Gaussian location-scale mixture with covariate effects
 \begin{equation*}
     y_{it}=x_{it}\beta+\theta_i+\sigma_i\epsilon_{it} \quad \text{where} \quad \epsilon_{it}\sim N(0,1)
 \end{equation*}
@@ -98,4 +134,19 @@ The sufficient statistics for
 \begin{remark}
     The orthogonality between the within and between information no longer holds here. (Why does it hold in the classical Gaussian panel data?)
 \end{remark}
+The likelihood function is \begin{equation*}
+    \begin{split}
+        l(\beta, h(\theta,\sigma)|y)&=\prod_{i=1}^N g_i(\beta,\theta_i,\sigma_i|y_{i1},\ldots,y_{iT})\\
+        &=\prod_{i=1}^N\int \int \prod \frac{1}{\sigma} \phi(\frac{y_{it}-x_{it}\beta-\theta_i}{\sigma}) h(\theta,\sigma)d\theta d\sigma\\
+        & =K \prod_{i=1}^N\int S_i^{1-r_i}\int\int \frac{1}{\sigma} \phi(\frac{\bar{y}_{i}-\bar{x}_{i}\beta-\theta_i}{\sigma})\frac{e^{-R_i}R_i^{r_i}}{S_i\Gamma(r_i)}h(\theta, \sigma)d\theta d\sigma
+    \end{split}
+\end{equation*}
+where \begin{equation*}
+    \begin{array}{ll}
+        R_i=\frac{r_iS_i}{\sigma_i^2} & K=\prod_{i=1}^N\ \pa{\frac{\Gamma(r_i)}{r_i^{r_i}}(\frac{1}{\sqrt{2\pi}})^{T_i-1}}
+    \end{array}
+\end{equation*}
 
+\begin{question}
+    The true $\beta$ is unknown. Therefore, we can not condition on it. How about the so called profile likelihood? How to compare it with the \textit{FORBIDDEN} approach of getting fixed effect estimates from the WG estimation? Since the $\theta_i$ is regarded as \textit{NUISANCE} parameters in the WG estimation, how low the status is...! Poor $\theta_i$!
+\end{question}

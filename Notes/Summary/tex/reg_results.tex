@@ -64,6 +64,21 @@
 \end{itemize}
 % Denote $y=\text{ETP_INF}$, $x_1=\text{STAC INPATIENT}$, $x_2=\text{STAC
 %         OUTPATIENT}$, $x_3=\text{SESSION}$\
+\paragraph{Inference on $\theta_i$ and ($\beta$)}
+If we apply the WG estimator $\hat{\beta}_{WG}= (X'WX)^{-1}X'W y$. The
+estimated fixed effect is \begin{equation*}
+    \begin{split}
+        \hat{\theta}_i &= \frac{1}{T}\sum_{t=1}^T y_{it}-x_{it}\hat{\beta}_{WG}\\
+        &= \frac{1}{T}\sum y_{it}-x_{it}\beta+\frac{1}{T}\sum x_{it}\beta-x_{it}\hat{\beta}_{WG}\\
+        &= \theta_i+\frac{1}{T}\sum_t \epsilon_{it} + \frac{1}{T}\sum x_{it}(\beta-\hat{\beta}_{WG})\\
+        & = \theta_i + \frac{1}{T}\sum_t \epsilon_{it} + \frac{1}{T}(X'WX)^{-1}X'W\epsilon \sum_t x_{it}\\
+    \end{split}
+
+\end{equation*}
+\begin{question}
+    How to estimate the variance of $\hat{\theta}_i$? How to estimate the variance of $\alpah$?
+\end{question}
+
 \subsection{Specification}\hypertarget{home}{}
 \paragraph{Model 1} (Pseudoc Poisson)
 \begin{equation*}

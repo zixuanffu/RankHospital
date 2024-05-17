@@ -7,8 +7,11 @@
 \contentsline {paragraph}{Model 1}{4}{section*.4}%
 \contentsline {paragraph}{Reference}{4}{section*.5}%
 \contentsline {paragraph}{Model 2}{5}{section*.6}%
-\contentsline {section}{\numberline {1.2}Descriptive Statistics}{10}{section.1.2}%
-\contentsline {subsection}{\numberline {1.2.1}Stays per labor input}{10}{subsection.1.2.1}%
-\contentsline {subsection}{\numberline {1.2.2}Share of outpatient stays}{10}{subsection.1.2.2}%
-\contentsline {subsection}{\numberline {1.2.3}Average length of stay}{16}{subsection.1.2.3}%
-\contentsline {subsection}{\numberline {1.2.4}Selection of patients}{17}{subsection.1.2.4}%
+\contentsline {section}{\numberline {1.2}Mixture model}{10}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Location mixture}{10}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Scale mixture}{11}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Location-scale mixture (independent)}{12}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}Location-scale mixture (general)}{13}{subsection.1.2.4}%
+\contentsline {subsection}{\numberline {1.2.5}Estimation of mixture density}{13}{subsection.1.2.5}%
+\contentsline {paragraph}{Dependent of location and scale}{13}{figure.caption.9}%
+\contentsline {paragraph}{Independent location and scale}{13}{figure.caption.11}%
