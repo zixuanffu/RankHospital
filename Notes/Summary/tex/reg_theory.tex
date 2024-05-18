@@ -64,19 +64,38 @@
 \end{itemize}
 % Denote $y=\text{ETP_INF}$, $x_1=\text{STAC INPATIENT}$, $x_2=\text{STAC
 %         OUTPATIENT}$, $x_3=\text{SESSION}$\
-\paragraph{Inference on $\theta_i$ and ($\beta$)}
+\subsection{Inference on $\hat{\beta}$ and $\hat{\theta_i}$}
+\paragraph{Inference on $\beta$} Because
+\begin{equation*}
+    \hat{\beta}_{WG}-\beta = (X'WX)^{-1}X'W\epsilon
+\end{equation*}
+we have \begin{equation*}
+    \sqrt{N}(\hat{\beta}_{WG}-\beta) \to^d N(0, A^{-1}C A^{-1})\\
+\end{equation*}
+where $A = \E\bra{X'WX}$ and $C = \E\bra{X'W\epsilon \epsilon'W'}=\E\bra{X'W\Omega W'X}$.\\
+We may greatly simplify $\Omega$ if we assume that all individual and all observations' $\epsilon$ are iid. Then $\Omega = \sigma^2 I_{NT}$ (something that we generally do not assume.)\\
+
+\paragraph{Inference on $\theta_i$}
 If we apply the WG estimator $\hat{\beta}_{WG}= (X'WX)^{-1}X'W y$. The
 estimated fixed effect is \begin{equation*}
     \begin{split}
         \hat{\theta}_i &= \frac{1}{T}\sum_{t=1}^T y_{it}-x_{it}\hat{\beta}_{WG}\\
         &= \frac{1}{T}\sum y_{it}-x_{it}\beta+\frac{1}{T}\sum x_{it}\beta-x_{it}\hat{\beta}_{WG}\\
-        &= \theta_i+\frac{1}{T}\sum_t \epsilon_{it} + \frac{1}{T}\sum x_{it}(\beta-\hat{\beta}_{WG})\\
-        & = \theta_i + \frac{1}{T}\sum_t \epsilon_{it} + \frac{1}{T}(X'WX)^{-1}X'W\epsilon \sum_t x_{it}\\
+        &= \theta_i+\frac{1}{T}\sum_t \epsilon_{it} + \pa{\frac{1}{T}\sum x_{it}}(\beta-\hat{\beta}_{WG})\\
     \end{split}
 \end{equation*}
-It is clear that the second part follows a normal distribution $N(0, \sigma_i^2)$. The third part is where asymptotic kicks since \begin{equation*}
-    \sqrt{N}\hat{\beta}_{WG} -\beta \sim N(0, \Sigma)
+It is clear that the second part follows a normal distribution $N(0, \sigma_i^2)$. The third part is where asymptotic kicks since
+\begin{equation*}
+    \begin{split}
+        \sqrt{N}\hat{\beta}_{WG} -\beta &\sim N(0, \Sigma)\\
+        \hat{\beta}_{WG} -\beta &\sim N(0, \frac{1}{N}\Sigma)\\
+        \frac{1}{T}\sum x_{it}(\hat{\beta}_{WG}-\beta)&\sim N(0, \pa{\frac{1}{T^2}\sum x_{it}^2}\frac{1}{N}\Sigma)\\
+    \end{split}
 \end{equation*}
+Then $\hat{\theta}_i-\theta_i$ is a sum of two (non independent) normal variables. Each following $N(0, \frac{\sigma_i^2}{T})$ and $N(0, \pa{\frac{1}{T^2}\sum x_{it}^2}\frac{1}{N}\Sigma)$ respectively.
+\begin{remark}
+    We don't know the $\Sigma$ and there's a need to replace it by $\hat{\Sigma}$.
+\end{remark}
 
 \paragraph{Recall the lectures...}
 Assume a simple stripped down model where $y_{it}=\alpha_i+\epsilon_{it}$, two
