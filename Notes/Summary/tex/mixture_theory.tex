@@ -110,7 +110,19 @@ For \textbf{estimation}, we can first solve for $\hat{F}_{\sigma}$ and solve for
           to this independent prior assumption.)
 \end{itemize}
 \subsection{Location-scale mixture (general)}
-The most general Gaussian location-scale mixture with covariate effects
+The most general Gaussian location-scale mixture with covariate effects.
+\begin{question}
+    It seems that in the paper. They assume that the \textbf{TRUE} covariate effect is known by constructing a profile likelihood to estimate the true $\beta$ (covariate effects).w
+\end{question}
+\begin{remark}
+    The $\hat{\beta}$ that maximizes profile likelihood function of the parameter of interests $\beta$ $L_{\hat{\alpha}(\beta)}(\beta)$ follows \begin{enumerate}
+        \item $\hat{\alpha}(\beta)=\argmax_{\alpha} L(\alpha,\beta)$
+        \item $\hat{\beta}=\argmax_\beta L_{\hat{\alpha}(\beta)}(\beta)$
+    \end{enumerate}
+    Note that maximizing profile likelihood function to get estimates gives rise to the infamous \textbf{incidental parameter problem} due to the fact that \begin{equation*}
+        \hat{\alpha}(\beta)=\frac{1}{T_i}\sum \log(f(\alpha,\beta)) \not\rightarrow \E\bra{\log f(\alpha,\beta)}
+    \end{equation*}
+\end{remark}
 \begin{equation*}
     y_{it}=x_{it}\beta+\theta_i+\sigma_i\epsilon_{it} \quad \text{where} \quad \epsilon_{it}\sim N(0,1)
 \end{equation*}
@@ -119,7 +131,7 @@ Given a true $\beta$, it is straightforward that \begin{equation*}
 \end{equation*}
 The sufficient statistics for
 \begin{itemize}
-    \item $\mu_i$: $\bar{y}_i-\bar{x}_i\beta$
+    \item $\mu_i$: $\bar{y}_i-\bar{x}_i\beta \sim N(\theta_i,\frac{\sigma_i^2}{T_i})$
           \begin{quote}
               contains the between information
           \end{quote}
@@ -131,6 +143,19 @@ The sufficient statistics for
               contains the within information (deviations from the individual means)
           \end{quote}
 \end{itemize}
+\begin{remark}
+    Unlike in the pure scale mixture, we don't know the true location parameter.
+    instead of $y_{it}-x_{it}\beta-\theta_i$ as in the scale mixture case, we need to use the sufficient statistics for $\theta_i$, which is $\frac{1}{T}\sum (y_{it}-x_{it}\beta)$. Each $y_{it}-x_{it}\beta-(\bar{y}_i-\bar{x}_i\beta)$ is a normal variable with mean 0 and variance $(1-1/T_i)\sigma_i^2$.\begin{equation*}
+        y_{it}-x_{it}\beta-\bar{y}_i+\bar{x}_i\beta \sim N(0,(1-1/T_i)\sigma_i^2)
+    \end{equation*}
+    If we \textit{may} assume that $z_{it}=y_{it}-x_{it}\beta-\bar{y}_i+\bar{x}_i$ is independent of $z_{it'}$ (which is not, the covariance is $\frac{1}{T(T-1)}\sigma_i^2$), then the sufficient statistics \begin{equation*}
+        S_i'=\sum (\frac{1}{\sqrt{T_i-1}}z_{it})^2 \underbrace{\sim}_{\text{if we may assume}} \sum \frac{\sigma_i^2}{{T_i}}Z_{it}^2 \sim \frac{\sigma_i^2}{T_i}\chi^2(T_i) \sim \gamma(\frac{T_i-1}{2},\frac{2\sigma^2}{T_i})
+    \end{equation*} where $Z_{it}\sim N(0,1)$ and are iid.
+
+\end{remark}
+\begin{question}
+    Why is the derived distribution of $S_i'$ different from $\gamma(\frac{T_i-1}{2},\frac{2\sigma_i^2}{T_i-1})$?
+\end{question}
 \begin{remark}
     The orthogonality between the within and between information no longer holds here. (Why does it hold in the classical Gaussian panel data?)
 \end{remark}
@@ -150,3 +175,13 @@ where \begin{equation*}
 \begin{question}
     The true $\beta$ is unknown. Therefore, we can not condition on it. How about the so called profile likelihood? How to compare it with the \textit{FORBIDDEN} approach of getting fixed effect estimates from the WG estimation? Since the $\theta_i$ is regarded as \textit{NUISANCE} parameters in the WG estimation, how low the status is...! Poor $\theta_i$!
 \end{question}
+
+\begin{example}
+    Consider a simple model where \begin{equation*}
+        y_{it}=\alpha_i f(x_{it};\beta)\epsilon_{it}
+    \end{equation*}
+    and $\epsilon|\alpha_i,x_{it}\sim \calp(1)$ Then we have \begin{equation*}
+        $y_{it} | \alpha_i,\pa{m_{it}= f(x_{it};\beta)}\sim \calp(\alpha_i m_{it})$
+    \end{equation*}
+\end{example}
+

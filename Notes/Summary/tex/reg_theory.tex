@@ -1,0 +1,138 @@
+\newpage
+\section{Regression tables}
+
+\subsection{WG, BG, Random effect, Correalted random effect(Mundlak)}
+\paragraph{Notation}
+\begin{itemize}
+    \item Dependent variable: \begin{equation*}
+              \underbrace{y}_{NT\times 1}= \begin{pmatrix}
+                  y_1    \\
+                  \vdots \\
+                  y_N
+              \end{pmatrix} \quad
+              \underbrace{y_i}_{T\times 1} = \begin{pmatrix}
+                  y_{i1} \\
+                  \vdots \\
+                  y_{iT}
+              \end{pmatrix}
+          \end{equation*}
+    \item Independent variable:\begin{equation*}
+              \underbrace{X}_{NT\times K}= \begin{pmatrix}
+                  x_1    \\
+                  \vdots \\
+                  x_N
+              \end{pmatrix} \quad
+              \underbrace{x_i}_{T\times K} = \begin{pmatrix}
+                  x_{i1} \\
+                  \vdots \\
+                  x_{iT}
+              \end{pmatrix}
+          \end{equation*}
+    \item Matrix to calcualte the mean: \begin{equation*}
+              B_T= d_T(d_T' d_T)^{-1}d_T'\quad \text{where} \quad d_T=\begin{pmatrix}
+                  1 \\ \vdots \\ 1 \end{pmatrix}
+          \end{equation*}
+          Thus \begin{equation*}
+              B_T y_1 = \begin{pmatrix}
+                  \bar{y}_1 \\ \vdots \\ \bar{y}_1
+              \end{pmatrix}
+          \end{equation*}
+          we set $B=I_N\otimes B_T$
+    \item Matrix to demean the variable: \begin{equation*}
+              W_T= I_T-B_T
+          \end{equation*}
+          Thus, \begin{equation*}
+              W_T y_i = \begin{pmatrix}
+                  y_{i1}-\bar{y}_1 \\ \vdots \\ y_{iT}-\bar{y}_1
+              \end{pmatrix}
+          \end{equation*}
+          we set $W=I_N\otimes W_T$
+
+\end{itemize}
+\paragraph{Estimators}
+\begin{itemize}
+    \item WG: \begin{equation*}
+              \hat{\beta}_{WG}=(X'WX)^{-1}X'W y
+          \end{equation*}
+    \item BG: \begin{equation*}
+              \hat{\beta}_{BG}=(X'B X)^{-1}X'By\end{equation*}
+    \item RE: A linear combination of WG and BG
+    \item CRE (Mundlak): equivalent to WG
+          \begin{quote}
+              In empirical analysis of data consisting of repeated observations on economic units (time series on a cross section) it is often assumed that the coefficients of the quantitiative variables (slopes) are the same, whereas the coefficients of the qualitative variables (intercepts or effects) vary over units or periods. This is the constant-slope variable- intercept framework. In such an analysis an explicit account should be taken of the statistical dependence that exists between the quantitative variables and the effects. It is shown that when this is done, the random effect approach and the fixed effect approach yield the same estimate for the slopes, the "within" estimate. Any matrix combination of the "within" and "between" estimates is generally biased. When the "within" estimate is subject to a relatively large error a minimum mean square error can be applied, as is generally done in regression analysis. Such an estimator is developed here from a somewhat different point of departure.
+          \end{quote}
+\end{itemize}
+% Denote $y=\text{ETP_INF}$, $x_1=\text{STAC INPATIENT}$, $x_2=\text{STAC
+%         OUTPATIENT}$, $x_3=\text{SESSION}$\
+\paragraph{Inference on $\theta_i$ and ($\beta$)}
+If we apply the WG estimator $\hat{\beta}_{WG}= (X'WX)^{-1}X'W y$. The
+estimated fixed effect is \begin{equation*}
+    \begin{split}
+        \hat{\theta}_i &= \frac{1}{T}\sum_{t=1}^T y_{it}-x_{it}\hat{\beta}_{WG}\\
+        &= \frac{1}{T}\sum y_{it}-x_{it}\beta+\frac{1}{T}\sum x_{it}\beta-x_{it}\hat{\beta}_{WG}\\
+        &= \theta_i+\frac{1}{T}\sum_t \epsilon_{it} + \frac{1}{T}\sum x_{it}(\beta-\hat{\beta}_{WG})\\
+        & = \theta_i + \frac{1}{T}\sum_t \epsilon_{it} + \frac{1}{T}(X'WX)^{-1}X'W\epsilon \sum_t x_{it}\\
+    \end{split}
+\end{equation*}
+It is clear that the second part follows a normal distribution $N(0, \sigma_i^2)$. The third part is where asymptotic kicks since \begin{equation*}
+    \sqrt{N}\hat{\beta}_{WG} -\beta \sim N(0, \Sigma)
+\end{equation*}
+
+\paragraph{Recall the lectures...}
+Assume a simple stripped down model where $y_{it}=\alpha_i+\epsilon_{it}$, two
+cases \begin{enumerate}
+    \item $y_{it}=\alpha_i+\epsilon_{it} \sim N(\alpha_i,\sigma^2)$
+    \item $y_{it}=\alpha_i+\epsilon_{it} \sim N(\alpha_i,\sigma_i^2)$
+\end{enumerate}
+The estimator of $\alpha_i$ is \begin{equation*}
+    \hat{\alpha}_i = \bar{y}_i
+\end{equation*}
+
+\paragraph{Estimate the $\sigma^2$ and $\sigma_i^2$}
+The classical incidental parameter problem appears when we want to estimate
+$\sigma^2$ or $\sigma_i^2$ because we only have an estimate of $\hat{\alpha}_i
+    = \bar{y}_i$.
+\begin{enumerate}
+    \item $\sigma^2$: \begin{equation*}
+              \hat{\sigma}^2 = \frac{1}{NT}\sum_{i=1}^N\sum_{t=1}^T (y_{it}-\hat{\alpha}_i)^2
+          \end{equation*}
+          \begin{itemize}
+              \item The mean of the estimator is $\E\bra{\hat{\sigma}^2} = \sigma^2
+                        (1-\frac{1}{T})$. Asymptotically \textbf{BIASED}. (Though We can deploy bias
+                    correction techniques.)
+              \item The variance of the estimator is $\Var\pa{\hat{\sigma}^2} =
+                        \frac{2\sigma^4}{NT}(1-\frac{1}{T})$
+          \end{itemize}
+    \item $\sigma_i^2$: \begin{equation*}
+              \hat{\sigma}_i^2 = \frac{1}{T}\sum_{t=1}^T (y_{it}-\hat{\alpha}_i)^2
+          \end{equation*} This corresponds to the \textit{sufficient statistics} we will be talking about later.
+\end{enumerate}
+\paragraph{Estimate the variance of $\alpha$} If we treat $\alpha_i$ for each $i$
+as a fixed number, and be agnostic about the possible latent distribution
+$G_{\alpha}$ from which $\alpha_i$ is drawn from. We don't talk about the
+variance of $\alpha$. Yet if we instead believe that all $\alpha_i$ are drawn
+iidly from a distribution $G$, then it is interesting to estimate something
+about $G$ (e.g. the moment of $\alpha$). \\ For example, we want to estimate
+the \textbf{first moment} of $\alpha$ by \begin{equation*}
+    \begin{split}
+        \frac{1}{N}\sum \hat{\alpha}_i &= \frac{1}{N}\sum \alpha_i + \frac{1}{N}\sum \bar{\epsilon}_i\\
+        \E\bra{\frac{1}{N}\sum \hat{\alpha}_i} &= \E\bra{\alpha_i} + 0
+    \end{split}
+\end{equation*}
+This is unbiased.\\
+Yet if we want to estimate the \textbf{second moment} of $\alpha$ by \begin{equation*}
+    \begin{split}
+        \frac{1}{N}\sum (\hat{\alpha}_i)^2 &= \frac{1}{N}\sum (\alpha_i+\bar{\epsilon}_i)^2\\
+        &= \frac{1}{N}\sum \alpha_i^2 + \frac{1}{N}\sum \bar{\epsilon}_i^2 + \frac{2}{N}\sum \alpha_i\bar{\epsilon}_i\\
+        \E\bra{\frac{1}{N}\sum (\hat{\alpha}_i)^2} &= \E\bra{\alpha_i^2} + \frac{1}{T}\sigma_i^2+0\\
+    \end{split}
+\end{equation*}
+This is biased and the bias is $\frac{1}{T}\sigma_i^2$.
+
+This is the issue we encountered when we go from the first moment of $\alpha$
+to the second moment. It would be interesting to estimate the
+$G_{\alpha}(\alpha_i)$ directly using non parametric convex optimization
+methods.\\ Or when $\sigma_i^2$ is heterogeneous, it would be
+(challenging/interesting) to estimate $H_{\alpha,\sigma}(\alpha_i,\sigma_i)$
+directly.
+
