@@ -155,3 +155,77 @@ methods.\\ Or when $\sigma_i^2$ is heterogeneous, it would be
 (challenging/interesting) to estimate $H_{\alpha,\sigma}(\alpha_i,\sigma_i)$
 directly.
 
+\subsection{Multiplcative fixed effect with two types of errors}
+The multiplicative fixed effect model is \begin{equation*}
+    \begin{split}
+        y_{it} = f(x_{it};\beta)\theta_i
+    \end{split}
+\end{equation*}
+\paragraph{Multiplicative error}
+\begin{equation*}
+    y_{it} = f(x_{it};\beta)\theta_i\epsilon_{it}
+\end{equation*}
+The exogeneity assumption is that $\E\bra{\epsilon_{it}|x_{it},\theta_i}=1$.\\
+The moment condition is that \begin{equation*}
+    \E\bra{x_{it}\pa{\frac{y_{it}}{f(x_{it};\beta)\theta_i}-1}}=\E\bra{x_{it} \E\bra{\frac{y_{it}}{f(x_{it};\beta)\theta_i}-1|x_{it},\theta_i}}=0
+\end{equation*}
+Given $\theta_i$ known, the emipircal moment condition to estimate $\beta$ is \begin{equation}\label{eq:mult_error_beta}
+    \sum_{i=1}^N\sum_{t=1}^T x_{it}\pa{\frac{y_{it}}{f(x_{it};{\beta}){\theta}_i}-1}=0
+\end{equation}
+Given $\beta$ known, the emipircal moment condition to estimate $\theta_i$ is \begin{equation}
+    \label{eq:mult_error_theta}
+    \begin{split}
+        &\sum_{t=1}^T {\frac{y_{it}}{f(x_{it};{\beta})\theta_i}-1}=0\\
+        & \Leftrightarrow \hat{\theta}(\beta)=\frac{1}{T}\sum_{t=1}^T \frac{y_{it}}{f(x_{it};\beta)}\\
+
+    \end{split}
+\end{equation}
+Since $\theta_i$ is unknown, We can use \ref{eq:mult_error_beta} to get the profiling estimating equation for $\beta$ which is \begin{equation*}
+    \sum_{n=1}^N\sum_{t=1}^T x_{it}\pa{\frac{y_{it}}{f(x_{it};\beta)\hat{\theta}_i(\beta)}-1}=0
+\end{equation*}
+The profiling estimating equation is biased, which can be seen from (taking expectation conditioning on all $x_{it}$ and evaluate at the true $\beta$) \begin{equation*}
+    \begin{split}
+        \sum_{n=1}^N\sum_{t=1}^T \E\bra{x_{it}\E\pa{\frac{\theta_i\epsilon_{it}}{\hat{\theta}_i}-1\bigg |x_{it}}}\\&=\sum \sum \E\bra{x_{it}\E\bra{\frac{\theta_i\epsilon_{it}}{\frac{1}{T}\sum{\theta_i \epsilon_{it}}}-1\bigg | x_{it}}}\\& = \sum \sum \E\bra{x_{it}\E \bra{\frac{\epsilon_{it}}{\bar{\epsilon}_{i}}-1\bigg | x_{it}}}=0
+    \end{split}
+\end{equation*}
+This is unbiased only when $\E\bra{\frac{\epsilon_{it}}{\bar{\epsilon}_i}|x_{it}}=1$. One of the situations that this is true is $\epsilon_{it}|x_{it}$ is iid. Because $\E\bra{\frac{\epsilon_{it}}{\bar{\epsilon}_i}}=\frac{1}{T}\sum_{t=1}^T \E\bra{\frac{\epsilon_{it}}{\bar{\epsilon}_i}}=\E\bra{\frac{\bar{\epsilon}_i}{\bar{\epsilon}_i}}=1$
+
+\paragraph{Additive error}
+\begin{equation*}
+    y_{it} = f(x_{it};\beta)\theta_i+u_{it}
+\end{equation*}
+The exogeneity assumption is that $\E\bra{u_{it}|x_{it},\theta_i}=0$.\\
+The equivalence can be shown since $u_{it}=f(x_{it};\beta)\theta_i(1-\epsilon_{it})$. Thus, \begin{equation*}
+    \E\bra{u_{it}|x_{it},\theta_i}=f(x_{it};\beta)\theta_i\E\bra{(1-\epsilon_{it})|x_{it},\theta_i} \Leftrightarrow \E\bra{\epsilon_{it}|x_{it},\theta_i}=1
+\end{equation*}
+The moment condition is that \begin{equation*}
+    \E\bra{x_{it}\pa{y_{it}-f(x_{it};\beta)\theta_i}}=\E\bra{x_{it} \E\bra{y_{it}-f(x_{it};\beta)\theta_i|x_{it},\theta_i}}=0
+\end{equation*}
+Given $\theta_i$, the emipircal moment condition to estimate $\beta$ is \begin{equation}
+    \label{eq:add_error_beta}
+    \sum_{i=1}^N\sum_{t=1}^T x_{it}\pa{y_{it}-f(x_{it};{\beta}){\theta}_i}=0
+\end{equation}
+Given $\beta$, the emipircal moment condition to estimate $\theta_i$ is \begin{equation}
+    \label{eq:add_error_theta}
+    \sum_{t=1}^T {y_{it}-f(x_{it};{\beta})}=0
+\end{equation}
+Since $\theta_i$ is unknown, We can use \ref{eq:add_error_beta} to get the profiling estimating equation for $\beta$ which is \begin{equation*}
+    \sum_{n=1}^N\sum_{t=1}^T{y_{it}-f(x_{it};\beta)\hat{\theta}_i(\beta)}=0
+\end{equation*}
+where $\hat{\theta}_i(\beta)=\frac{\sum_t y_{it}}{\sum_tf(x_{it};\beta)}=\frac{\sum f*\theta_i+u_{it}}{\sum f}=\theta_i+\frac{\sum_t u_{it}}{\sum_t f}$
+The unbiasedness condtion requires that \begin{equation*}
+    \E\bra{y_{it}-f(x_{it};\beta)\frac{\sum_t y_{it}}{\sum_tf(x_{it};\beta)}|x_{it}}=0
+\end{equation*}
+which boils down to \begin{equation*}
+    \E\bra{\hat{\theta}_i|x_{it}}=\theta_i
+\end{equation*} which is true.
+\begin{remark}
+    If we use intrument $z_{it}$ the unbiasedness condition would be \begin{equation*}
+        \E\bra{y_{it}-\frac{\sum_t y_{it}}{\sum_tf(x_{it};\beta)}\bigg |z_{it},x_{it}}=0
+    \end{equation*} which is generally not true.
+\end{remark}
+
+\paragraph{Poisson distribution}
+We assume that $y_{it}|x_{i1},\ldots,x_{iT},\theta_i \sim
+    \calp(f(x_{it};\beta)\theta_i)$. Then $\beta$ are estimated jointly by MLE.
+% 有点混乱之我到底应该怎么assume error term. Multiplicative or additive error? The additive form is the standard Pseudo Poisson estimator?

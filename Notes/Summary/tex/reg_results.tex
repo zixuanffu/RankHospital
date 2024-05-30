@@ -28,6 +28,33 @@ The moment conditon is often called pseudo-poisson estimator (as if assuming $y_
 When regressors are not strictly exogenous, we can construct a \textbf{differencing} based estimator based on sequential moment restrictions.
 The \verb+fixest+ package doesn't provide the differencing based estimator. \\
 \textbf{TO BE CONSTRUCTED BY HAND LATER.}
+
+\begin{example}
+    Consider a simple multiplicative error term model where \begin{equation*}
+        y_{it}=\alpha_i f(x_{it};\beta)\epsilon_{it}
+    \end{equation*}
+    \begin{enumerate}
+        \item If $\epsilon|\alpha_i,x_{it}\sim \calp(1)$, then we have \begin{equation*}
+                  y_{it} | \alpha_i,\pa{m_{it}= f(x_{it};\beta)}\sim \calp(\alpha_i m_{it}) \to \E\bra{y_{it}|\alpha_i,x_{it}}=\alpha_i m_{it}
+              \end{equation*}
+        \item If $\log(\epsilon)|\alpha_i,x_{it}\sim \caln(0,\sigma^2)$, as long as
+              $\E\bra{\epsilon_{it}|\alpha_i,x_{it}}=1$, we have \begin{equation*}
+                  \E\bra{y_{it} | \alpha_i,m_{it}}=\alpha_i m_{it}
+              \end{equation*}
+    \end{enumerate}
+    Consider an additive error term model where \begin{equation*}
+        y_{it} = \alpha_i f(x_{it};\beta)+u_{it}
+    \end{equation*} with $\E\bra{u_{it}|\alpha_i, m_{it}}=0$ we have the same conditional mean function $\E\bra{y_{it}|\alpha_i,m_{it}}=\alpha_i m_{it}$
+
+\end{example}
+
+\begin{remark}
+    If we assume that $\epsilon_{it}$ is independent of $x_{it}$ and $\theta_i$, then \begin{equation*}
+        \log(y_{it})=\log(f(x_{it};\beta))+\log(\theta_i)+\log(\epsilon_{it})
+    \end{equation*}
+    with $\E\bra{\log(\epsilon_{it})|x_{it},\theta_i}=\E\bra{\log(\epsilon_{it})}\neq \log\E\bra{\epsilon_{it}}$
+\end{remark}
+
 \paragraph{Model 2} (OLS)
 \begin{align*}
     \log(y_{it}) & =\log(x_{it1})\beta_1+\log(x_{it2})\beta_2+\log(x_{it3})\beta_3+\log(\theta_i)+\log(\epsilon_{it}) \\
@@ -38,9 +65,9 @@ log(SESSION),CASEMIX
 \hyperlink{reg_inf_lag_2022}{OLS\_lag1}
 \\Figure: \hyperlink{FE_OLS_FI}{FixedEffect\_OLS}
 
-\begin{remark}
-    The Pseudo poisson and Log OLS are equivalent if we assume that $\epsilon_{it}$ is independent of $x_{it}$ and $\theta_i$.
-\end{remark}
+% \begin{remark}
+%     The Pseudo poisson and Log OLS are equivalent if we assume that $\epsilon_{it}$ is independent of $x_{it}$ and $\theta_i$.
+% \end{remark}
 
 \begin{remark}
     The Mundlak (1978) approach is to include the average of the individual-specific variables $\bar{x_i}$ in the regression. He shows that it is equivalent to within group estimator.
