@@ -1,10 +1,6 @@
-library(data.table)
-install.packages("archive")
-library(archive)
-# install.packages("readxl")
-library(readxl)
+pacman::p_load(data.table, archive, readxl)
 
-# Collect the urls of the data files
+# ---- Collect the urls of the data files
 # read from Data/In/708_bases-statistiques-sae.csv
 
 links <- fread("Data/In/Raw/708_bases-statistiques-sae.csv")
@@ -25,7 +21,7 @@ for (i in 2013:2022) {
     links[year == i]$url <- paste0("https://data.drees.solidarites-sante.gouv.fr/api/v2/catalog/datasets/708_bases-statistiques-sae/attachments/sae_", i, "_bases_statistiques_formats_sas_csv_7z")
 }
 
-# Download from the urls stored in the links data frame
+# ---- Download the data files from the urls stored in the links data frame
 for (i in 2008:2016) {
     url <- links[year == i]$url
     filename <- paste0("Data/In/Raw/sae_stat_", i, ".7z")
@@ -37,8 +33,8 @@ for (i in 2008:2016) {
     )
 }
 
-# The SAE dataset
-# the input and output
+# ---- SAE: Select the sheets of interests and save them as Rds ---- #
+# SYGEN.csv contains a synthetic overview of the hospital
 for (i in 2016:2022) {
     zipfilename <- paste0("Data/In/Raw/sae_stat_", i, ".7z")
     zipfiletable <- setDT(archive(zipfilename))
@@ -49,8 +45,7 @@ for (i in 2016:2022) {
     saveRDS(x, file = paste0("Data/In/SYGEN/SYGEN_", i, ".rds"))
 }
 
-
-# the dummies
+# BRULES, PSY, BLOCS.csv contains information to construct the dummies --- #
 if (!dir.exists("Data/In/BRULES")) {
     dir.create("Data/In/BRULES", showWarnings = TRUE)
 }
@@ -82,7 +77,7 @@ for (i in 2016:2022) {
     saveRDS(bl, file = paste0("Data/In/BLOCS/BLOCS_", i, ".rds"))
 }
 
-# the id
+# ID.csv contains the hospital ID
 if (!dir.exists("Data/In/ID")) {
     dir.create("Data/In/ID", showWarnings = TRUE)
 }
@@ -96,19 +91,48 @@ for (i in 2016:2022) {
     saveRDS(id, file = paste0("Data/In/ID/ID_", i, ".rds"))
 }
 
-
+# ---- HOSPIDIAG: Extract the xlsx from the zip file and save the sheet of interests as Rds ---- #
 # The Hospidiag dataset
 hospidiag <- "Data/In/Raw/hospidiag_opendata.zip"
 a <- archive(hospidiag)
 year <- 2017:2022
-for (i in seq_along(year)) {
+for (i in seq_along(year)) { # seq_along is used to get the index of the vector
     archive_extract(hospidiag, "Data/In/Hospidiag", i)
     f <- read_xlsx(paste0("Data/In/Hospidiag/", a$path[i]), col_names = TRUE, sheet = paste0("hd", year[i]))
     x <- setDT(f)
     x[, AN := year[i]]
     saveRDS(x, file = paste0("Data/In/Hospidiag/hd_", year[i], ".rds"))
 }
-hd2016 <- read_xlsx(paste0("Data/In/Hospidiag/hospidiag_opendata_2016.xlsx"), col_names = TRUE, sheet = paste0("hd", 2016))
-hd2016 <- setDT(hd2016)
-hd2016[, AN := 2016]
-saveRDS(hd2016, file = paste0("Data/In/Hospidiag/hd_", 2016, ".rds"))
+
+# ---- Extend to 2013-2015 ---- #
+# ---- HOSPIDIAG ---- #
+for (i in 2013:2015) {
+    f <- read_xlsx(paste0("Data/In/Hospidiag/hospidiag_opendata_", i, ".xlsx"), col_names = TRUE, sheet = paste0("hd", i))
+    x <- setDT(f)
+    x[, AN := i]
+    saveRDS(x, file = paste0("Data/In/Hospidiag/hd_", i, ".rds"))
+}
+
+# ---- SAE ---- #
+SheetExtract <- function(sheet_names, start, end) {
+    for (i in start:end) {
+        zipfilename <- paste0("Data/In/Raw/sae_stat_", i, ".7z")
+        zipfiletable <- setDT(archive(zipfilename))
+        for (sheet_name in sheet_names) {
+            row_number <- (grep(paste0(sheet_name, "_"), zipfiletable$path))
+            x <- setDT(read.csv2(archive_read(zipfilename, row_number, mode = "r")))
+            colnames(x) <- toupper(colnames(x))
+            x[, `:=`(AN = as.numeric(AN), FI = as.character(FI))]
+            dir_name <- paste0("Data/In/", sheet_name, "/")
+            if (!dir.exists(dir_name)) {
+                dir.create(dir_name, showWarnings = TRUE)
+            }
+            saveRDS(x, file = paste0(dir_name, sheet_name, "_", i, ".rds"))
+        }
+    }
+}
+# MCO contains output
+# Q20, Q21, Q23, Q24 contains labor input
+# ID contains the hospital ID
+sheet <- c("MCO", "Q20", "Q21", "Q23", "Q24", "ID")
+SheetExtract(sheet, 2013, 2015)

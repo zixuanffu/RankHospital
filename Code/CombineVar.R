@@ -1,6 +1,7 @@
 rm(list = ls())
 library(data.table)
 
+# ---- 2016-2022 ----
 # get input
 input <- readRDS("Data/Out/labor_input_2016_2022.rds")
 colnames(input)
@@ -45,3 +46,17 @@ dt[, ENTSSR := ENT + SEJHC_SSR]
 dt[, PASSU := PASSU_PED + PASSU_GEN]
 colnames(dt)
 saveRDS(dt, "Data/Out/combineddata_2016_2022.rds")
+
+# ---- 2013-2015 ----
+# Extend the dataset to 2023
+input <- readRDS("Data/Out/labor_input_2013_2015.rds")
+output <- readRDS("Data/Out/output_2013_2015.rds")
+control_status <- readRDS("Data/Out/control_stat_2013_2015.rds")
+
+# merge
+dt <- input[output, on = .(AN, FI, FI_EJ), nomatch = 0]
+dt <- dt[control_status, on = .(AN, FI, FI_EJ), nomatch = 0]
+dt[is.na(dt)] <- 0
+dt[, EFF_MD := EFFSAL_TOT + EFFLIB_TOT]
+dt[, ETP_INF := ETP_INFAVECSPE + ETP_INFSANSSPE + ETP_DIRINF]
+saveRDS(dt, "Data/Out/combineddata_2013_2015.rds")
