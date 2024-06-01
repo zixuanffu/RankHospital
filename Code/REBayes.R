@@ -95,3 +95,7 @@ plot(f_t$v[1:299], f_t$fv,
 )
 dev.off()
 warnings() # check the warnings later.
+
+
+help(KWsmooth)
+help(Pmix)

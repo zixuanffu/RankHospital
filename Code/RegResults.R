@@ -1,78 +1,116 @@
 rm(list = ls())
 source("Code/RegX.R")
+# ---- load the dataset ---- #
+dt1 <- readRDS("Data/Out/combineddata_2016_2022.rds") # 2016-2022
+dt2 <- readRDS("Data/Out/combineddata_2013_2015.rds") # 2013-2015
+cols <- c("AN", "FI", "FI_EJ", "EFF_MD", "ETP_INF", "SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "CASEMIX", "STJR") # variables of interest
+dt <- rbind(dt1[, ..cols], dt2[, ..cols])
 
-# For registered nurses
-dt <- readRDS("Data/Out/combineddata_2016_2022.rds")
-# hospitals that have changed status
+# ---- select only those with stable legal status ---- #
 FI_stat_change <- unique(dt[, .(FI, STJR)])
 FI_stat_change <- FI_stat_change[, .N, by = .(FI)]
 FI_stat_change <- FI_stat_change[N > 1]
 dt <- dt[!FI %in% FI_stat_change$FI]
-# those observations with possible coding errors...
+
+# ---- Prepare the panel for nurses ---- #
+# ---- filter out observations with possible coding errors
 # 2022 760000166
 # 2016 910001973
-dt <- dt[!(FI == 760000166 & AN == 2022) | !(FI == 910001973 & AN == 2016)]
-# dt[,Y:=ETP_INF*EFF_MD]
-dt <- dt[ETP_INF > 0]
+dt_inf <- dt[!(FI == 760000166 & AN == 2022) | !(FI == 910001973 & AN == 2016)]
+# ---- filter out zero values on the LHS ---- #
+dt_inf <- dt_inf[ETP_INF > 0]
+# ---- add one to the RHS to avoid zero values in taking log ---- #
 varr1 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
 varl <- "ETP_INF"
-dt <- dt[SEJHC_MCO > 1 | SEJHP_MCO > 1 | SEANCES_MED > 1]
-dt[, (varr1) := lapply(.SD, function(x) x <- x + 1), .SDcols = varr1]
-dt[, Nobs := .N, by = .(FI)]
-dt <- dt[Nobs == 6]
-length(unique(dt$FI))
-# dt[, (varr1) := lapply(.SD, function(x) ifelse(x == 0, 1, x)), .SDcols = varr1] # add one to ever column to avoid zero value issue
+dt_inf <- dt_inf[SEJHC_MCO > 1 | SEJHP_MCO > 1 | SEANCES_MED > 1]
+dt_inf[, (varr1) := lapply(.SD, function(x) x <- x + 1), .SDcols = varr1]
+dt_inf[, Nobs := .N, by = .(FI)]
+dt_inf <- dt_inf[Nobs >= 6] # keep only those with at least 6 observations
+num_hospital <- length(unique(dt$FI)) # 1526
 
-pdt <- panel(dt, panel.id = ~ FI + AN, time.step = "consecutive", duplicate.method = "first")
+# ---- set data.table in panel data format ---- #
+pdt <- panel(dt_inf, panel.id = ~ FI + AN, time.step = "consecutive", duplicate.method = "first")
 # construct lagged variables
 # pdt[, `:=`(SEJHC_MCO_l1 = l(SEJHC_MCO, 1), SEJHP_MCO_l1 = l(SEJHP_MCO, 1), SEANCES_MED_l1 = l(SEANCES_MED, 1))]
 
-
-
-# OLS regression
+# ---- Regression ---- #
+start_year <- 2013
+end_year <- 2022
+# ---- OLS regression with all types of hospitals ---- #
+# ---- With nurses ---- #
 reg_inf_ols_FI <- reg_X(pdt, varl, varr1)
 summary(reg_inf_ols_FI)
-# add residuals to the panel
-obs_removed <- reg_inf_ols_FI$obs_selection$obsRemoved * (-1)
-pdt_used <- pdt[!obs_removed, ]
-residuals <- reg_inf_ols_FI$residuals
-pdt_used[, `:=`(Res = residuals)] # add residuals to the panel
-# add fixed effect to the panel
+str(reg_inf_ols_FI)
+
+obs_removed <- reg_inf_ols_FI$obs_selection$obsRemoved * (-1) # get the observations removed
+pdt_used <- pdt[!obs_removed, ] # keep only the observations used
+
+# ---- add residuals to the panel
+RES <- reg_inf_ols_FI$residuals
+pdt_used[, `:=`(Res = RES)] # add residuals to the panel
+# ---- add fixed effect to the panel
 FE <- reg_inf_ols_FI$sumFE
 pdt_used[, `:=`(FixedEffect = FE)]
-saveRDS(pdt_used, "Results/2016-2022/pdt_inf_ols.rds")
-saveRDS(reg_inf_ols_FI, "Results/2016-2022/reg_inf_ols_FI.rds")
-# plot
-reg_inf_ols_FI <- readRDS("Results/2016-2022/reg_inf_ols_FI.rds")
-status <- readRDS("Data/Out/status_stable_2016_2022.rds")
-plot_FE(reg_inf_ols_FI, "FI", status)
 
+saveRDS(pdt_used, paste0("Results/", start_year, "-", end_year, "/pdt_inf_ols_FI.rds"))
+saveRDS(reg_inf_ols_FI, paste0("Results/", start_year, "-", end_year, "/reg_inf_ols_FI.rds"))
+# ---- plot the fixed effect ---- #
+reg_inf_ols_FI <- readRDS(paste0("Results/", start_year, "-", end_year, "/reg_inf_ols_FI.rds"))
+status_stable <- readRDS(paste0("Data/Out/status_stable_", start_year, "_", end_year, ".rds"))
+p_res <- plot_FE(reg_inf_ols_FI, "FI", status_stable, year_start = start_year, year_end = end_year)
+p <- p_res[[1]]
+p_e <- p_res[[2]]
 
-# dropping CHU and PNL
+# ---- OLS regression with only public and private hospitals ---- #
 reg_inf_ols_FI_pub <- reg_X(pdt[STJR == 1 | STJR == 2], varl, varr1)
 summary(reg_inf_ols_FI_pub)
-plot_FE(reg_inf_ols_FI_pub, "FI", status)
+p_res <- plot_FE(reg_inf_ols_FI_pub, "FI", status_stable, year_start = start_year, year_end = end_year)
+p <- p_res[[1]]
+p_e <- p_res[[2]]
 
-# For medical doctors
-reg_md_ols_FI <- reg_X(pdt, "EFF_MD", varr1)
-# add residuals to the panel
+
+# ---- Prepare the panel for doctors ---- #
+# ---- filter out observations with possible coding errors
+dt_md <- dt[!(FI == 760000166 & AN == 2022) | !(FI == 910001973 & AN == 2016)]
+# ---- filter out zero values on the LHS ---- #
+dt_md <- dt_md[EFF_MD > 0]
+# ---- add one to the RHS to avoid zero values in taking log ---- #
+varr1 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
+varl <- "EFF_MD"
+dt_md <- dt_md[SEJHC_MCO > 1 | SEJHP_MCO > 1 | SEANCES_MED > 1]
+dt_md[, (varr1) := lapply(.SD, function(x) x <- x + 1), .SDcols = varr1]
+dt_md[, Nobs := .N, by = .(FI)]
+dt_md <- dt_md[Nobs >= 6] # keep only those with at least 6 observations
+num_hospital <- length(unique(dt$FI)) # 2231
+
+# ---- set data.table in panel data format ---- #
+pdt <- panel(dt_md, panel.id = ~ FI + AN, time.step = "consecutive", duplicate.method = "first")
+# construct lagged variables
+# pdt[, `:=`(SEJHC_MCO_l1 = l(SEJHC_MCO, 1), SEJHP_MCO_l1 = l(SEJHP_MCO, 1), SEANCES_MED_l1 = l(SEANCES_MED, 1))]
+
+varl <- "EFF_MD"
+reg_md_ols_FI <- reg_X(pdt, varl, varr1)
+summary(reg_md_ols_FI)
+# ---- remove observations that are not used in the regression ---- #
 obs_removed <- reg_md_ols_FI$obs_selection$obsRemoved * (-1)
 pdt_used <- pdt[!obs_removed, ]
+# ---- add residuals to the panel
 residuals <- reg_md_ols_FI$residuals
 pdt_used[, `:=`(Res = residuals)] # add residuals to the panel
-# add fixed effect to the panel
+# ---- add fixed effect to the panel
 FE <- reg_md_ols_FI$sumFE
 pdt_used[, `:=`(FixedEffect = FE)]
-saveRDS(pdt_used, "Results/2016-2022/pdt_md_ols.rds")
-saveRDS(reg_md_ols_FI, "Results/2016-2022/reg_md_ols_FI.rds")
+saveRDS(pdt_used, paste0("Results/", start_year, "-", end_year, "/pdt_md_ols_FI.rds"))
+saveRDS(reg_md_ols_FI, paste0("Results/", start_year, "-", end_year, "/reg_md_ols_FI.rds"))
 
-# plot
-reg_md_ols_FI <- readRDS("Results/2016-2022/reg_md_ols_FI.rds")
-status <- readRDS("Data/Out/status_stable_2016_2022.rds")
-plot_FE(reg_md_ols_FI, "FI", status)
+# ---- plot the fixed effect by legal status ---- #
+reg_md_ols_FI <- readRDS(paste0("Results/", start_year, "-", end_year, "/reg_md_ols_FI.rds"))
+status_stable <- readRDS(paste0("Data/Out/status_stable_", start_year, "_", end_year, ".rds"))
+p_res <- plot_FE(reg_md_ols_FI, "FI", status_stable, year_start = start_year, year_end = end_year)
+p <- p_res[[1]]
+p_e <- p_res[[2]]
 
-
-
+# ---- IGNORE: Preliminary test with Poisson regression ----- #
 # Multiplicative model Pseudo Poisson regression
 # If we actually assume Poisson distribution of the multiplicative error term, we are in the case of heterogeneous known variance, where the variance stabilizing transformation gives $z_{it} =\sqrt{\frac{y_it}{m_{it}}} \sim \caln (\theta_i, \frac{1}{w_{it}}= \frac{1}{4m_{it}})$
 
