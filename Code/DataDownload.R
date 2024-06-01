@@ -1,5 +1,5 @@
 library(data.table)
-install.packages("archive")
+# install.packages("archive")
 library(archive)
 # install.packages("readxl")
 library(readxl)
@@ -112,3 +112,25 @@ hd2016 <- read_xlsx(paste0("Data/In/Hospidiag/hospidiag_opendata_2016.xlsx"), co
 hd2016 <- setDT(hd2016)
 hd2016[, AN := 2016]
 saveRDS(hd2016, file = paste0("Data/In/Hospidiag/hd_", 2016, ".rds"))
+
+
+
+# Extend the dataset to 2013
+SheetExtract <- function(sheet_names, start, end) {
+    for (i in start:end) {
+        zipfilename <- paste0("Data/In/Raw/sae_stat_", i, ".7z")
+        zipfiletable <- setDT(archive(zipfilename))
+        for (sheet_name in sheet_names) {
+            row_number <- (grep(paste0(sheet_name, "_"), zipfiletable$path))
+            x <- setDT(read.csv2(archive_read(zipfilename, row_number, mode = "r")))
+            x[, `:=`(AN = as.numeric(AN), FI = as.character(FI))]
+            dir_name <- paste0("Data/In/", sheet_name, "/")
+            if (!dir.exists(dir_name)) {
+                dir.create(dir_name, showWarnings = TRUE)
+            }
+            saveRDS(x, file = paste0(dir_name, sheet_name, "_", i, ".rds"))
+        }
+    }
+}
+names <- c("MCO", "Q20", "Q21", "Q23", "Q24")
+SheetExtract(names, 2013, 2015)

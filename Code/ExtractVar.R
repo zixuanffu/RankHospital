@@ -127,3 +127,70 @@ stat_unique <- stat_unique[N == 1]
 fi <- stat_unique$FI
 status <- unique(status[FI %in% fi, .(FI, FI_EJ, STJR, STJR_LABEL)])
 saveRDS(status, "Data/Out/status_stable_2016_2022.rds")
+
+
+# Extend to 2013
+
+# output: SEJHC_MCO, SEJHP_MCO
+cols_out <- c("AN", "FI", "FI_EJ", "SEJHC_MCO", "SEJHP_MCO")
+dt_out_all <- data.table()
+for (i in seq(2013, 2015)) {
+    dt_out <- readRDS(paste0("Data/In/MCO/MCO_", i, ".rds"))
+    dt_out <- dt_out[, ..cols_out]
+    dt_out_all <- rbind(dt_out_all, dt_out)
+}
+saveRDS(dt_out_all, "Data/Out/output_2013_2015.rds")
+
+# labor input: according to solen
+doctor <- c("EFFSAL_TOT", "EFFLIB_TOT")
+infirmier <- c("ETP_INFAVECSPE", "ETP_INFSANSSPE", "ETP_DIRINF")
+aide_soignant <- c("ETP_AID")
+non_med <- c("ETP_CAD", "ETP_DIR", "ETP_AUTADM")
+
+# doctors q20
+cols_doctor <- c("AN", "FI", "FI_EJ", "EFFSAL", "EFFLIB")
+
+dt_doctor_all <- data.table()
+for (i in seq(2013, 2015)) {
+    dt_doctor <- readRDS(paste0("Data/In/Q20/Q20_", i, ".rds"))
+    dt_doctor <- dt_doctor[, ..cols_doctor]
+    dt_doctor_all <- rbind(dt_doctor_all, dt_doctor)
+}
+
+# nurses q23 ETPPNM N2100 (ETP_DIRINF) 2200 (ETP_INFSANSSPE) 2300 (ETP_INFAVECSPE)
+# aidesoignant q23 ETPPNM N2500 (ETP_AID)
+# non_med q23 ETPPNM N1000
+# N1000=N
+# N2100=N2120+N2130
+# N2200=N2210+N2220
+# N2300=N2310+N2320+N2340
+# N2500=N2510+N2520+N2530
+dt_input_all <- data.table()
+cols_doctor <- c("AN", "FI", "FI_EJ", "EFFSAL", "EFFLIB")
+perso_id <- c("N1000", "N2100", "N2200", "N2300", "N2500")
+perso_names <- c("ETP_ADM", "ETP_DIRINF", "ETP_INFSANSSPE", "ETP_INFAVECSPE", "ETP_AID")
+for (i in seq(2013, 2015)) {
+    dt <- readRDS(paste0("Data/In/Q23/Q23_", i, ".rds"))
+    dt <- dt[, c("AN", "FI", "FI_EJ", "PERSO", "ETPPNM")]
+    dt[, ETPPNM := as.numeric(ETPPNM)]
+    dt <- dcast(dt, AN + FI + FI_EJ ~ PERSO, value.var = "ETPPNM")
+    dt[is.na(dt)] <- 0
+    dt[, `:=`(N2100 = N2120 + N2130, N2200 = N2210 + N2220, N2300 = N2310 + N2320 + N2340, N2500 = N2510 + N2520 + N2530)]
+    setnames(dt, perso_id, perso_names)
+    cols <- c("AN", "FI", "FI_EJ", perso_names)
+    dt <- dt[, ..cols]
+    setkey(dt, AN, FI, FI_EJ)
+
+    dt_doctor <- readRDS(paste0("Data/In/Q20/Q20_", i, ".rds"))
+    dt_doctor <- dt_doctor[PERSO == "M9999", ..cols_doctor]
+    dt_doctor[is.na(dt_doctor)] <- 0
+    setkey(dt_doctor, AN, FI, FI_EJ)
+
+    dt <- cbind(dt_doctor, dt)
+    dt_input_all <- rbind(dt_input_all, dt_input)
+}
+
+q20 <- readRDS("Data/In/Q20/Q20_2013.rds")
+q21 <- readRDS("Data/In/Q21/Q21_2013.rds")
+q23 <- readRDS("Data/In/Q23/Q23_2013.rds")
+q24 <- readRDS("Data/In/Q24/Q24_2013.rds")
