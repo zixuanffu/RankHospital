@@ -13,3 +13,13 @@ Z <- fit1d(pdt)
 sL <- selectL1d(Z, alpha = 0.22, gamma = 0.2)
 sR <- selectR1d(Z, alpha = 0.04, gamma = 0.2)
 save(Z, sL, sR, file = "Results/2013-2022/ZsLsR.Rda")
+
+# ---- extra plot for estimated G ---- #
+load("Results/2013-2022/ZsLsR.Rda")
+png("Figures/2013-2022/GLmix.png", height = 500, width = 800)
+plot(Z$f, xlab = expression(mu), main = "Estimated Location Mixing Density with Heterogeneous Known Variance")
+dev.off()
+
+png("Figures/2013-2022/GLmix_s.png", height = 500, width = 800)
+plot(Z$fs, xlab = expression(mu), main = "Estimated Location smoothed G with Heterogenous Known Variance")
+dev.off()

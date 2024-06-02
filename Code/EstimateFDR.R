@@ -57,3 +57,16 @@ latex(D,
     rgroup = c("Right Selection"),
     caption.loc = "bottom", caption = cap, label = "tab: naive_31_1d"
 )
+
+require(xtable)
+meths <- c("TP", "PM", "MLE", "James-Stein")
+alphas <- c("$\\alpha=4\\%$", "$\\alpha=10\\%$", "$\\alpha=15\\%$", "$\\alpha=20\\%$", "$\\alpha=25\\%$")
+D <- round(FDRright, digits = 3)
+dimnames(D) <- list(rep(meths, 1), rep(alphas, 1))
+cap <- "FDR Estimates: 2004-2006"
+
+# Create a LaTeX table with xtable
+latex_table <- xtable(D, caption = cap, label = "tab: naive_31_1d")
+
+# Print the LaTeX table to a .tex file
+print(latex_table, type = "latex", file = "Results/2013-2022/FDR.tex")
