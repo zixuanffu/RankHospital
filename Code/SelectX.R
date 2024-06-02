@@ -191,7 +191,6 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
                        xgrid = seq(1, 1.6, length = 300), ygrid = 8 * (1:100)) {
     nrows <- length(cindex) / 2
     ncols <- 2
-    par(mfrow = c(nrows, ncols))
     # ---- define color scheme ---- #
     cols <- c("grey", "blue", "red")
     # ---- define rules ---- #
@@ -248,11 +247,11 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
         tMLE1 <- try(Finv(gamma, ThreshFDR, stat = Z$S, v = tp), silent = TRUE)
     } else {
         tpmr0 <- quantile(pmr, alpha)
-        tpmr1 <- -try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pmr, v = tpr), silent = TRUE)
+        tpmr1 <- -try(Finv(gamma, ThreshFDR, interval = c(-7, 1), stat = -pmr, v = tpr), silent = TRUE)
         tpm0 <- quantile(pm, alpha)
-        tpm1 <- -try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pm, v = tp), silent = TRUE)
+        tpm1 <- -try(Finv(gamma, ThreshFDR, interval = c(-7, 1), stat = -pm, v = tp), silent = TRUE)
         tMLE0 <- quantile(z$S, alpha)
-        tMLE1 <- -try(Finv(gamma, ThreshFDR, interval = c(-1.45, -0.75), stat = -z$S, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
+        tMLE1 <- -try(Finv(gamma, ThreshFDR, interval = c(-7, 1), stat = -z$S, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
 
         tpmr0 <- quantile(pmr, alpha)
         tpmr1 <- -try(Finv(gamma, ThreshFDR, stat = -pmr, v = tpr), silent = TRUE)
@@ -278,106 +277,121 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
     thresh[6, ] <- c(tlm0, max(tlm0, tlm1))
 
     # ---- For each grid point (\hat{\theta}_i, \sigma_i), compute the criteria value for each rule ---- #
-    for (i in 1:length(xgrid)) {
-        for (j in 1:length(ygrid)) {
-            cls[i, j, 1] <- Lfdr.GLmix_temp(xgrid[i], Z$f, sqrt((ygrid[j])), cnull = cnullr, tail = tail)
-            cls[i, j, 2] <- Lfdr.GLmix_temp(xgrid[i], Z$fs, sqrt((ygrid[j])), cnull = cnull, tail = tail)
-            cls[i, j, 3] <- predict(Z$f, xgrid[i], newsigma = sqrt(ygrid[j]))
-            cls[i, j, 4] <- predict(Z$fs, xgrid[i], newsigma = sqrt(ygrid[j]))
-            cls[i, j, 5] <- xgrid[i]
-            cls[i, j, 6] <- estmean + (xgrid[i] - estmean) * estvar / (estvar + ((ygrid[j])))
+    for (k in cindex) {
+        for (i in 1:length(xgrid)) {
+            for (j in 1:length(ygrid)) {
+                switch(k,
+                    {
+                        cls[i, j, 1] <- Lfdr.GLmix_temp(xgrid[i], Z$f, sqrt((ygrid[j])), cnull = cnullr, tail = tail)
+                    },
+                    {
+                        cls[i, j, 2] <- Lfdr.GLmix_temp(xgrid[i], Z$fs, sqrt((ygrid[j])), cnull = cnull, tail = tail)
+                    },
+                    {
+                        cls[i, j, 3] <- predict(Z$f, xgrid[i], newsigma = sqrt(ygrid[j]))
+                    },
+                    {
+                        cls[i, j, 4] <- predict(Z$fs, xgrid[i], newsigma = sqrt(ygrid[j]))
+                    },
+                    {
+                        cls[i, j, 5] <- xgrid[i]
+                    },
+                    {
+                        cls[i, j, 6] <- estmean + (xgrid[i] - estmean) * estvar / (estvar + ((ygrid[j])))
+                    }
+                )
+            }
         }
     }
 
-    for (i in 0:(nrows - 1)) {
-        # ---- From the real dataset, find the agreement and disagreement between the two rules ---- #
-        if (tail == "R") {
-            B <- sR$B # cap constraint
-            A <- sR$A # cap and fdr constraint
-        } else {
-            B <- sL$B
-            A <- sL$A
-        }
-
-
-        Bagree <- intersect(which(B[, cindex[1 + 2i]] == 1), which(B[, cindex[2 + 2i]] == 1))
-        Bdis1 <- setdiff(which(B[, cindex[1 + 2i]] == 1), which(B[, cindex[2 + 2i]] == 1))
-        Bdis2 <- setdiff(which(B[, cindex[2 + 2i]] == 1), which(B[, cindex[1 + 2i]] == 1))
-
+    if (tail == "R") {
+        B <- sR$B # cap constraint
         A <- sR$A # cap and fdr constraint
-        Aagree <- intersect(which(A[, cindex[1 + 2i]] == 1), which(A[, cindex[2 + 2i]] == 1))
-        Adis1 <- setdiff(which(A[, cindex[1 + 2i]] == 1), which(A[, cindex[2 + 2i]] == 1))
-        Adis2 <- setdiff(which(A[, cindex[2 + 2i]] == 1), which(A[, cindex[1 + 2i]] == 1))
+    } else {
+        B <- sL$B
+        A <- sL$A
+    }
 
-        # ---- For each grid point, plot the selection results -
-        --- #
 
-        # The left graph compares the the two rules under cap constraint
+    # ---- From the real dataset, find the agreement and disagreement between the two rules ---- #
 
-        # When plotting, we want to rescale the y-axis by log(y) to make the plot more readable
 
-        if ("cap" %in% constraint) {
-            if (Rules[[cindex[1 + 2i]]] != "MLE") {
-                contour(xgrid, log(ygrid), cls[, , cindex[[1 + 2i]]],
-                    lwd = 2, col = 4,
-                    levels = round(thresh[cindex[1 + 2i], 1], digits = 3),
-                    xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), sub = paste("Capacity ", Rules[cindex[1 + 2i]], " vs ", Rules[cindex[2 + 2i]], sep = ""), drawlabels = FALSE
-                )
-            } else {
-                abline(v = thresh[cindex[1 + 2i], 1], lwd = 2, col = 4)[] # MLE rule
-            }
-            if (Rules[[cindex[2 + 2i]]] != "MLE") {
-                contour(xgrid, log(ygrid), cls[, , cindex[[2 + 2i]]],
-                    lwd = 2,
-                    levels = round(thresh[cindex[2 + 2i], 1], digits = 3),
-                    xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), add = TRUE, col = 2, drawlabels = FALSE
-                )
-            } else {
-                abline(v = thresh[cindex[2 + 2i], 1], lwd = 2, col = 2) # MLE rule
-            }
-            points(Z$S[Bagree], log(Z$W[Bagree]), col = "grey", cex = 0.5)
-            points(Z$S[Bdis1], log(Z$W[Bdis1]), col = 4, cex = 0.5)
-            points(Z$S[Bdis2], log(Z$W[Bdis2]), col = 2, cex = 0.5)
-            text <- c(
-                "Agree", paste(Rules[cindex[1 + 2i]], " extra", sep = ""),
-                paste(Rules[cindex[2 + 2i]], " extra", sep = "")
+
+    Bagree <- intersect(which(B[, cindex[1]] == 1), which(B[, cindex[2]] == 1))
+    Bdis1 <- setdiff(which(B[, cindex[1]] == 1), which(B[, cindex[2]] == 1))
+    Bdis2 <- setdiff(which(B[, cindex[2]] == 1), which(B[, cindex[1]] == 1))
+
+    Aagree <- intersect(which(A[, cindex[1]] == 1), which(A[, cindex[2]] == 1))
+    Adis1 <- setdiff(which(A[, cindex[1]] == 1), which(A[, cindex[2]] == 1))
+    Adis2 <- setdiff(which(A[, cindex[2]] == 1), which(A[, cindex[1]] == 1))
+
+    # ---- For each grid point, plot the selection results ---- #
+
+    # The left graph compares the the two rules under cap constraint
+
+    # When plotting, we want to rescale the y-axis by log(y) to make the plot more readable
+
+    if ("cap" %in% constraint) {
+        if (Rules[[cindex[1]]] != "MLE") {
+            contour(xgrid, log(ygrid), cls[, , cindex[[1]]],
+                lwd = 2, col = 4,
+                levels = round(thresh[cindex[1], 1], digits = 3),
+                xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), sub = paste("Capacity ", Rules[cindex[1]], " vs ", Rules[cindex[2]], sep = ""), drawlabels = FALSE
             )
-            legend("topleft", text,
-                col = cols, pch = 1, cex = 0.95, bty = "n"
-            )
-            title("(a)")
+        } else {
+            abline(v = thresh[cindex[1], 1], lwd = 2, col = 4)[] # MLE rule
         }
-
-        # The right graph compares the two rules under cap+fdr constraint
-        if ("fdr" %in% constraint) {
-            if (cindex[1 + 2i] != 5) {
-                contour(xgrid, log(ygrid), cls[, , cindex[[1 + 2i]]],
-                    lwd = 2, col = 4,
-                    levels = round(thresh[cindex[1 + 2i], 2], digits = 3),
-                    xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), drawlabels = FALSE
-                )
-            } else {
-                abline(v = thresh[cindex[1 + 2i], 2], lwd = 2, col = 4)
-            }
-            if (Rules[[cindex[2 + 2i]]] != "MLE") {
-                contour(xgrid, log(ygrid), cls[, , cindex[[2 + 2i]]],
-                    lwd = 2,
-                    levels = round(thresh[cindex[2 + 2i], 2], digits = 3),
-                    xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), add = TRUE, col = 2, sub = paste("Capacity and FDR ", Rules[cindex[1 + 2i]], " vs ", Rules[cindex[2 + 2i]], sep = ""), drawlabels = FALSE
-                )
-            } else {
-                abline(v = thresh[cindex[2 + 2i], 2], lwd = 2, col = 2)
-            }
-            points(Z$S[Aagree], log(Z$W[Aagree]), col = "grey", cex = 0.5)
-            points(Z$S[Adis1], log(Z$W[Adis1]), col = 4, cex = 0.5)
-            points(Z$S[Adis2], log(Z$W[Adis2]), col = 2, cex = 0.5)
-            text <- c(
-                "Agree", paste(Rules[cindex[1 + 2i]], " extra", sep = ""),
-                paste(Rules[cindex[2 + 2i]], " extra", sep = "")
+        if (Rules[[cindex[2]]] != "MLE") {
+            contour(xgrid, log(ygrid), cls[, , cindex[[2]]],
+                lwd = 2,
+                levels = round(thresh[cindex[2], 1], digits = 3),
+                xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), add = TRUE, col = 2, drawlabels = FALSE
             )
-            legend("topleft", text, col = cols, pch = 1, cex = 0.95, bty = "n")
-            title("(b)")
+        } else {
+            abline(v = thresh[cindex[2], 1], lwd = 2, col = 2) # MLE rule
         }
+        points(Z$S[Bagree], log(Z$W[Bagree]), col = "grey", cex = 0.5)
+        points(Z$S[Bdis1], log(Z$W[Bdis1]), col = 4, cex = 0.5)
+        points(Z$S[Bdis2], log(Z$W[Bdis2]), col = 2, cex = 0.5)
+        text <- c(
+            "Agree", paste(Rules[cindex[1]], " extra", sep = ""),
+            paste(Rules[cindex[2]], " extra", sep = "")
+        )
+        legend("topleft", text,
+            col = cols, pch = 1, cex = 0.95, bty = "n"
+        )
+        title("(a)")
+    }
+
+    # The right graph compares the two rules under cap+fdr constraint
+    if ("fdr" %in% constraint) {
+        if (Rules[[cindex[1]]] != "MLE") {
+            contour(xgrid, log(ygrid), cls[, , cindex[[1]]],
+                lwd = 2, col = 4,
+                levels = round(thresh[cindex[1], 2], digits = 3),
+                xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), drawlabels = FALSE
+            )
+        } else {
+            abline(v = thresh[cindex[1], 2], lwd = 2, col = 4)
+        }
+        if (Rules[[cindex[2]]] != "MLE") {
+            contour(xgrid, log(ygrid), cls[, , cindex[[2]]],
+                lwd = 2,
+                levels = round(thresh[cindex[2], 2], digits = 3),
+                xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), add = TRUE, col = 2, sub = paste("Capacity and FDR ", Rules[cindex[1]], " vs ", Rules[cindex[2]], sep = ""), drawlabels = FALSE
+            )
+        } else {
+            abline(v = thresh[cindex[2], 2], lwd = 2, col = 2)
+        }
+        points(Z$S[Aagree], log(Z$W[Aagree]), col = "grey", cex = 0.5)
+        points(Z$S[Adis1], log(Z$W[Adis1]), col = 4, cex = 0.5)
+        points(Z$S[Adis2], log(Z$W[Adis2]), col = 2, cex = 0.5)
+        text <- c(
+            "Agree", paste(Rules[cindex[1]], " extra", sep = ""),
+            paste(Rules[cindex[2]], " extra", sep = "")
+        )
+        legend("topleft", text, col = cols, pch = 1, cex = 0.95, bty = "n")
+        title("(b)")
     }
 
 

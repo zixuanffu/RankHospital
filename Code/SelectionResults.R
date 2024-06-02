@@ -2,7 +2,7 @@
 # All that is needed is Z$f Z$fs  Z$S which is the statistics Z$s which is the estimated known variance
 
 rm(list = ls())
-pacman::p_load(data.table, REBayes, lattice, ggplot2)
+pacman::p_load(data.table, REBayes, lattice, ggplot2, docstring)
 source("Code/SelectX.R")
 
 # ---- load regression results ---- #
