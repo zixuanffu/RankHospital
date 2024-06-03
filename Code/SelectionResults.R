@@ -4,16 +4,15 @@
 rm(list = ls())
 pacman::p_load(data.table, REBayes, lattice, ggplot2, docstring)
 source("Code/SelectX.R")
-
 # ---- load regression results ---- #
 
 pdt <- readRDS("Results/2013-2022/pdt_inf_ols_FI.rds")
 
 Z <- fit1d(pdt)
-sL <- selectL1d(Z, alpha = 0.22, gamma = 0.2)
-sR <- selectR1d(Z, alpha = 0.04, gamma = 0.2)
+sL <- selectL1d(Z, alpha = 0.22, gamma = 0.05)
+sR <- selectR1d(Z, alpha = 0.22, gamma = 0.05)
 save(Z, sL, sR, file = "Results/2013-2022/ZsLsR.Rda")
-
+str(sL)
 # ---- extra plot for estimated G ---- #
 load("Results/2013-2022/ZsLsR.Rda")
 png("Figures/2013-2022/GLmix.png", height = 500, width = 800)

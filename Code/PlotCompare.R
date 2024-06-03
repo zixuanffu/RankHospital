@@ -55,18 +55,33 @@ v_max <- max(Z$W)
 # TPKWs_JS <- level_plot(Z, alpha = 0.22, gamma = 0.05, tail = "L", cindex = c(2, 6), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200))
 # dev.off()
 
-# --- png --- #
-png("Figures/2013-2022/TPKWs_MLE_L.png", height = 450, width = 800)
+# # --- png --- #
+# png("Figures/2013-2022/TPKWs_MLE_L.png", height = 450, width = 800)
+# par(mfrow = c(1, 2))
+# TPKWs_MLE <- level_plot(Z, alpha = 0.22, gamma = 0.05, tail = "L", cindex = c(2, 5), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200))
+# dev.off()
+
+# png("Figures/2013-2022/TPKWs_PMKWs_L.png", height = 450, width = 800)
+# par(mfrow = c(1, 2))
+# TPKWs_PMKWs <- level_plot(Z, alpha = 0.22, gamma = 0.05, tail = "L", cindex = c(2, 4), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200))
+# dev.off()
+
+# png("Figures/2013-2022/TPKWs_JS_L.png", height = 450, width = 800)
+# par(mfrow = c(1, 2))
+# TPKWs_JS <- level_plot(Z, alpha = 0.22, gamma = 0.05, tail = "L", cindex = c(2, 6), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200))
+# dev.off()
+
+
+# --- test: right--- #
+png("Figures/2013-2022/test_R.png", height = 450, width = 800)
 par(mfrow = c(1, 2))
-TPKWs_MLE <- level_plot(Z, alpha = 0.22, gamma = 0.05, tail = "L", cindex = c(2, 5), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200))
+grid <- grid_select(Z, alpha = 0.22, gamma = 0.05, tail = "R", cindex = c(2, 5), xgrid = seq(u_min, u_max, length = 600), ygrid = seq(v_min, v_max, length = 200))
+level_plot(Z, sR, grid, alpha = 0.22, gamma = 0.05, tail = "R", cindex = c(2, 5), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200))
 dev.off()
 
-png("Figures/2013-2022/TPKWs_PMKWs_L.png", height = 450, width = 800)
+# --- test: left--- #
+png("Figures/2013-2022/test_L.png", height = 450, width = 800)
 par(mfrow = c(1, 2))
-TPKWs_PMKWs <- level_plot(Z, alpha = 0.22, gamma = 0.05, tail = "L", cindex = c(2, 4), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200))
-dev.off()
-
-png("Figures/2013-2022/TPKWs_JS_L.png", height = 450, width = 800)
-par(mfrow = c(1, 2))
-TPKWs_JS <- level_plot(Z, alpha = 0.22, gamma = 0.05, tail = "L", cindex = c(2, 6), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200))
+grid <- grid_select(Z, alpha = 0.22, gamma = 0.05, tail = "L", cindex = c(2, 5), xgrid = seq(u_min, u_max, length = 600), ygrid = seq(v_min, v_max, length = 200))
+level_plot(Z, sL, grid, alpha = 0.22, gamma = 0.05, tail = "L", cindex = c(2, 5), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200))
 dev.off()
