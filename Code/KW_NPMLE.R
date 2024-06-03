@@ -22,12 +22,11 @@ pdt[, Nobs := .N, by = .(FI)]
 pdt <- pdt[Nobs >= 6]
 pdt[, id := as.numeric(as.factor(FI))]
 dt1 <- pdt[, .(AN, FI, id, SEJHC_MCO, SEJHP_MCO, SEANCES_MED, ETP_INF, EFF_MD, FixedEffect, Res, hat_mu, Var_res1, Var_res2, Nobs)]
-
+dt2 <- pdt[, .(hat_mu = first(hat_mu), Var_res1 = first(Var_res1), Var_res2 = first(Var_res2), Nobs = first(Nobs)), by = .(FI)]
 # ---- 4 ways to estimate the mixing density ---- #
 
 # ---- 1. homogeneous known variance ---- #
 help(GLmix) # GLmix(x, v = 300, sigma = 1, hist = FALSE, histm = 300, weights = NULL, ...)
-dt2 <- pdt[, .(hat_mu = first(hat_mu), Var_res1 = first(Var_res1), Var_res2 = first(Var_res2), Nobs = first(Nobs)), by = .(FI)]
 f <- GLmix(dt2$hat_mu, verb = 5) # assume sigma = 1
 pdf("Figures/2013-2022/HomoKnownVar.pdf", width = 8, height = 5)
 plot(f, xlab = expression(mu), main = "Estimated Location Mixing Density with Homogeneous Known Variance (sigma^2 = 1)")
@@ -35,7 +34,6 @@ dev.off()
 
 # ---- 2. heterogeneous known variance ---- #
 help(GLmix)
-dt2 <- pdt[, .(hat_mu = first(hat_mu), Var_res1 = first(Var_res1), Var_res2 = first(Var_res2), Nobs = first(Nobs)), by = .(FI)]
 f <- GLmix(dt2$hat_mu, sigma = sqrt(dt2$Var_res1), verb = 5) # assume the estimated variance is the known variance
 pdf("Figures/2013-2022/HeteroKnownVar.pdf", width = 8, height = 5)
 plot(f, xlab = expression(mu), main = "Estimated Location Mixing Density with Heterogeneous Known Variance")
@@ -106,4 +104,30 @@ pl <- cloud(fuv ~ theta * sigma,
     )
 )
 print(pl)
+dev.off()
+
+
+# ---- Estimate G separately for each category of hospitals ---- #
+# ---- 2.1 heterogeneous known variance ---- #
+dt2 <- pdt[, .(hat_mu = first(hat_mu), Var_res1 = first(Var_res1), Var_res2 = first(Var_res2), Nobs = first(Nobs)), by = .(FI, STJR)]
+
+for (i in 0:3) {
+    assign(paste0("f", i), GLmix(dt2[STJR == i]$hat_mu, sigma = sqrt(dt2[STJR == i]$Var_res1), verb = 5)) # assume the estimated variance is the known variance
+}
+
+png("Figures/2013-2022/HeteroKnownVar_sep.png", width = 800, height = 500 * 4)
+par(mfrow = c(4, 1))
+for (i in 0:3) {
+    plot(get(paste0("f", i)), xlab = expression(mu), main = paste("Estimated G (STJR = ", i, ")", sep = ""))
+}
+dev.off()
+
+# ---- 2.2 smoothed G ---- #
+png("Figures/2013-2022/HeteroKnownVar_sep_s.png", width = 800, height = 500 * 4)
+par(mfrow = c(4, 1))
+for (i in 0:3) {
+    f <- get(paste0("f", i))
+    assign(paste0("f", i, "s"), KWsmooth(f, bw = bwKW(f, 2)))
+    plot(get(paste0("f", i, "s")), xlab = expression(mu), main = paste("Estimated G smoothed (STJR = ", i, ")", sep = ""))
+}
 dev.off()
