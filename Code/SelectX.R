@@ -149,8 +149,15 @@ selectR1d <- function(Z, alpha = 0.04, gamma = 0.10) {
     list(A = A, B = B)
 }
 
+
 selectL1d <- function(Z, alpha = 0.20, gamma = 0.20) {
-    Rules <- c("TPKW", "TP", "PMKW", "PMKWs", "MLE1", "JS")
+    Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE1", "JS")
+    # ---- store the ranking statistics, threshold_1, threshold_2 for teach rule ---- #
+    results <- array(NA, c(length(Z$S), 3, length(Rules)))
+    dimnames(results)[[2]] <- c("stat", "thresh_1", "thresh_2")
+    dimnames(results)[[3]] <- Rules
+
+    # ---- store the selection results ---- #
     A <- matrix(0, length(Z$S), length(Rules)) # FDR rules
     B <- matrix(0, length(Z$S), length(Rules)) # Capacity rules
     dimnames(A)[[2]] <- Rules
@@ -160,6 +167,7 @@ selectL1d <- function(Z, alpha = 0.20, gamma = 0.20) {
         G <- if (k == 1) Z$f else Z$fs
         cnull <- qKW(G, alpha)
         tp <- Lfdr.GLmix_temp(Z$S, G, sqrt(Z$s), cnull = cnull, tail = "L")
+        results[[k]] <- tp
         t0 <- quantile(tp, 1 - alpha)
         t1 <- try(Finv(gamma, ThreshFDR,
             interval = c(0.01, 0.99), stat = tp,
@@ -200,11 +208,33 @@ selectL1d <- function(Z, alpha = 0.20, gamma = 0.20) {
     A[which(-R > max(-t0, -t1)), 6] <- 1
     B[which(-R > -t0), 6] <- 1
 
-    list(A = A, B = B)
+    list(A = A, B = B, estmean = estmean, estvar = estvar)
+}
+
+# ---- Level plot ---- #
+level_plot <- function(Z, sR = NULL, sL = NULL, alpha, gamma, tail, cindex = c(2, 5), constraint = c("cap", "fdr"), xgrid = seq(1, 1.6, length = 300), ygrid = 8 * (1:100)) {
+    # ---- define color scheme ---- #
+    cols <- c("grey", "blue", "red")
+    # ---- define rules ---- #
+    Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
+    # ---- prepare ranking statitics for posterior mean type rule ---- #
+    estmean <- mean(Z$S)
+    estvar <- uniroot(psi, c(0.001, 4), s = (Z$S - estmean)^2, d = Z$s, extendInt = "yes")$root
+    est <- optim(c(0, 1), lik, x = Z$S, s = sqrt(Z$s))$par
+    estmean <- est[1]
+    estvar <- est[2]
+
+    pmr <- predict(Z$f, Z$S, newsigma = sqrt(Z$s))
+    pm <- predict(Z$fs, Z$S, newsigma = sqrt(Z$s))
+    linear <- estmean + (Z$S - estmean) * estvar / (estvar + (Z$s))
+    cls <- array(NA, c(length(xgrid), length(ygrid), length(Rules)))
+
+    # ---- calculate
 }
 
 # 怎么right tail left tail 这么混乱啊？？？
 # 一个一个来吧。。。
+
 level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5), constraint = "cap",
                        xgrid = seq(1, 1.6, length = 300), ygrid = 8 * (1:100)) {
     nrows <- length(cindex) / 2
