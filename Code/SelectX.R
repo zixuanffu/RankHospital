@@ -32,17 +32,33 @@ fit1d <- function(pdt, bwt = 2, rtol = 1e-20, ...) {
     list(f = f, fs = fs, S = dt2$hat_mu, s = dt2$Var_res1, id = dt2$id)
 }
 
-Lfdr.GLmix_temp <- function(x, G, s, cnull, tail = "R") { # Modified for outliers??
+Lfdr.GLmix_temp <- function(x, G, s, cnull, tail = "R") {
+    # Modified for outliers??
+    #' @Description: Given an estimated mixing distribution, G, Lfdr computes an estimated local false discovery rate at a specified set of points and threshold value cnull. The argument G can be specified as the fitted object from one of several possible fitting routines for nonparametric mixing distributions.
+    #' @param x: a vector of estimates \hat{\theta} each following N(\theta_i, \sigma_i^2)
+    #' @param G: the estimated distribution of $\theta_i$
+    #' @param s: a vector of \sigma_i
+    #' @param cnull: the threshold value
+
     # changed for left tail selection
-    v <- G$x
-    fv <- G$y
+
+    v <- G$x # the grid points
+    fv <- G$y # the density values
+    A <- dnorm(outer(x, v, "-"), sd = s)
+    # generate a matrix A with dim = (length(x), length(v))
+    # at each point (i,j), give the density function of a normal distribution N(0, s[i]^2) evaluated at x[i] - v[j]
+    # because at each point (i,j) we have the assumption x[i] ~ N(v[j], s[i]^2)
     A <- dnorm(outer(x, v, "-"), sd = s)
     if (tail == "R") {
+        # the denominator is the probability of observing x[i] given the estimated distribution G
+        # the nominator is the probability of observing x[i] AND its true mean value is smaller than cnull.
+        # 1- the ratio is the conditional probability of having the true mean value smaller than cnull given the observed value x[i] P(\theta_i < cnull | x[i])
         v <- 1 - c((A %*% (fv * (v < cnull))) / (A %*% fv))
+        # v is
     } else {
+        # 1- the ratio is the conditional probability of having the true mean value larger than cnull given the observed value x[i] P(\theta_i > cnull | x[i])
         v <- 1 - c((A %*% (fv * (v >= cnull))) / (A %*% fv))
     }
-    v
 }
 
 # ---- For James Stein Rule ---- #
@@ -93,7 +109,7 @@ selectR1d <- function(Z, alpha = 0.04, gamma = 0.10) {
         # Posterior Tail Probability Selection
         G <- if (k == 1) Z$f else Z$fs
         cnull <- qKW(G, 1 - alpha)
-        tp <- Lfdr.GLmix_temp(Z$S, G, sqrt(Z$s), cnull = cnull)
+        tp <- Lfdr.GLmix_temp(Z$S, G, sqrt(Z$s), cnull = cnull) # to generate tail probability for each point in Z$S
         t0 <- quantile(tp, 1 - alpha)
         t1 <- try(Finv(gamma, ThreshFDR,
             interval = c(0.1, 0.9), stat = tp,
@@ -155,22 +171,22 @@ selectL1d <- function(Z, alpha = 0.20, gamma = 0.20) {
         # Posterior Mean Selection
         pm <- predict(G, Z$S, newsigma = sqrt(Z$s))
         t0 <- quantile(pm, alpha)
-        t1 <- try(Finv(gamma, ThreshFDR,
+        t1 <- -try(Finv(gamma, ThreshFDR,
             interval = c(-1.6, -0.8),
             stat = -pm, v = tp
         ), silent = TRUE)
         if (inherits(t1, "try-error")) t1 <- NULL
-        A[which(-pm > max(-t0, t1)), 2 + k] <- 1
+        A[which(-pm > max(-t0, -t1)), 2 + k] <- 1
         B[which(-pm > -t0), 2 + k] <- 1
     }
 
     # Naive Rules MLE
     R <- Z$S
     t0 <- quantile(R, alpha)
-    t1 <- try(Finv(gamma, ThreshFDR, stat = R, v = tp), silent = TRUE)
+    t1 <- -try(Finv(gamma, ThreshFDR, stat = -R, v = tp), silent = TRUE)
     if (inherits(t1, "try-error")) t1 <- NULL
-    A[which(R > max(t0, t1)), 5] <- 1
-    B[which(R > t0), 5] <- 1
+    A[which(-R > max(-t0, -t1)), 5] <- 1
+    B[which(-R > -t0), 5] <- 1
 
 
     # James-Stein Rule
@@ -187,6 +203,8 @@ selectL1d <- function(Z, alpha = 0.20, gamma = 0.20) {
     list(A = A, B = B)
 }
 
+# 怎么right tail left tail 这么混乱啊？？？
+# 一个一个来吧。。。
 level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5), constraint = "cap",
                        xgrid = seq(1, 1.6, length = 300), ygrid = 8 * (1:100)) {
     nrows <- length(cindex) / 2
@@ -208,22 +226,32 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
     linear <- estmean + (Z$S - estmean) * estvar / (estvar + (Z$s))
     cls <- array(NA, c(length(xgrid), length(ygrid), length(Rules)))
 
+    # ---- calculate the threshold \theta_\alpha ---- #
     if (tail == "R") {
         sR <- selectR1d(Z, alpha = alpha, gamma = gamma)
+        cnullr <- qKW(Z$f, 1 - alpha) # non-smoothed KW estimates
+        cnull <- qKW(Z$fs, 1 - alpha) # smoothed KW estimates
     } else {
         sL <- selectL1d(Z, alpha = alpha, gamma = gamma)
+        cnullr <- qKW(Z$f, alpha) # non-smoothed KW estimates
+        cnull <- qKW(Z$fs, alpha) # smoothed KW estimates
     }
 
-    cnullr <- qKW(Z$f, 1 - alpha) # non-smoothed KW estimates
-    cnull <- qKW(Z$fs, 1 - alpha) # smoothed KW estimates
+
 
     # ---- Find the threshold given by two constraints ---- #
 
     # ---- Posterior Tail Probability rule ---- #
-    tpr <- Lfdr.GLmix_temp(Z$S, Z$f, sqrt(Z$s), cnull = cnullr)
-    tp <- Lfdr.GLmix_temp(Z$S, Z$fs, sqrt(Z$s), cnull = cnull)
+    # ---- If tail == "R", calculate the tail probability v_\alpha(y_i) = P(\theta_i > \theta_\alpha|y_i) ---- #
+    # ---- If tail == "L", calculate the tail probability v_\alpha(y_i) = P(\theta_i < \theta_\alpha|y_i) ---- #
+    tpr <- Lfdr.GLmix_temp(Z$S, Z$f, sqrt(Z$s), cnull = cnullr, tail = tail)
+    tp <- Lfdr.GLmix_temp(Z$S, Z$fs, sqrt(Z$s), cnull = cnull, tail = tail)
+    # ---- tp is  used as ranking statistics ---- #
+
+
     # ---- Non Smoothed KW estimates ---- #
     # ---- compute the threshold given by cap = alpha ---- #
+    # if tail == "L", we select the left tail by
     ttpr0 <- quantile(tpr, 1 - alpha)
     # ---- compute the threshold given by FDR = gamma ---- #
     ttpr1 <- try(Finv(gamma, ThreshFDR, interval = c(0.1, 0.9), stat = tpr, v = tpr), silent = TRUE)
@@ -232,9 +260,6 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
     ttp0 <- quantile(tp, 1 - alpha)
     # ---- compute the threshold given by FDR = gamma ---- #
     ttp1 <- try(Finv(gamma, ThreshFDR, interval = c(0.1, 0.9), stat = tp, v = tp), silent = TRUE)
-
-
-
 
     if (tail == "R") {
         # ---- Posterior Mean rule ---- #
@@ -245,36 +270,31 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
         # ---- MLE rule ---- #
         tMLE0 <- quantile(Z$S, 1 - alpha)
         tMLE1 <- try(Finv(gamma, ThreshFDR, stat = Z$S, v = tp), silent = TRUE)
+        tlm0 <- quantile(linear, 1 - alpha)
+        tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = tail), silent = TRUE)
     } else {
         tpmr0 <- quantile(pmr, alpha)
-        tpmr1 <- -try(Finv(gamma, ThreshFDR, interval = c(-7, 1), stat = -pmr, v = tpr), silent = TRUE)
+        tpmr1 <- -try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pmr, v = tpr), silent = TRUE)
         tpm0 <- quantile(pm, alpha)
-        tpm1 <- -try(Finv(gamma, ThreshFDR, interval = c(-7, 1), stat = -pm, v = tp), silent = TRUE)
-        tMLE0 <- quantile(z$S, alpha)
-        tMLE1 <- -try(Finv(gamma, ThreshFDR, interval = c(-7, 1), stat = -z$S, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
-
-        tpmr0 <- quantile(pmr, alpha)
-        tpmr1 <- -try(Finv(gamma, ThreshFDR, stat = -pmr, v = tpr), silent = TRUE)
-        tpm0 <- quantile(pm, alpha)
-        tpm1 <- -try(Finv(gamma, ThreshFDR, stat = -pm, v = tp), silent = TRUE)
+        tpm1 <- -try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pm, v = tp), silent = TRUE)
         tMLE0 <- quantile(Z$S, alpha)
-        tMLE1 <- -try(Finv(gamma, ThreshFDR, stat = -Z$S, v = tp), silent = TRUE)
+        tMLE1 <- -try(Finv(gamma, ThreshFDR, interval = c(-1.45, -0.75), stat = -Z$S, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
+        tlm0 <- quantile(linear, alpha)
+        tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = tail), silent = TRUE)
     }
 
 
-    # ---- JS rule ---- #
-    tlm0 <- quantile(linear, 1 - alpha)
-    tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = "R"), silent = TRUE)
 
     # ---- Define the max of the the two tresholds (\lambda_1 for cal, \lambda_2 for fdr) ---- #
-
+    tail <- "L"
+    maxmin <- ifelse(tail == "R", max, min)
     thresh <- matrix(NA, length(Rules), 2)
-    thresh[1, ] <- c(ttpr0, max(ttpr0, ttpr1))
-    thresh[2, ] <- c(ttp0, max(ttp0, ttp1))
-    thresh[3, ] <- c(tpmr0, max(tpmr0, tpmr1))
-    thresh[4, ] <- c(tpm0, max(tpm0, tpm1))
-    thresh[5, ] <- c(tMLE0, max(tMLE0, tMLE1))
-    thresh[6, ] <- c(tlm0, max(tlm0, tlm1))
+    thresh[1, ] <- c(ttpr0, maxmin(ttpr0, ttpr1))
+    thresh[2, ] <- c(ttp0, maxmin(ttp0, ttp1))
+    thresh[3, ] <- c(tpmr0, maxmin(tpmr0, tpmr1))
+    thresh[4, ] <- c(tpm0, maxmin(tpm0, tpm1))
+    thresh[5, ] <- c(tMLE0, maxmin(tMLE0, tMLE1))
+    thresh[6, ] <- c(tlm0, maxmin(tlm0, tlm1))
 
     # ---- For each grid point (\hat{\theta}_i, \sigma_i), compute the criteria value for each rule ---- #
     for (k in cindex) {
@@ -397,82 +417,3 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
 
     list(cls = cls, thresh = thresh)
 }
-
-
-# selectR1d <- function(Z, alpha = 0.4, gamma = 0.10) {
-# ---- setting up the matrix to store the results ---- #
-# Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "P-val", "E&M", "JS")
-# nobs <- length(Z$id) # the number of entities
-# nrule <- length(Rules) # the number of rules
-# A <- matrix(0, nrow = nobs, ncol = nrule) # FDR rule + Capacity rule
-# B <- matrix(0, nrow = nobs, ncol = nrule) # Capacity rule only
-# dimnames(A)[[2]] <- Rules
-# dimnames(B)[[2]] <- Rules
-# # ----  KW smoothed and non smoothed  ---- #
-# for (k in 1:2) {
-#     # ---- k=1, KW, k=2, KWsmooth ---- #
-#     G <- if (k == 1) Z$f else Z$fs # G is the estimate of the mixing density
-#     for (t in 1:3) {
-#         # ---- t=1, Posterior Tail Probability, t=2, Posterior Mean ---- #
-#         # ---- 1. Posterior Tail Probability ---- #
-#         if (t == 1) {
-#             cnull <- qKW(G, 1 - alpha) # cnull is quantiles of KW fit
-#             # ---- calculate the posterior tail probability given G ---- #
-#             tp <- Lfdr.GLmix_temp(Z$S, G, s = Z$s, cnull = cnull)
-#             # s is the known heterogenous variance
-#             t0 <- quantile(tp, 1 - alpha) # t0 is the quantile of the posterior tail probability
-#             t1 <- try(Finv(gamma, ThreshFDR, interval = c(0.1, 0.9), stat = tp, v = tp), silent = TRUE)
-#             # gamma is the FDR rate
-#             if (inherits(t1, "try-error")) t1 <- NULL
-#             # error handling: if t1 has class "try-error", then t1 = NULL
-#             A[which(tp > max(t0, t1)), k + 2(t - 1)] <- 1 # FDR + Capacity
-#             B[which(tp > t0), k + 2(t - 1)] <- 1 # Capacity only
-#         }
-#         # ---- 2. Posterior Mean ---- #
-#         if (t == 2) {
-#             pm <- predict(G, Z$S, newsigma = sqrt(Z$s)) # predict the posterior mean
-#             t0 <- quantile(pm, 1 - alpha)
-#             t1 <- try(Finv(gamma, ThreshFDR, stat = pm, v = tp), silent = TRUE)
-#             if (inherits(t1, "try-error")) t1 <- NULL
-#             A[which(pm > max(t0, t1)), k + 2 * (t - 1)] <- 1
-#             B[which(pm > t0), t + k - 1] <- 1
-#         }
-#         # ---- 3. MLE ---- #
-#         if (t == 3) {
-#             R <- with(Z, switch(k,
-#                 S,
-#                 ((S - 1) * sqrt(W))
-#             )) # if S=k, then R = (S-1)*sqrt(W), otherwise R = S
-#             t0 <- quantile(R, 1 - alpha)
-#             t1 <- try(Finv(gamma, ThreshFDR, stat = R, v = tp), silent = TRUE)
-#             if (inherits(t1, "try-error")) t1 <- NULL
-#             A[which(R > max(t0, t1)), k + 2(t - 1)] <- 1
-#             B[which(R > t0), k + 2(t - 1)] <- 1
-#         }
-#     }
-# }
-# # ---- 4. E&M ---- #
-
-# est <- optim(c(0, 1), lik, x = Z$S, s = sqrt(Z$s))$par
-# estmean <- est[1]
-# estvar <- est[2]
-# R <- EMrule(Z$S, sqrt(Z$s), mean = estmean, estvar = estvar)
-# t0 <- quantile(R$v, 1 - alpha)
-# t1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = R$Bhat, s = sqrt(Z$s), alpha = alpha, tail = "R"), silent = TRUE)
-# if (inherits(t1, "try-error")) t1 <- NULL
-# A[which(R$v > max(t0, t1)), 7] <- 1
-# B[which(R$v > t0), 7] <- 1
-
-# # ---- 5. JS ---- #
-
-# R <- estmean + (Z$S - estmean) * estvar / (estvar + (Z$s))
-# t0 <- quantile(R, 1 - alpha)
-# t1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = 1 / Z$W / (estvar + 1 / Z$W), s = sqrt(Z$s), alpha = alpha, tail = "R"), silent = TRUE)
-# if (inherits(t1, "try-error")) t1 <- NULL
-# A[which(R > max(t0, t1)), 8] <- 1
-# B[which(R > t0), 8] <- 1
-
-
-
-# return(list(A = A, B = B))
-# }
