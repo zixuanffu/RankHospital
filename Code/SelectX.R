@@ -99,7 +99,16 @@ ThreshFDREM <- function(lam, mean = 0, estvar, Bhat, s, alpha, tail = "L") {
     }
 }
 
-
+error_avoid <- function(x, pos = TRUE) {
+    if (inherits(x, "try-error")) {
+        x <- NULL
+    } else if (pos) {
+        x <- x
+    } else {
+        x <- -x
+    }
+    return(x)
+}
 selectR1d <- function(Z, alpha = 0.20, gamma = 0.20) {
     Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
     # ---- store the ranking statistics, threshold_1, threshold_2 for teach rule ---- #
@@ -139,12 +148,16 @@ selectR1d <- function(Z, alpha = 0.20, gamma = 0.20) {
 
     tpmr0 <- quantile(pmr, 1 - alpha)
     tpmr1 <- try(Finv(gamma, ThreshFDR, stat = pmr, v = tpr), silent = TRUE)
+    tpmr1 <- error_avoid(tpmr1)
     tpm0 <- quantile(pm, 1 - alpha)
     tpm1 <- try(Finv(gamma, ThreshFDR, stat = pm, v = tp), silent = TRUE)
+    tpm1 <- error_avoid(tpm1)
     tMLE0 <- quantile(R, 1 - alpha)
     tMLE1 <- try(Finv(gamma, ThreshFDR, stat = R, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
+    tMLE1 <- error_avoid(tMLE1)
     tlm0 <- quantile(linear, 1 - alpha)
     tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = "R"), silent = TRUE)
+    tlm1 <- error_avoid(tlm1)
 
     for (i in 1:length(Rules)) {
         statistics <- switch(i,
@@ -251,15 +264,21 @@ selectL1d <- function(Z, alpha = 0.20, gamma = 0.20) {
     # ---- for each rule, calculate the threshold ---- #
     ttpr0 <- quantile(tpr, 1 - alpha)
     ttpr1 <- try(Finv(gamma, ThreshFDR, interval = c(0.1, 0.9), stat = tpr, v = tpr), silent = TRUE)
+    ttpr1 <- error_avoid(ttpr1)
     ttp0 <- quantile(tp, 1 - alpha)
     ttp1 <- try(Finv(gamma, ThreshFDR, interval = c(0.1, 0.9), stat = tp, v = tp), silent = TRUE)
+    ttp1 <- error_avoid(ttp1)
 
     tpmr0 <- quantile(pmr, alpha)
-    tpmr1 <- -try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pmr, v = tpr), silent = TRUE)
+    tpmr1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pmr, v = tpr), silent = TRUE)
+    tpmr1 <- error_avoid(tpmr1, FALSE)
     tpm0 <- quantile(pm, alpha)
-    tpm1 <- -try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pm, v = tp), silent = TRUE)
+    tpm1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pm, v = tp), silent = TRUE)
+    tpm1 <- error_avoid(tpm1, FALSE)
     tMLE0 <- quantile(R, alpha)
-    tMLE1 <- -try(Finv(gamma, ThreshFDR, interval = c(-1.45, -0.75), stat = -R, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
+    tMLE1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.45, -0.75), stat = -R, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
+    tMLE1 <- error_avoid(tMLE1, FALSE)
+
     tlm0 <- quantile(linear, alpha)
     tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = "L"), silent = TRUE)
 
@@ -354,7 +373,7 @@ grid_select <- function(Z, alpha, gamma, tail, cindex = c(2, 5), xgrid = seq(1, 
     cnullr <- ifelse(tail == "R", qKW(Z$f, 1 - alpha), qKW(Z$f, alpha))
     cnull <- ifelse(tail == "R", qKW(Z$fs, 1 - alpha), qKW(Z$fs, alpha))
 
-    est <- optim(c(0, 1), lik, x = Z$S, s = sqrt(1 / Z$W))$par
+    est <- optim(c(0, 1), lik, x = Z$S, s = sqrt(Z$s))$par
     estmean <- est[1]
     estvar <- est[2]
 
@@ -458,7 +477,7 @@ level_plot <- function(Z, Selection, cls, alpha = 0.04, gamma = 0.2, tail = "R",
                 xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), add = TRUE, col = 2, drawlabels = FALSE
             )
         } else {
-            abline(v = thresh[cindex[2], 2], lwd = 2, col = 2)
+            abline(v = thresh[cindex[2], 1], lwd = 2, col = 2)
         }
         points(Z$S[Aagree], log(Z$W[Aagree]), col = "grey", cex = 0.5)
         points(Z$S[Adis1], log(Z$W[Adis1]), col = 4, cex = 0.5)

@@ -12,7 +12,7 @@ Z <- fit1d(pdt)
 sL <- selectL1d(Z, alpha = 0.22, gamma = 0.05)
 sR <- selectR1d(Z, alpha = 0.22, gamma = 0.05)
 save(Z, sL, sR, file = "Results/2013-2022/ZsLsR.Rda")
-str(sL)
+
 # ---- extra plot for estimated G ---- #
 load("Results/2013-2022/ZsLsR.Rda")
 png("Figures/2013-2022/GLmix.png", height = 500, width = 800)
