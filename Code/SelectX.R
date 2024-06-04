@@ -38,7 +38,7 @@ Lfdr.GLmix_temp <- function(x, G, s, cnull, tail = "R") {
     #' @param x: a vector of estimates \hat{\theta} each following N(\theta_i, \sigma_i^2)
     #' @param G: the estimated distribution of $\theta_i$
     #' @param s: a vector of \sigma_i
-    #' @param cnull: the threshold value
+    #' @param cnull: the threshold value capacity constraint
 
     # changed for left tail selection
 
@@ -61,14 +61,14 @@ Lfdr.GLmix_temp <- function(x, G, s, cnull, tail = "R") {
     }
 }
 
-# ---- For James Stein Rule ---- #
+# ---- For EM/JS Rule (parametric) ---- #
 P <- function(a, d) 1 / (2 * (a + d)^2) # 1/Var(S)
 psi <- function(a, s, d) a - sum((s - d) * P(a, d)) / sum(P(a, d))
 lik <- function(theta, x, s) {
     sum(log(theta[2] + s^2)) + sum((x - theta[1])^2 / (theta[2] + s^2))
 }
 
-# ---- For EM and JS, Compute the threshold when setting FDR rate to gamma ---- #
+# ---- For EM/JS, Compute the threshold when setting FDR rate to gamma ---- #
 
 ThreshFDREM <- function(lam, mean = 0, estvar, Bhat, s, alpha, tail = "L") {
     # assume G = N(0, V)
@@ -99,8 +99,8 @@ ThreshFDREM <- function(lam, mean = 0, estvar, Bhat, s, alpha, tail = "L") {
     }
 }
 
-selectR1d <- function(Z, alpha = 0.04, gamma = 0.10) {
-    Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE1", "JS")
+selectR1d <- function(Z, alpha = 0.20, gamma = 0.20) {
+    Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
     A <- matrix(0, length(Z$S), length(Rules)) # FDR rules
     B <- matrix(0, length(Z$S), length(Rules)) # Capacity rules
     dimnames(A)[[2]] <- Rules
@@ -171,21 +171,21 @@ selectL1d <- function(Z, alpha = 0.20, gamma = 0.20) {
         # Posterior Mean Selection
         pm <- predict(G, Z$S, newsigma = sqrt(Z$s))
         t0 <- quantile(pm, alpha)
-        t1 <- -try(Finv(gamma, ThreshFDR,
+        t1 <- try(Finv(gamma, ThreshFDR,
             interval = c(-1.6, -0.8),
             stat = -pm, v = tp
         ), silent = TRUE)
-        if (inherits(t1, "try-error")) t1 <- NULL
-        A[which(-pm > max(-t0, -t1)), 2 + k] <- 1
+        if (inherits(t1, "try-error")) t1 <- NULL # to avoid the error message
+        A[which(-pm > max(-t0, t1)), 2 + k] <- 1
         B[which(-pm > -t0), 2 + k] <- 1
     }
 
     # Naive Rules MLE
     R <- Z$S
     t0 <- quantile(R, alpha)
-    t1 <- -try(Finv(gamma, ThreshFDR, stat = -R, v = tp), silent = TRUE)
+    t1 <- try(Finv(gamma, ThreshFDR, stat = -R, v = tp), silent = TRUE)
     if (inherits(t1, "try-error")) t1 <- NULL
-    A[which(-R > max(-t0, -t1)), 5] <- 1
+    A[which(-R > max(-t0, t1)), 5] <- 1
     B[which(-R > -t0), 5] <- 1
 
 
@@ -203,30 +203,50 @@ selectL1d <- function(Z, alpha = 0.20, gamma = 0.20) {
     list(A = A, B = B)
 }
 
-# 怎么right tail left tail 这么混乱啊？？？
-# 一个一个来吧。。。
+error_avoid <- function(x, pos = TRUE) {
+    if (inherits(x, "try-error")) {
+        x <- NULL
+    } else if (pos) {
+        x <- x
+    } else {
+        x <- -x
+    }
+    return(x)
+}
+
 level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5), constraint = "cap",
                        xgrid = seq(1, 1.6, length = 300), ygrid = 8 * (1:100)) {
-    nrows <- length(cindex) / 2
-    ncols <- 2
     # ---- define color scheme ---- #
     cols <- c("grey", "blue", "red")
     # ---- define rules ---- #
     Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
 
+    # ---- define ranking statistics ---- #
+
+    # ---- posterior tail probability ---- #
+    # ---- If tail == "R", calculate the tail probability v_\alpha(y_i) = P(\theta_i > \theta_\alpha|y_i) ---- #
+    # ---- If tail == "L", calculate the tail probability v_\alpha(y_i) = P(\theta_i < \theta_\alpha|y_i) ---- #
+    tpr <- Lfdr.GLmix_temp(Z$S, Z$f, sqrt(Z$s), cnull = cnullr, tail = tail)
+    tp <- Lfdr.GLmix_temp(Z$S, Z$fs, sqrt(Z$s), cnull = cnull, tail = tail)
+
+    # ---- posterior mean ---- #
+    pmr <- predict(Z$f, Z$S, newsigma = sqrt(Z$s))
+    pm <- predict(Z$fs, Z$S, newsigma = sqrt(Z$s))
     # ---- JS rule ---- #
     estmean <- mean(Z$S)
     estvar <- uniroot(psi, c(0.001, 4), s = (Z$S - estmean)^2, d = Z$s, extendInt = "yes")$root
     est <- optim(c(0, 1), lik, x = Z$S, s = sqrt(Z$s))$par
     estmean <- est[1]
     estvar <- est[2]
-
-    pmr <- predict(Z$f, Z$S, newsigma = sqrt(Z$s))
-    pm <- predict(Z$fs, Z$S, newsigma = sqrt(Z$s))
     linear <- estmean + (Z$S - estmean) * estvar / (estvar + (Z$s))
+
+    # ---- define an array of grid ---- #
+    # each rule has one grid
+    # this is to draw the contour line
     cls <- array(NA, c(length(xgrid), length(ygrid), length(Rules)))
 
     # ---- calculate the threshold \theta_\alpha ---- #
+
     if (tail == "R") {
         sR <- selectR1d(Z, alpha = alpha, gamma = gamma)
         cnullr <- qKW(Z$f, 1 - alpha) # non-smoothed KW estimates
@@ -239,64 +259,67 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
 
 
 
-    # ---- Find the threshold given by two constraints ---- #
+    # ---- find the threshold given by two constraints ---- #
 
-    # ---- Posterior Tail Probability rule ---- #
-    # ---- If tail == "R", calculate the tail probability v_\alpha(y_i) = P(\theta_i > \theta_\alpha|y_i) ---- #
-    # ---- If tail == "L", calculate the tail probability v_\alpha(y_i) = P(\theta_i < \theta_\alpha|y_i) ---- #
-    tpr <- Lfdr.GLmix_temp(Z$S, Z$f, sqrt(Z$s), cnull = cnullr, tail = tail)
-    tp <- Lfdr.GLmix_temp(Z$S, Z$fs, sqrt(Z$s), cnull = cnull, tail = tail)
-    # ---- tp is  used as ranking statistics ---- #
+    # ---- posterior tail probability ---- #
 
-
-    # ---- Non Smoothed KW estimates ---- #
+    # ---- Non Smoothed KW estimates rule ---- #
     # ---- compute the threshold given by cap = alpha ---- #
-    # if tail == "L", we select the left tail by
     ttpr0 <- quantile(tpr, 1 - alpha)
     # ---- compute the threshold given by FDR = gamma ---- #
     ttpr1 <- try(Finv(gamma, ThreshFDR, interval = c(0.1, 0.9), stat = tpr, v = tpr), silent = TRUE)
+    ttpr1 <- error_avoid(ttpr1)
     # ---- Smoothed KW estimates ---- #
     # ---- compute the threshold given by cap = alpha ---- #
     ttp0 <- quantile(tp, 1 - alpha)
     # ---- compute the threshold given by FDR = gamma ---- #
     ttp1 <- try(Finv(gamma, ThreshFDR, interval = c(0.1, 0.9), stat = tp, v = tp), silent = TRUE)
-
+    ttpr1 <- error_avoid(ttpr1)
     if (tail == "R") {
-        # ---- Posterior Mean rule ---- #
+        # ---- posterior mean rule ---- #
         tpmr0 <- quantile(pmr, 1 - alpha)
         tpmr1 <- try(Finv(gamma, ThreshFDR, stat = pmr, v = tpr), silent = TRUE)
+        tpmr1 <- error_avoid(tpmr1)
         tpm0 <- quantile(pm, 1 - alpha)
         tpm1 <- try(Finv(gamma, ThreshFDR, stat = pm, v = tp), silent = TRUE)
+        tpmr1 <- error_avoid(tpmr1)
         # ---- MLE rule ---- #
         tMLE0 <- quantile(Z$S, 1 - alpha)
         tMLE1 <- try(Finv(gamma, ThreshFDR, stat = Z$S, v = tp), silent = TRUE)
+        tMLE1 <- error_avoid(tMLE1)
+        # ---- JS rule ---- #
         tlm0 <- quantile(linear, 1 - alpha)
         tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = tail), silent = TRUE)
+        tlm1 <- error_avoid(tlm1, tail)
     } else {
         tpmr0 <- quantile(pmr, alpha)
-        tpmr1 <- -try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pmr, v = tpr), silent = TRUE)
+        tpmr1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pmr, v = tpr), silent = TRUE)
+        tpmr1 <- error_avoid(tpmr1, FALSE)
         tpm0 <- quantile(pm, alpha)
-        tpm1 <- -try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pm, v = tp), silent = TRUE)
+        tpm1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pm, v = tp), silent = TRUE)
+        tpmr1 <- error_avoid(tpmr1, FALSE)
         tMLE0 <- quantile(Z$S, alpha)
-        tMLE1 <- -try(Finv(gamma, ThreshFDR, interval = c(-1.45, -0.75), stat = -Z$S, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
+        tMLE1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.45, -0.75), stat = -Z$S, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
+        tMLE1 <- error_avoid(tMLE1, FALSE)
         tlm0 <- quantile(linear, alpha)
         tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = tail), silent = TRUE)
+        tlm1 <- error_avoid(tlm1)
     }
 
 
 
-    # ---- Define the max of the the two tresholds (\lambda_1 for cal, \lambda_2 for fdr) ---- #
-    tail <- "L"
+    # ---- define the max of the the two tresholds (\lambda_1 for cal, \lambda_2 for fdr) ---- #
+    # need to deal with NULL value
     maxmin <- ifelse(tail == "R", max, min)
     thresh <- matrix(NA, length(Rules), 2)
     thresh[1, ] <- c(ttpr0, max(ttpr0, ttpr1))
     thresh[2, ] <- c(ttp0, max(ttp0, ttp1))
     thresh[3, ] <- c(tpmr0, maxmin(tpmr0, tpmr1))
     thresh[4, ] <- c(tpm0, maxmin(tpm0, tpm1))
-    thresh[5, ] <- c(tMLE0, maxmin(tMLE0, tMLE1))
+    thresh[5, ] <- c(tMLE0, maxmin(tMLE0))
     thresh[6, ] <- c(tlm0, maxmin(tlm0, tlm1))
 
-    # ---- For each grid point (\hat{\theta}_i, \sigma_i), compute the criteria value for each rule ---- #
+    # ---- for each grid point (\hat{\theta}_i, \sigma_i), compute the criteria value for each rule ---- #
     for (k in cindex) {
         for (i in 1:length(xgrid)) {
             for (j in 1:length(ygrid)) {
@@ -323,7 +346,9 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
             }
         }
     }
+    # we will use the thresh and the cls to plot the contour line
 
+    # ---- find the selected points ---- #
     if (tail == "R") {
         B <- sR$B # cap constraint
         A <- sR$A # cap and fdr constraint
@@ -331,12 +356,7 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
         B <- sL$B
         A <- sL$A
     }
-
-
-    # ---- From the real dataset, find the agreement and disagreement between the two rules ---- #
-
-
-
+    # from the real dataset, find the agreement and disagreement between the two rules
     Bagree <- intersect(which(B[, cindex[1]] == 1), which(B[, cindex[2]] == 1))
     Bdis1 <- setdiff(which(B[, cindex[1]] == 1), which(B[, cindex[2]] == 1))
     Bdis2 <- setdiff(which(B[, cindex[2]] == 1), which(B[, cindex[1]] == 1))
@@ -345,21 +365,21 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
     Adis1 <- setdiff(which(A[, cindex[1]] == 1), which(A[, cindex[2]] == 1))
     Adis2 <- setdiff(which(A[, cindex[2]] == 1), which(A[, cindex[1]] == 1))
 
-    # ---- For each grid point, plot the selection results ---- #
+    # ---- for each grid point, plot the selection results ---- #
 
-    # The left graph compares the the two rules under cap constraint
+    # the left graph compares the the two rules under cap constraint
 
-    # When plotting, we want to rescale the y-axis by log(y) to make the plot more readable
+    # when plotting, we want to rescale the y-axis by log(y) to make the plot more readable
 
     if ("cap" %in% constraint) {
         if (Rules[[cindex[1]]] != "MLE") {
             contour(xgrid, log(ygrid), cls[, , cindex[[1]]],
                 lwd = 2, col = 4,
                 levels = round(thresh[cindex[1], 1], digits = 3),
-                xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), sub = paste("Capacity ", Rules[cindex[1]], " vs ", Rules[cindex[2]], sep = ""), drawlabels = FALSE
+                xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), drawlabels = FALSE
             )
         } else {
-            abline(v = thresh[cindex[1], 1], lwd = 2, col = 4)[] # MLE rule
+            abline(v = thresh[cindex[1], 1], lwd = 2, col = 4) # MLE rule, always only consider capacity constraint
         }
         if (Rules[[cindex[2]]] != "MLE") {
             contour(xgrid, log(ygrid), cls[, , cindex[[2]]],
@@ -368,11 +388,11 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
                 xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), add = TRUE, col = 2, drawlabels = FALSE
             )
         } else {
-            abline(v = thresh[cindex[2], 1], lwd = 2, col = 2) # MLE rule
+            abline(v = thresh[cindex[2], 1], lwd = 2, col = 2) # MLE rule, always only consider capacity constraint
         }
-        points(Z$S[Bagree], log(Z$W[Bagree]), col = "grey", cex = 0.5)
-        points(Z$S[Bdis1], log(Z$W[Bdis1]), col = 4, cex = 0.5)
-        points(Z$S[Bdis2], log(Z$W[Bdis2]), col = 2, cex = 0.5)
+        points(Z$S[Bagree], (Z$W[Bagree]), col = "grey", cex = 0.5)
+        points(Z$S[Bdis1], (Z$W[Bdis1]), col = 4, cex = 0.5)
+        points(Z$S[Bdis2], (Z$W[Bdis2]), col = 2, cex = 0.5)
         text <- c(
             "Agree", paste(Rules[cindex[1]], " extra", sep = ""),
             paste(Rules[cindex[2]], " extra", sep = "")
@@ -380,16 +400,17 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
         legend("topleft", text,
             col = cols, pch = 1, cex = 0.95, bty = "n"
         )
+        mtext(paste("Capacity ", Rules[cindex[1]], " vs ", Rules[cindex[2]], sep = ""))
         title("(a)")
     }
 
-    # The right graph compares the two rules under cap+fdr constraint
+    # the right graph compares the two rules under cap+fdr constraint
     if ("fdr" %in% constraint) {
         if (Rules[[cindex[1]]] != "MLE") {
             contour(xgrid, log(ygrid), cls[, , cindex[[1]]],
                 lwd = 2, col = 4,
                 levels = round(thresh[cindex[1], 2], digits = 3),
-                xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), drawlabels = FALSE
+                xlab = expression(theta[i]), ylab = expression((sigma[i]^2)), drawlabels = FALSE
             )
         } else {
             abline(v = thresh[cindex[1], 2], lwd = 2, col = 4)
@@ -398,19 +419,20 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
             contour(xgrid, log(ygrid), cls[, , cindex[[2]]],
                 lwd = 2,
                 levels = round(thresh[cindex[2], 2], digits = 3),
-                xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), add = TRUE, col = 2, sub = paste("Capacity and FDR ", Rules[cindex[1]], " vs ", Rules[cindex[2]], sep = ""), drawlabels = FALSE
+                xlab = expression(theta[i]), ylab = expression((sigma[i]^2)), add = TRUE, col = 2, drawlabels = FALSE
             )
         } else {
             abline(v = thresh[cindex[2], 2], lwd = 2, col = 2)
         }
-        points(Z$S[Aagree], log(Z$W[Aagree]), col = "grey", cex = 0.5)
-        points(Z$S[Adis1], log(Z$W[Adis1]), col = 4, cex = 0.5)
-        points(Z$S[Adis2], log(Z$W[Adis2]), col = 2, cex = 0.5)
+        points(Z$S[Aagree], (Z$W[Aagree]), col = "grey", cex = 0.5)
+        points(Z$S[Adis1], (Z$W[Adis1]), col = 4, cex = 0.5)
+        points(Z$S[Adis2], (Z$W[Adis2]), col = 2, cex = 0.5)
         text <- c(
             "Agree", paste(Rules[cindex[1]], " extra", sep = ""),
             paste(Rules[cindex[2]], " extra", sep = "")
         )
         legend("topleft", text, col = cols, pch = 1, cex = 0.95, bty = "n")
+        mtext(paste("Capacity and FDR ", Rules[cindex[1]], " vs ", Rules[cindex[2]], sep = ""))
         title("(b)")
     }
 
