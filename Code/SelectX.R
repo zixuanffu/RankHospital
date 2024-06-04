@@ -289,8 +289,8 @@ level_plot <- function(Z, alpha = 0.04, gamma = 0.2, tail = "R", cindex = c(2, 5
     tail <- "L"
     maxmin <- ifelse(tail == "R", max, min)
     thresh <- matrix(NA, length(Rules), 2)
-    thresh[1, ] <- c(ttpr0, maxmin(ttpr0, ttpr1))
-    thresh[2, ] <- c(ttp0, maxmin(ttp0, ttp1))
+    thresh[1, ] <- c(ttpr0, max(ttpr0, ttpr1))
+    thresh[2, ] <- c(ttp0, max(ttp0, ttp1))
     thresh[3, ] <- c(tpmr0, maxmin(tpmr0, tpmr1))
     thresh[4, ] <- c(tpm0, maxmin(tpm0, tpm1))
     thresh[5, ] <- c(tMLE0, maxmin(tMLE0, tMLE1))
