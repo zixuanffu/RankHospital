@@ -35,7 +35,7 @@ As usual, **risk is defined as the expected loss**. Thus, the compound risk is
 \begin{align*}
 R_n(\alpha, \delta(Y))  &= E[L_n(\alpha, \delta(Y))]\\
  &= \frac{1}{n}\sum_{i=1}^n E[L(\alpha_i, \delta_i(Y))]\\
-&= \frac{1}{n}\sum_{i=1}^n \int \ldots \int L(\alpha_i, \delta_i(y_1, \ldots, y_n))P_{\alpha_1}(dy_1)\ldots P_{\alpha_n}(dy_n)\\
+&= \frac{1}{n}\sum_{i=1}^n \int \ldots \int L(\alpha_i, \delta_i(y_1, \ldots, y_n))dP_{\alpha_1}(y_1)\ldots dP_{\alpha_n}(y_n)\\
 \end{align*}
 
 Given the **compound risk**, our goal is to find a function/decision rule $\delta(\cdot)$ that minimizes the **compound risk**. This is the **optimal** compound decision rule for a given vector $Y$
@@ -44,9 +44,10 @@ $$
 $$
 
 If $\delta^*(Y)$ is separable (the linear shrinkage class belongs to this class as well), which means that $\delta_i^*(Y)=\{t(Y_1), \ldots, t(Y_n)\}$, the **compound risk** can be written as 
-$$
-R_n(\alpha, \delta(Y)) =  \frac{1}{n}\sum \int\ldots\int L(\alpha_i, \delta(y_1,\dots,y_n))dP_{\alpha_1}(y_1)\ldots dP_{\alpha_n}(y_n)\\
-= \int_{\alpha} \int L(\alpha_i, t(y_i))dP_{\alpha_i}(y_i)dG_n(\alpha)$$
+\begin{align*}
+R_n(\alpha, \delta(Y)) &=  \frac{1}{n}\sum \int\ldots\int L(\alpha_i, \delta(y_1,\dots,y_n))dP_{\alpha_1}(y_1)\ldots dP_{\alpha_n}(y_n)\\
+&= \int_{\alpha} \int L(\alpha_i, t(y_i))dP_{\alpha_i}(y_i)dG_n(\alpha)\\
+\end{align*}
 where $G_n(\alpha)$ is the empirical distribution of $\alpha$.
 $$
 E_{G_n}(f(x)) = 1/n \sum_i f(x_i)
