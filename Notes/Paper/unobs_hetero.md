@@ -1,6 +1,6 @@
 
-## Unobserved heterogeneity
-### Compound loss, risk and decision rule
+# Unobserved heterogeneity
+## Compound loss, risk and decision rule
 Each individual has an observed $\alpha_i$ which is unobservable. We only observe $Y_i$ as an estimate/sufficient statistics for $\alpha_i$ for n individuals. We know that
 $$ Y_i | \alpha_i \sim P_{\alpha_i} $$
 We care about the **entire** vector 
@@ -61,23 +61,29 @@ We want to non-parametrically estimate $G_n(\alpha)$.
 
 
 
-### Comparison
-| Name        | Decision rule                                                      | Remarks                   |
-| ----------- | ------------------------------------------------------------------ | ------------------------- |
-| Naive       | $\delta_i(Y) = Y_i$                                                | ignore compound risk      |
-| James-Stein | $\delta_i(Y) = (1-\frac{n-2}{S})Y_i$ with S = $\sum_{i=1}^n Y_i^2$ | known as linear shrinkage |
+## Comparison
+| Name           | Decision rule                                                      | Remarks                                              |
+| -------------- | ------------------------------------------------------------------ | ---------------------------------------------------- |
+| Naive          | $\delta_i(Y) = Y_i$                                                | ignore compound risk                                 |
+| James-Stein    | $\delta_i(Y) = (1-\frac{n-2}{S})Y_i$ with S = $\sum_{i=1}^n Y_i^2$ | known as linear shrinkage                            |
+| Posterior mean | $\delta_i(Y) = E(\alpha_i\|Y)$                                     | best among separable estimators under quadratic loss |
 
+The posterior mean decision rule gives the ***Tweedie formula*** and its variants.
+$$
+t_G(Y) = E(\alpha|Y)= \frac{\int \alpha p(y|\alpha)dG(\alpha)}{\int p(y|\alpha)dG(\alpha)}
+$$
+where the denominator $f(y)=\int p(y|\alpha)dG(\alpha)$ is the marginal density of $y$.
 
+Note: if $p(y|\alpha)$ is normal, we will have the ***basic*** Tweedie formula. See appendix.
 
-
-### Historical view
+## Historical view
 Up til now, we didn't specify any views on the $\alpha$. Conventionally in the literature, there are different "philosophical views" on the $\alpha_i$'s. 
 1. Fixed effect: $\alpha_i,\ldots,\alpha_n$ are viewed as fixed unknown parameters. No assumption on distribution of $\alpha_i$ whatsoever.
 2. Random effect: $\alpha_i,\ldots,\alpha_n$ are viewed as i.i.d. draws (a realization of the random variable)from a common distribution $G$.
 
-## Appendix
-### James-Stein rule
-#### FIXED EFFECT VIEW
+# Appendix
+## James-Stein rule
+### FIXED EFFECT VIEW
 Consider all the linear shrinkage estimators of the form
 $$
 \delta(Y) = ((1-b)Y_1, \ldots, (1-b)Y_n)
@@ -90,7 +96,8 @@ The **compound risk** is
 $$
 R_n(\alpha, \delta(Y)) =1/n \sum \int \ldots \int (\alpha_i - \delta_i(y_1, \ldots, y_n))^2 dP_{\alpha_1}(dy_1)\ldots dP_{\alpha_n}(dy_n)\\
 = 1/n \sum \int (\alpha_i - (1-b)y_i)^2 dP_{\alpha_i}(y_i)\\
-= 1/n \sum \alpha_i^2 -2 (1-b)\alpha_i E[Y_i] + (1-b)^2 E[Y_i^2]\\
+$$
+$$= 1/n \sum \alpha_i^2 -2 (1-b)\alpha_i E[Y_i] + (1-b)^2 E[Y_i^2]\\
 $$
 
 Thus the **optimal** compound decision rule is 
@@ -108,7 +115,7 @@ This is the J-S rule where the optimal shrinkage term is approximated by data.
 
 > We call this the **frequentist view** which corresponds to the idea of **fixed effect**.
 
-#### RANDOM EFFECT VIEW
+### RANDOM EFFECT VIEW
 > We can take the **Bayesian view** (idea of **random effect**) and assume that $\alpha_i$ are i.i.d. draws from a common distribution $G$.
 
 We assume that $\alpha_i \sim G= N(0,A)$ 
@@ -130,11 +137,24 @@ Therefore, the empirical optimal decision rule takes the form $\delta_i^*(Y) = (
 
 > All roads to the same estimator.
 
-#### Conclusion 
+### Conclusion 
 
 1. Fixed effect: JS mimics the optimal linear shrinkage estimator.
 2. Random effect: Js mimics the optimal Bayesian estimator when G=N(0,A).
 > Pretty restrictive class & assumptions.
 
+## Tweedie formula and its variants
 
+### Normal 
+
+If $p(y|\alpha_i)=\phi((y-\alpha_i)/\sigma_i)/\sigma_i$, the posterior mean is
+$$
+t_G(Y) = Y+\frac{f'(Y)}{f(Y)}
+$$ 
+
+### Possion
+
+$$
+t_G(y) = \frac{(y+1)P_Y(y+1)}{P_Y(y)}
+$$
 
