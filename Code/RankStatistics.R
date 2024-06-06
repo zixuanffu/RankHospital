@@ -152,6 +152,7 @@ dir_name <- "Figures/Simulation/"
 if (!dir.exists(dir_name)) {
     dir.create(dir_name)
 }
+png(paste0(dir_name, "thresh_eg_normal_discrete_alphazero_cap.png"), width = 800, height = 800)
 pdf(paste0(dir_name, "thresh_eg_normal_discrete_alphazero_cap.pdf"))
 plot(s, cLfdr0, ylim = c(0, 18), type = "l", lwd = 2, ylab = "Threshold", xlab = expression(sigma))
 # lines(s, cLfdr1)
@@ -166,6 +167,7 @@ polygon(x = c(s[1], s[1:loc], s[1:loc]), y = c(cLfdr0[1], cLfdr2[1:loc], cLfdr0[
 polygon(x = c(s[loc], s[(loc + 1):length(s)], s[length(s)], s[length(s):(loc + 1)]), y = c(cLfdr2[loc], cLfdr0[(loc + 1):length(s)], cLfdr2[length(s)], cLfdr2[length(s):(loc + 1)]), , density = 20, angle = 90, col = 4)
 dev.off()
 
+png(paste0(dir_name, "thresh_eg_normal_discrete_alphazero_capfdr.png"), width = 800, height = 800)
 pdf(paste0(dir_name, "thresh_eg_normal_discrete_alphazero_capfdr.pdf"))
 cLfdr_alpha <- rep(NA, length(s))
 cLfdr_alpha <- pmax(cLfdr0, cLfdr1)
@@ -184,6 +186,7 @@ polygon(x = c(s[1], s[1:loc], s[1:loc]), y = c(cLfdr_alpha[1], cLfdr_null[1:loc]
 polygon(x = c(s[loc], s[(loc + 1):length(s)], s[length(s)], s[length(s):(loc + 1)]), y = c(cLfdr_null[loc], cLfdr_alpha[(loc + 1):length(s)], cLfdr_null[length(s)], cLfdr_null[length(s):(loc + 1)]), , density = 20, angle = 90, col = 4)
 dev.off()
 
+# ---- calculate the power ---- #
 power <- function(cut, s, fs, G, znull) {
     # P(non-null case & reject)/P(non-null) : interpret as among all non-null cases, what's the probability of correct rejection.
     ns <- length(s)
@@ -201,7 +204,7 @@ power(cLfdr1, s, fs, G, znull = 4)
 power(cLfdr2, s, fs, G, znull = 4)
 power(cLfdr3, s, fs, G, znull = 4)
 
-
+# ---- Section 3: Selection ---- #
 # check selection
 A <- matrix(NA, 200, 2)
 View(x > cLfdr_alpha)
@@ -227,3 +230,102 @@ cols <- c("grey", "red", "blue")
 legend("topleft", text, col = cols, pch = 1, cex = 0.95, bty = "n")
 dev.off()
 # too few observations...don't bother...
+
+# ---- Section 4: Simplified expression for the constraint ---- #
+# ---- only consider cap constraint ---- #
+# using cnull = 4
+# given the capacity control level, calculate the threhold for $\lambda$.
+# heterogeneous known variance
+# DGP: normal - discrete
+G <- list(x = c(-1, 0.5, 5), y = c(0.85, 0.1, 0.05), sigma = 1)
+# note the smaller null effect is change from 2 to 1 in this example so that threshold TLfdr3 does not become 1
+class(G) <- "GLmix"
+rG <- function(n, G, s) rnorm(n, sample(G$x, prob = G$y, replace = TRUE), s)
+s <- seq(0.5, 4, length = 200) # sigma values
+x <- rG(200, G, s)
+# scaled beta (density of s monotone increasing on the support)
+# fs = dbeta(s/max(s), 6,1)/sum(dbeta(s/max(s), 6,1))
+fs <- rep(1 / length(s), length(s)) # sigma density
+
+tp <- Lfdr.GLmix_temp(x, G, s, cnull = 4)
+# each tp is conditioned on the sigma_i
+alpha <- 0.05
+TLfdr0 <- quantile(tp, 1 - alpha) # in the previous method 0.262, now 0.111
+cLfdr0 <- rep(NA, length(s))
+for (i in 1:length(s)) {
+    cLfdr0[i] <- Finv(TLfdr0, Lfdr.GLmix_temp, interval = c(-20, 20), G = G, s = s[i], cnull = 4)
+}
+
+# using cnull = 0
+# given the capacity control level, calculate the threhold for $\lambda$.
+tp_null <- Lfdr.GLmix_temp(x, G, s, cnull = 0)
+TLfdr2 <- quantile(tp_null, 1 - alpha) # in the previous method 0.551,now 0.481
+cLfdr2 <- rep(NA, length(s))
+for (i in 1:length(s)) {
+    cLfdr2[i] <- Finv(TLfdr2, Lfdr.GLmix_temp, interval = c(-20, 20), G = G, s = s[i], cnull = 0)
+}
+
+# consider only capacity control level = 0.05
+dir_name <- "Figures/Simulation/"
+if (!dir.exists(dir_name)) {
+    dir.create(dir_name)
+}
+pdf(paste0(dir_name, "thresh_eg_normal_discrete_alphazero_capr.pdf"))
+plot(s, cLfdr0, ylim = c(0, 18), type = "l", lwd = 2, ylab = "Threshold", xlab = expression(sigma))
+# lines(s, cLfdr1)
+
+# red for cnull = 0
+lines(s, cLfdr2, col = 2, lty = 2)
+# lines(s, cLfdr3, col = 2, lwd = 2, lty = 2)
+
+legend("topleft", c("zeroNull", "tailNull"), col = c(2, 1), lty = c(2, 1), lwd = c(2, 2))
+mtext("capacity constraint = 0.05")
+## highlight polygon
+loc <- which.min(abs(cLfdr0 - cLfdr2))
+polygon(x = c(s[1], s[1:loc], s[1:loc]), y = c(cLfdr0[1], cLfdr2[1:loc], cLfdr0[1:loc]), density = 20, angle = 90, lty = 2)
+polygon(x = c(s[loc], s[(loc + 1):length(s)], s[length(s)], s[length(s):(loc + 1)]), y = c(cLfdr2[loc], cLfdr0[(loc + 1):length(s)], cLfdr2[length(s)], cLfdr2[length(s):(loc + 1)]), , density = 20, angle = 90, col = 4)
+dev.off()
+# similar results:)
+
+# ---- consider both constraints ---- #
+source("Code/SelectX.R")
+# using cnull = 4
+# given the fdr control level, calculate the threshold for $\lambda$
+TLfdr1 <- Finv(0.1, Thresh1, c(0.001, 0.8),
+    Fun = Lfdr, G = G, s = s,
+    fs = fs, domain = c(-20, 20), cnull = 4, znull = 4
+)
+cLfdr1 <- rep(NA, length(s))
+for (i in 1:length(s)) {
+    cLfdr1[i] <- Finv(TLfdr1, Lfdr, interval = c(-20, 20), G = G, s = s[i], cnull = 4)
+}
+
+# using cnull = 0
+
+# given the fdr control level, calculate the threshold for $\lambda$
+TLfdr3 <- Finv(0.1, Thresh1, c(0.1, 0.99999999),
+    Fun = Lfdr, G = G, s = s,
+    fs = fs, domain = c(-20, 20), cnull = 0, znull = 4
+)
+cLfdr3 <- rep(NA, length(s))
+for (i in 1:length(s)) {
+    cLfdr3[i] <- Finv(TLfdr3, Lfdr, interval = c(-20, 20), G = G, s = s[i], cnull = 0)
+}
+
+pdf(paste0(dir_name, "thresh_eg_normal_discrete_alphazero_capfdrr.pdf"))
+cLfdr_alpha <- rep(NA, length(s))
+cLfdr_alpha <- pmax(cLfdr0, cLfdr1)
+cLfdr_null <- rep(NA, length(s))
+cLfdr_null <- pmax(cLfdr2, cLfdr3)
+
+# black for cnull=4
+# red for cnull = 0
+plot(s, cLfdr_alpha, ylim = c(0, 18), type = "l", lwd = 2, ylab = "Threshold", xlab = expression(sigma))
+lines(s, cLfdr_null, col = 2, lwd = 2, lty = 2)
+legend("topleft", c("zeroNull", "tailNull"), col = c(2, 1), lty = c(2, 1), lwd = c(2, 2))
+mtext("capacity = 0.05, gamma = 0.1")
+## highlight polygon
+loc <- which.min(abs(cLfdr_alpha - cLfdr_null))
+polygon(x = c(s[1], s[1:loc], s[1:loc]), y = c(cLfdr_alpha[1], cLfdr_null[1:loc], cLfdr_alpha[1:loc]), density = 20, angle = 90, lty = 2)
+polygon(x = c(s[loc], s[(loc + 1):length(s)], s[length(s)], s[length(s):(loc + 1)]), y = c(cLfdr_null[loc], cLfdr_alpha[(loc + 1):length(s)], cLfdr_null[length(s)], cLfdr_null[length(s):(loc + 1)]), , density = 20, angle = 90, col = 4)
+dev.off()
