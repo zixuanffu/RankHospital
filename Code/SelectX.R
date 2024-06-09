@@ -244,8 +244,9 @@ selectL1d <-
         dimnames(B)[[2]] <- Rules
 
         # ---- for each rule, calculate the ranking statistics---- #
-        cnull <- ifelse(tail == "R", qKW(Z$f, 1 - alpha), qKW(Z$f, alpha))
-        tpr <- Lfdr.GLmix_temp(Z$S, Z$f, sqrt(Z$s), cnull = cnull, tail = tail)
+        cnullr <- ifelse(tail == "R", qKW(Z$f, 1 - alpha), qKW(Z$f, alpha))
+        tpr <- Lfdr.GLmix_temp(Z$S, Z$f, sqrt(Z$s), cnull = cnullr, tail = tail)
+        cnull <- ifelse(tail == "R", qKW(Z$fs, 1 - alpha), qKW(Z$fs, alpha))
         tp <- Lfdr.GLmix_temp(Z$S, Z$fs, sqrt(Z$s), cnull = cnull, tail = tail)
 
         pmr <- predict(Z$f, Z$S, newsigma = sqrt(Z$s))

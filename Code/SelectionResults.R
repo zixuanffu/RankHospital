@@ -10,7 +10,9 @@ pdt <- readRDS("Results/2013-2022/pdt_inf_ols_FI.rds")
 
 Z <- fit1d(pdt)
 sL <- selectL1d(Z, alpha = 0.22, gamma = 0.05)
+sL <- select1d(Z, alpha = 0.22, gamma = 0.05, "L")
 sR <- selectR1d(Z, alpha = 0.22, gamma = 0.05)
+sR <- select1d(Z, alpha = 0.22, gamma = 0.05, "R")
 save(Z, sL, sR, file = "Results/2013-2022/ZsLsR.Rda")
 
 # ---- extra plot for estimated G ---- #
