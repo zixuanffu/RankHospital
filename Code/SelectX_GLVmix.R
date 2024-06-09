@@ -29,6 +29,13 @@ fit2d <- function(pdt, bwt = 2, rtol = 1e-20, ...) {
     list(f = f, fs = fs, S = dt2$hat_mu, s = dt2$Var_res1, m = dt2$Nobs, id = dt2$id)
 }
 
+# for linear shrinkage rule
+P <- function(a, d) 1 / (2 * (a + d)^2) # 1/Var(S)
+psi <- function(a, s, d) a - sum((s - d) * P(a, d)) / sum(P(a, d))
+lik <- function(theta, x, s) {
+    sum(log(theta[2] + s^2)) + sum((x - theta[1])^2 / (theta[2] + s^2))
+}
+
 # calculate the tail probability
 Lfdr.GLVmix_temp <- function(t, s, w, m, G, cnull, tail = "R") {
     # t: sample mean
@@ -101,6 +108,38 @@ Finv <- function(y, F, interval = c(0, 1), ...) {
     uniroot(function(x) F(x, ...) - y, interval, extendInt = "yes", maxiter = 50)$root
 }
 
+# ---- For EM/JS, compute the FDR rate when setting treshold lambda = lam ---- #
+
+ThreshFDREM <- function(lam, mean = 0, estvar, Bhat, s, alpha, tail = "L") {
+    # assume G = N(0, V)
+    gx <- seq(mean - 12 * sqrt(estvar), mean + 12 * sqrt(estvar), length = 100)
+    G <- list(x = gx, y = dnorm(gx, mean = mean, sd = sqrt(estvar)), sd = sqrt(estvar))
+    if (tail == "R") {
+        cnull <- qnorm(1 - alpha, mean = mean, sd = sqrt(estvar))
+        n <- length(s)
+        nu <- rep(NA, n)
+        cnu <- rep(NA, n)
+        for (j in 1:n) {
+            cut <- (lam - mean) / (1 - Bhat[j]) + mean
+            nu[j] <- sum(G$y * (1 - pnorm(cut - G$x, sd = s[j])))
+            cnu[j] <- sum(G$y * (G$x < cnull) * (1 - pnorm(cut - G$x, sd = s[j])))
+        }
+        mean(cnu) / mean(nu)
+    } else {
+        cnull <- qnorm(alpha, mean = mean, sd = sqrt(estvar))
+        n <- length(s)
+        nu <- rep(NA, n)
+        cnu <- rep(NA, n)
+        for (j in 1:n) {
+            cut <- (lam - mean) / (1 - Bhat[j]) + mean
+            nu[j] <- sum(G$y * (pnorm(cut - G$x, sd = s[j])))
+            cnu[j] <- sum(G$y * (G$x >= cnull) * (pnorm(cut - G$x, sd = s[j])))
+        }
+        mean(cnu) / mean(nu)
+    }
+}
+
+# ---- For other rules, compute the FDR rate when setting treshold lambda = lam ---- #
 ThreshFDR <- function(lam, stat, v) {
     # find value such that Fun criterion is met
     # v is the Lfdr statistics for specific alpha
@@ -153,7 +192,7 @@ error_avoid <- function(x, pos = TRUE) {
 }
 
 select2d <- function(Z, alpha = 0.20, gamma = 0.20, tail = "R") {
-    Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE")
+    Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
     # ---- store the ranking statistics, threshold_1, threshold_2 for teach rule ---- #
     stat <- matrix(NA, length(Z$S), length(Rules))
     thresh_0 <- matrix(NA, length(Rules))
@@ -177,10 +216,12 @@ select2d <- function(Z, alpha = 0.20, gamma = 0.20, tail = "R") {
 
     R <- Z$S
 
-    # est <- optim(c(0, 1), lik, x = Z$S, s = sqrt(Z$s))$par
-    # estmean <- est[1]
-    # estvar <- est[2]
-    # linear <- estmean + (Z$S - estmean) * estvar / (estvar + (Z$s))
+    # now we need to calculate the linear rule
+
+    est <- optim(c(0, 1), lik, x = Z$S, s = sqrt(Z$s))$par
+    estmean <- est[1]
+    estvar <- est[2]
+    linear <- estmean + (Z$S - estmean) * estvar / (estvar + (Z$s))
 
 
     # ---- for each rule, calculate the threshold ---- #
@@ -201,8 +242,8 @@ select2d <- function(Z, alpha = 0.20, gamma = 0.20, tail = "R") {
         tMLE0 <- quantile(R, 1 - alpha)
         tMLE1 <- try(Finv(gamma, ThreshFDR, stat = R, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
         tMLE1 <- error_avoid(tMLE1)
-        # tlm0 <- quantile(linear, 1 - alpha)
-        # tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = "R"), silent = TRUE)
+        tlm0 <- quantile(linear, 1 - alpha)
+        tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = "R"), silent = TRUE)
         # tlm1 <- error_avoid(tlm1)
     } else {
         tpmr0 <- quantile(pmr, alpha)
@@ -214,8 +255,9 @@ select2d <- function(Z, alpha = 0.20, gamma = 0.20, tail = "R") {
         tMLE0 <- quantile(R, alpha)
         tMLE1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.45, -0.75), stat = -R, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
         tMLE1 <- error_avoid(tMLE1, FALSE)
-        #     tlm0 <- quantile(linear, alpha)
-        #     tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = "L"), silent = TRUE)
+        tlm0 <- quantile(linear, alpha)
+        tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = "L"), silent = TRUE)
+        # tlm1 <- error_avoid(tlm1, FALSE)
     }
     for (i in 1:length(Rules)) {
         statistics <- switch(i,
@@ -309,7 +351,7 @@ level_plot_2d <- function(Z, Selection, alpha = 0.04, gamma = 0.2, tail = "R", c
     cols <- c("grey", "red", "blue")
 
     # ---- define rules ---- #
-    Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE")
+    Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
     # ---- read the selection results ---- #
     A <- Selection$A
     B <- Selection$B
