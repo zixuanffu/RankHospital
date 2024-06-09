@@ -7,6 +7,41 @@ add_log <- function(var_list) {
     return(log_var_list)
 }
 
+extract.plm <- function(
+    model, include.rsquared = TRUE, include.adjrs = TRUE,
+    include.nobs = TRUE, ...) {
+    s <- summary(model, ...)
+    coefficient.names <- rownames(s$CoefTable)
+    coefficients <- s$CoefTable[, 1]
+    standard.errors <- s$CoefTable[, 2]
+    significance <- s$CoefTable[, 4]
+    rs <- s$rsqr
+    n <- length(s$resid)
+    gof <- numeric()
+    gof.names <- character()
+    gof.decimal <- logical()
+    if (include.rsquared == TRUE) {
+        gof <- c(gof, rs)
+        gof.names <- c(gof.names, "R$^2$")
+        gof.decimal <- c(gof.decimal, TRUE)
+    }
+    if (include.nobs == TRUE) {
+        gof <- c(gof, n)
+        gof.names <- c(gof.names, "Num. obs.")
+        gof.decimal <- c(gof.decimal, FALSE)
+    }
+    tr <- createTexreg(
+        coef.names = coefficient.names, coef = coefficients,
+        se = standard.errors, pvalues = significance, gof.names = gof.names,
+        gof = gof, gof.decimal = gof.decimal
+    )
+    return(tr)
+}
+setMethod("extract",
+    signature = className("plm", "plm"),
+    definition = extract.plm
+)
+
 extract.pggls <- function(
     model, include.rsquared = TRUE, include.adjrs = TRUE,
     include.nobs = TRUE, ...) {
@@ -70,3 +105,10 @@ setMethod("extract",
 
 #     return(res)
 # }
+
+
+# Error in validObject(.Object) :
+#   invalid class "texreg" object: 1: invalid object for slot "coef.names" in class "texreg": got class "NULL", should be or extend class "character"
+# invalid class "texreg" object: 2: invalid object for slot "coef" in class "texreg": got class "NULL", should be or extend class "numeric"
+# invalid class "texreg" object: 3: invalid object for slot "se" in class "texreg": got class "NULL", should be or extend class "numeric"
+# invalid class "texreg" object: 4: invalid object for slot "pvalues" in class "texreg": got class "NULL", should be or extend class "numeric"

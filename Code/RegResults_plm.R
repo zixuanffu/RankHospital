@@ -32,34 +32,50 @@ dt_inf[, (varr1) := lapply(.SD, function(x) x <- x + 1), .SDcols = varr1]
 dt_inf[, Nobs := .N, by = .(FI)]
 dt_inf <- dt_inf[Nobs >= 6] # keep only those with at least 6 observations
 num_hospital <- length(unique(dt$FI)) # 1526
+# check if there are duplicates
 # check<-dt_inf[, .N, by = .(AN,FI)] # 330780503 # 370007569
-
+saveRDS(dt_inf, "Data/Out/dt_inf.rds")
 
 # ---- prepare the formula ---- #
+dt_inf <- readRDS("Data/Out/dt_inf.rds")
 rhs <- paste(c(add_log(varr1), "CASEMIX -1"), collapse = " + ")
 lhs <- add_log(varl)
-help(as.formula)
 formula <- as.formula(paste(lhs, "~", rhs))
 
 # ---- estimate the regression model ---- #
-help(plm)
-zz_fd <- plm(formula, data = dt_inf, index = c("FI", "AN"), model = "fd")
-help(vcovHC)
-zz_fd_sum <- summary(zz, vcov = vcovHC(zz_fd, method = c("arellano"), cluster = "group"))
+
+# ---- assume strict exogeneity ---- #
+
+# ---- fixed effects-within group estimator ---- #
 zz_wg <- plm(formula, data = dt_inf, index = c("FI", "AN"), model = "within")
-summary(zz_wg, vcov = vcovHC(zz_wg, method = c("arellano"), cluster = "group"))
-help(pggls)
-zz_fd_gls <- pggls(formula, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "fd")
-summary(zz_fd_gls, vcov = vcovHC(zz_fd_gls, method = c("arellano"), cluster = "group"))
+se_zz_wg <- vcovHC(zz_wg, method = c("arellano"), cluster = "group")
+a<-summary(zz_wg, vcov = vcovHC(zz_wg, method = c("arellano"), cluster = "group"))
 zz_wg_gls <- pggls(formula, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "within")
-summary(zz_wg_gls, vcov = vcovHC(zz_wg_gls, method = c("arellano"), cluster = "group"))
+se_zz_wg_gls <- vcovHC(zz_wg_gls, method = c("arellano"), cluster = "group")
+b<-summary(zz_wg_gls, vcov = vcovHC(zz_wg_gls, method = c("arellano"), cluster = "group"))
+
+# ---- fixed effects-first difference estimator ---- #
+zz_fd <- plm(formula, data = dt_inf, index = c("FI", "AN"), model = "fd")
+se_zz_fd <- vcovHC(zz_fd, method = c("arellano"), cluster = "group")
+c<-summary(zz, vcov = vcovHC(zz_fd, method = c("arellano"), cluster = "group"))
+zz_fd_gls <- pggls(formula, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "fd")
+se_zz_fd_gls <- vcovHC(zz_fd_gls, method = c("arellano"), cluster = "group")
+d<-summary(zz_fd_gls, vcov = vcovHC(zz_fd_gls, method = c("arellano"), cluster = "group"))
 
 z <- readRDS("Results/2013-2022/reg_inf_ols_FI.rds")
 summary(z)
 
-inherits(zz_fd_gls, "plm")
+# Custom extractor for texreg to use robust SE
+extract.plm(zz_wg, s=c)
+extract.pggls(zz_wg_gls, s = summary(s, se_zz_wg_gls))
+extract.plm(zz_wg, se_zz_wg),
+extract.plm(zz_fd, se_zz_fd),
+models <- list( extract.pggls(zz_wg_gls, s = b),  extract.pggls(zz_fd_gls, s = d))
+texreg(models,
+    sdBelow = TRUE, signif.code = "letters", digits = 6, file = "Tables/2013-2022/reg_inf.tex", replace = TRUE,
+    custom.model.names = c( "Within-group GLS",  "First difference GLS")
+)
 
-dir.create("Tables/2013-2022", showWarnings = FALSE)
-help(texreg)
-texreg(list(zz_fd, zz_wg, extract.pggls(zz_fd_gls), z), sdBelow = TRUE, digits = 3, file = "Tables/2013-2022/reg_inf.tex", signif.code = "letters", replace = TRUE)
-texreg(extract.pggls(zz_fd_gls), sdBelow = TRUE, digits = 3, file = "Tables/2013-2022/reg_inf_gls.tex", signif.code = "letters", replace = TRUE)
+# ---- assume some feedback (\varepsilon_{it} uncorrelated with past x_{it}) ---- #
+# current errors will affect current and future regressors
+#
