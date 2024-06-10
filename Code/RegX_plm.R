@@ -8,21 +8,27 @@ add_log <- function(var_list) {
 }
 
 extract.plm <- function(
-    model, include.rsquared = TRUE, include.adjrs = TRUE,
+    model, include.rsquared = TRUE, include.adjrs = FALSE,
     include.nobs = TRUE, ...) {
     s <- summary(model, ...)
-    coefficient.names <- rownames(s$CoefTable)
-    coefficients <- s$CoefTable[, 1]
-    standard.errors <- s$CoefTable[, 2]
-    significance <- s$CoefTable[, 4]
-    rs <- s$rsqr
-    n <- length(s$resid)
+    coefficient.names <- rownames(s$coefficients)
+    coefficients <- s$coefficients[, 1]
+    standard.errors <- s$coefficients[, 2]
+    significance <- s$coefficients[, 4]
+    rs <- s$r.squared[1]
+    adjrs <- s$r.squared[2]
+    n <- length(s$residuals)
     gof <- numeric()
     gof.names <- character()
     gof.decimal <- logical()
     if (include.rsquared == TRUE) {
         gof <- c(gof, rs)
         gof.names <- c(gof.names, "R$^2$")
+        gof.decimal <- c(gof.decimal, TRUE)
+    }
+    if (include.adjrs == TRUE) {
+        gof <- c(gof, adjrs)
+        gof.names <- c(gof.names, "Adj. R$^2$")
         gof.decimal <- c(gof.decimal, TRUE)
     }
     if (include.nobs == TRUE) {
@@ -37,6 +43,7 @@ extract.plm <- function(
     )
     return(tr)
 }
+
 setMethod("extract",
     signature = className("plm", "plm"),
     definition = extract.plm

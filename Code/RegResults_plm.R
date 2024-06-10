@@ -38,6 +38,8 @@ saveRDS(dt_inf, "Data/Out/dt_inf.rds")
 
 # ---- prepare the formula ---- #
 dt_inf <- readRDS("Data/Out/dt_inf.rds")
+varr1 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
+varl <- "ETP_INF"
 rhs <- paste(c(add_log(varr1), "CASEMIX -1"), collapse = " + ")
 lhs <- add_log(varl)
 formula <- as.formula(paste(lhs, "~", rhs))
@@ -48,34 +50,20 @@ formula <- as.formula(paste(lhs, "~", rhs))
 
 # ---- fixed effects-within group estimator ---- #
 zz_wg <- plm(formula, data = dt_inf, index = c("FI", "AN"), model = "within")
-se_zz_wg <- vcovHC(zz_wg, method = c("arellano"), cluster = "group")
-a<-summary(zz_wg, vcov = vcovHC(zz_wg, method = c("arellano"), cluster = "group"))
+se_zz_wg <- vcov(zz_wg, method = c("arellano"), cluster = "group")
+
 zz_wg_gls <- pggls(formula, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "within")
-se_zz_wg_gls <- vcovHC(zz_wg_gls, method = c("arellano"), cluster = "group")
-b<-summary(zz_wg_gls, vcov = vcovHC(zz_wg_gls, method = c("arellano"), cluster = "group"))
+se_zz_wg_gls <- vcov(zz_wg_gls, method = c("arellano"), cluster = "group")
 
 # ---- fixed effects-first difference estimator ---- #
 zz_fd <- plm(formula, data = dt_inf, index = c("FI", "AN"), model = "fd")
-se_zz_fd <- vcovHC(zz_fd, method = c("arellano"), cluster = "group")
-c<-summary(zz, vcov = vcovHC(zz_fd, method = c("arellano"), cluster = "group"))
+se_zz_fd <- vcov(zz_fd, method = c("arellano"), cluster = "group")
+
 zz_fd_gls <- pggls(formula, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "fd")
-se_zz_fd_gls <- vcovHC(zz_fd_gls, method = c("arellano"), cluster = "group")
-d<-summary(zz_fd_gls, vcov = vcovHC(zz_fd_gls, method = c("arellano"), cluster = "group"))
+se_zz_fd_gls <- vcov(zz_fd_gls, method = c("arellano"), cluster = "group")
 
 z <- readRDS("Results/2013-2022/reg_inf_ols_FI.rds")
 summary(z)
 
-# Custom extractor for texreg to use robust SE
-extract.plm(zz_wg, s=c)
-extract.pggls(zz_wg_gls, s = summary(s, se_zz_wg_gls))
-extract.plm(zz_wg, se_zz_wg),
-extract.plm(zz_fd, se_zz_fd),
-models <- list( extract.pggls(zz_wg_gls, s = b),  extract.pggls(zz_fd_gls, s = d))
-texreg(models,
-    sdBelow = TRUE, signif.code = "letters", digits = 6, file = "Tables/2013-2022/reg_inf.tex", replace = TRUE,
-    custom.model.names = c( "Within-group GLS",  "First difference GLS")
-)
-
-# ---- assume some feedback (\varepsilon_{it} uncorrelated with past x_{it}) ---- #
-# current errors will affect current and future regressors
-#
+models <- list(extract.plm(zz_wg, vcov = se_zz_wg), extract.pggls(zz_wg_gls, vcov = se_zz_wg_gls), extract.plm(zz_fd, vcov = se_zz_fd), extract.pggls(zz_fd_gls, vcov = se_zz_fd_gls))
+htmlreg(models, stars = numeric(0), caption = "Estimation results", digits = 4, custom.model.names = c("Within-group", "Within-group (GLS)", "First difference", "First difference (GLS)"), file = "Tables/2013-2022/reg_inf.html")
