@@ -1,7 +1,7 @@
 rm(list = ls())
 pacman::p_load(REBayes)
 source("Code/SelectX.R")
-load("Results/2013-2022/ZsLsR.Rda")
+load("Results/2013-2022/Spec3/ZsLsR.Rda")
 Z <- append(Z, list(W = Z$s)) #
 # ---- Find the min and max of the density ---- #
 u_min <- min(Z$S)
@@ -102,8 +102,8 @@ dev.off()
 
 # ---- left tail ---- #
 grid_L <- grid_select(Z, alpha = 0.22, gamma = 0.05, tail = "L", cindex = c(2, 4, 5, 6), xgrid = seq(u_min, u_max, length = 600), ygrid = seq(v_min, v_max, length = 200))
-pdf("Figures/2013-2022/Left_0.22_0.05.pdf", height = 4.5 * 3, width = 8)
-png("Figures/2013-2022/Left_0.22_0.05.png", height = 450 * 3, width = 800)
+pdf("Figures/2013-2022/Spec3/Left_0.22_0.05.pdf", height = 4.5 * 3, width = 8)
+png("Figures/2013-2022/Spec3/Left_0.22_0.05.png", height = 450 * 3, width = 800)
 par(mfrow = c(3, 2))
 for (i in c(4, 5, 6)) {
     level_plot(Z, sL, grid_L, alpha = 0.22, gamma = 0.05, tail = "L", cindex = c(2, i), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200))
@@ -112,8 +112,8 @@ dev.off()
 
 # ---- right tail ---- #
 grid_R <- grid_select(Z, alpha = 0.22, gamma = 0.05, tail = "R", cindex = c(2, 4, 5, 6), xgrid = seq(u_min, u_max, length = 600), ygrid = seq(v_min, v_max, length = 200))
-pdf("Figures/2013-2022/Right_0.22_0.05.pdf", height = 4.5 * 3, width = 8)
-png("Figures/2013-2022/Right_0.22_0.05.png", height = 450 * 3, width = 800)
+pdf("Figures/2013-2022/Spec3/Right_0.22_0.05.pdf", height = 4.5 * 3, width = 8)
+png("Figures/2013-2022/Spec3/Right_0.22_0.05.png", height = 450 * 3, width = 800)
 par(mfrow = c(3, 2))
 for (i in c(4, 5, 6)) {
     level_plot(Z, sR, grid_R, alpha = 0.22, gamma = 0.05, tail = "R", cindex = c(2, i), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200))

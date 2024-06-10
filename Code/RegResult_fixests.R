@@ -57,14 +57,16 @@ saveRDS(reg_inf_ols_FI, paste0("Results/", start_year, "-", end_year, "/reg_inf_
 # ---- plot the fixed effect ---- #
 reg_inf_ols_FI <- readRDS(paste0("Results/", start_year, "-", end_year, "/reg_inf_ols_FI.rds"))
 status_stable <- readRDS(paste0("Data/Out/status_stable_", start_year, "_", end_year, ".rds"))
-p_res <- plot_FE(reg_inf_ols_FI, "FI", status_stable, year_start = start_year, year_end = end_year)
+filename <- paste0("Figures/", start_year, "-", end_year, "/reg_inf_ols_FI_FE_on_FI")
+p_res <- plot_FE(reg_inf_ols_FI, "FI", status_stable, year_start = start_year, year_end = end_year, filename = filename)
 p <- p_res[[1]]
 p_e <- p_res[[2]]
 
 # ---- OLS regression with only public and private hospitals ---- #
 reg_inf_ols_FI_pub <- reg_X(pdt[STJR == 1 | STJR == 2], varl, varr1)
 summary(reg_inf_ols_FI_pub)
-p_res <- plot_FE(reg_inf_ols_FI_pub, "FI", status_stable, year_start = start_year, year_end = end_year)
+filename <- paste0("Figures/", start_year, "-", end_year, "/reg_inf_ols_FI_FE_on_FI_pub")
+p_res <- plot_FE(reg_inf_ols_FI_pub, "FI", status_stable, year_start = start_year, year_end = end_year, filename)
 p <- p_res[[1]]
 p_e <- p_res[[2]]
 
@@ -106,7 +108,8 @@ saveRDS(reg_md_ols_FI, paste0("Results/", start_year, "-", end_year, "/reg_md_ol
 # ---- plot the fixed effect by legal status ---- #
 reg_md_ols_FI <- readRDS(paste0("Results/", start_year, "-", end_year, "/reg_md_ols_FI.rds"))
 status_stable <- readRDS(paste0("Data/Out/status_stable_", start_year, "_", end_year, ".rds"))
-p_res <- plot_FE(reg_md_ols_FI, "FI", status_stable, year_start = start_year, year_end = end_year)
+filename <- paste0("Figures/", start_year, "-", end_year, "/reg_md_ols_FI_FE_on_FI")
+p_res <- plot_FE(reg_md_ols_FI, "FI", status_stable, year_start = start_year, year_end = end_year, filename = filename)
 p <- p_res[[1]]
 p_e <- p_res[[2]]
 

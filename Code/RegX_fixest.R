@@ -39,7 +39,7 @@ reg_X <- function(data, varl, varr, control = "CASEMIX", cluster = "FI", method 
 }
 
 
-plot_FE <- function(reg_res, cluster, dt_status, year_start, year_end, plot_format = "pdf") {
+plot_FE <- function(reg_res, cluster, dt_status, year_start, year_end, filename, format = "pdf") {
     #' @title Plot the fixed effect classified by the legal status
     #' @description This function is used to plot the fixed effect classified by the legal status.
     #' @param reg_res The regression result.
@@ -65,11 +65,11 @@ plot_FE <- function(reg_res, cluster, dt_status, year_start, year_end, plot_form
         geom_point(aes(color = STJR_LABEL), size = 1) +
         theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5))
 
-    ggsave(paste0("Figures/", year_start, "-", year_end, "/", reg_name, "_FE_on_", cluster, ".", plot_format), p, width = 6, height = 4, dpi = 300)
+    ggsave(paste(filename, format, sep = "."), p, width = 6, height = 4, dpi = 300)
     pe <- ggplot(dt_FE_status, aes(x = Rank, y = exp(FixedEffect))) +
         geom_point(aes(color = STJR_LABEL), size = 1) +
         theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5))
-    ggsave(paste0("Figures/", year_start, "-", year_end, "/", reg_name, "_FE_on_", cluster, "_e.", plot_format), pe, width = 6, height = 4, dpi = 300)
+    ggsave(paste(paste0(filename, "_e"), format, sep = "."), pe, width = 6, height = 4, dpi = 300)
 
     return(list(p, pe))
 }

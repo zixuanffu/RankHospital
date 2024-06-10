@@ -1,5 +1,6 @@
 rm(list = ls())
-pacman::p_load(data.table, plm, texreg)
+pacman::p_load(data.table, plm, texreg, fixest)
+source("Code/RegX_fixest.R")
 source("Code/RegX_plm.R")
 
 # ---- load the dataset ---- #
@@ -113,12 +114,31 @@ models3 <- list(extract.plm(res3$wg, vcov = res3$se_wg), extract.pggls(res3$wg_g
 htmlreg(models3, star.symbol = "*", caption = "Estimation results", digits = 4, custom.model.names = c("Within-group", "Within-group (GLS)", "First difference", "First difference (GLS)"), file = "Tables/2013-2022/reg_inf_m3.html")
 
 # ---- compare with fixest results ---- #
-pacman::p_load(fixest)
+start_year <- 2013
+end_year <- 2022
 formula3 <- as.formula(paste(lhs, "~", rhs3, "|FI"))
 zz_fixest <- feols(formula3, data = dt_inf, cluster = "FI")
-zz_fixest
-summary(zz_fixest)
-help(pggls)
-help(feols)
 
-readRDS("Results/2013-2022/reg_inf_ols_FI.rds")
+obs_removed <- zz_fixest$obs_selection$obsRemoved * (-1) # get the observations removed
+pdt_used <- dt_inf[!obs_removed, ] # keep only the observations used
+
+# ---- add residuals to the panel
+RES <- zz_fixest$residuals
+pdt_used[, `:=`(Res = RES)] # add residuals to the panel
+# ---- add fixed effect to the panel
+FE <- zz_fixest$sumFE
+pdt_used[, `:=`(FixedEffect = FE)]
+
+dir.create(paste0("Resu1lts/", start_year, "-", end_year, "/Spec3"), showWarnings = FALSE)
+saveRDS(pdt_used, paste0("Results/", start_year, "-", end_year, "/Spec3/pdt_inf_ols_FI.rds"))
+saveRDS(zz_fixest, paste0("Results/", start_year, "-", end_year, "/Spec3/reg_inf_ols_FI.rds"))
+# ---- plot the fixed effect ---- #
+reg_inf_ols_FI <- readRDS(paste0("Results/", start_year, "-", end_year, "/Spec3/reg_inf_ols_FI.rds"))
+status_stable <- readRDS(paste0("Data/Out/status_stable_", start_year, "_", end_year, ".rds"))
+p_res <- plot_FE(reg_inf_ols_FI, "FI", status_stable,
+    year_start = start_year, year_end = end_year,
+    filename = "Figures/2013-2022/Spec3/FixedEffect_zz_fixest", format = "png"
+)
+p <- p_res[[1]]
+p_e <- p_res[[2]]
+print(p)

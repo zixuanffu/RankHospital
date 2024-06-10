@@ -1,11 +1,3 @@
-add_log <- function(var_list) {
-    #' @title Add log to a list of variables
-    len <- length(var_list)
-    log_left <- rep("log(", length(len))
-    log_right <- rep(")", length(len))
-    log_var_list <- paste0(log_left, var_list, log_right)
-    return(log_var_list)
-}
 extract.plm <- function(
     model, include.rsquared = TRUE, include.adjrs = FALSE,
     include.nobs = TRUE, ...) {

@@ -314,7 +314,8 @@ select2d <- function(Z, alpha = 0.20, gamma = 0.20, tail = "R") {
                 tpm1
             },
             {
-                tMLE1
+                # tMLE1
+                tMLE0
             },
             {
                 tlm1
@@ -327,6 +328,7 @@ select2d <- function(Z, alpha = 0.20, gamma = 0.20, tail = "R") {
         if (tail == "R") {
             A[which(statistics > max(threshold_0, threshold_1)), i] <- 1
             B[which(statistics > threshold_0), i] <- 1
+            thresh <- cbind(thresh_0, pmax(thresh_0, thresh_1))
         } else {
             if (i == 1 | i == 2) {
                 A[which(statistics > max(threshold_0, threshold_1)), i] <- 1
