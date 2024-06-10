@@ -29,3 +29,4 @@ for (i in c(4, 5, 6)) {
     level_plot_2d(Z, sL, alpha = 0.22, gamma = 0.10, tail = "L", cindex = c(2, i), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200), xlim = c(u_min, u_max), ylim = c(v_min, v_max))
 }
 dev.off()
+help(plot)

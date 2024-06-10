@@ -11,6 +11,14 @@ load("Results/2013-2022/Spec3/pdt_dt1_dt2.Rda")
 
 # ---- NPMLE estimate the prior distritbuion of (theta, sigma^2) ---- #
 Z <- fit2d(pdt)
+# ---- Perform the selection ---- #
+sL <- select2d(Z, alpha = 0.22, gamma = 0.05, tail = "L")
+sR <- select2d(Z, alpha = 0.22, gamma = 0.05, tail = "R")
+save(Z, sL, sR, file = "Results/2013-2022/Spec3/ZsLsR_GLVmix.Rda")
+
+pdt_selected <- cbind(dt2, sL$A)
+
+
 fg <- Z$fs
 # ---- 浅浅看一下smooth的效果 ---- #
 g <- expand.grid(theta = fg$u, sigma = fg$v)
@@ -28,6 +36,10 @@ pl <- cloud(fuv ~ theta * sigma,
 print(pl)
 dev.off()
 # 你别说，这个smooth的效果还真挺好看的哈
+
+
+
+
 
 # ---- Caculate the threshold and cutoff ---- #
 alpha <- 0.22

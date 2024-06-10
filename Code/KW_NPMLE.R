@@ -21,8 +21,8 @@ pdt[, `:=`(Var_res2 = var(Demeaned_res)), by = .(FI)]
 pdt[, Nobs := .N, by = .(FI)]
 pdt <- pdt[Nobs >= 6]
 pdt[, id := as.numeric(as.factor(FI))]
-dt1 <- pdt[, .(AN, FI, id, SEJHC_MCO, SEJHP_MCO, SEANCES_MED, ETP_INF, EFF_MD, FixedEffect, Res, hat_mu, Var_res1, Var_res2, Nobs)]
-dt2 <- pdt[, .(hat_mu = first(hat_mu), Var_res1 = first(Var_res1), Var_res2 = first(Var_res2), Nobs = first(Nobs)), by = .(FI)]
+dt1 <- pdt[, .(AN, FI, STJR, id, SEJHC_MCO, SEJHP_MCO, SEANCES_MED, ETP_INF, EFF_MD, FixedEffect, Res, hat_mu, Var_res1, Var_res2, Nobs)]
+dt2 <- pdt[, .(hat_mu = first(hat_mu), Var_res1 = first(Var_res1), Var_res2 = first(Var_res2), Nobs = first(Nobs)), by = .(FI, STJR)]
 save(pdt, dt1, dt2, file = "Results/2013-2022/Spec3/pdt_dt1_dt2.rda")
 # ---- 4 ways to estimate the mixing density ---- #
 
