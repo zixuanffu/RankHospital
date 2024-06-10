@@ -114,3 +114,28 @@ for each $t=1+p,\ldots,T$.
 
 
 
+# Appendix
+
+| Variable    | Label         |
+| :---------- | :------------ |
+| AN          | YEAR          |
+| FI          | ID1           |
+| FI_EJ       | ID2           |
+| STJR        | STATUS        |
+| ETP_INF     | NURSES        |
+| EFF_MD      | DOCTORS       |
+| SEJHC_MCO   | INPATIENT     |
+| SEJHP_MCO   | OUTPATIENT    |
+| SEANCES_MED | SESSIONS      |
+| CONSULT_EXT | CONSULTATIONS |
+| PASSU       | EMERGENCY     |
+| VEN_TOT     | PSY_OUT       |
+| SEJ_HTP_TOT | PSY_IN        |
+| ENTSSR      | REHAB&LTAC    |
+| SEJ_HAD     | HOME          |
+| LIT_MCO     | BEDS          |
+| PLA_MCO     | SLOTS         |
+| CASEMIX     | CASEMIX       |
+| CANCER      | CANCER        |
+| TEACHING    | TEACHING      |
+| RESEARCH    | RESEARCH      |

@@ -6,7 +6,6 @@ add_log <- function(var_list) {
     log_var_list <- paste0(log_left, var_list, log_right)
     return(log_var_list)
 }
-
 extract.plm <- function(
     model, include.rsquared = TRUE, include.adjrs = FALSE,
     include.nobs = TRUE, ...) {
@@ -84,38 +83,3 @@ setMethod("extract",
     signature = className("pggls", "plm"),
     definition = extract.pggls
 )
-
-# reg_X <- function(data, varl, varr, control = "CASEMIX", cluster = "FI", method = "ols") {
-#     #' @title Regression using fixest package
-#     #' @description This function is used to estimate the regression model using the fixest package.
-#     #' @param data A data.table object.
-#     #' @param varl A character vector of the left-hand side variables.
-#     #' @param varr A character vector of the right-hand side variables.
-#     #' @param control A character string of the control variables.
-#     #' @param cluster A character string of the cluster variable.
-#     #' @param method A character string of the method to be used. Either "ols" or "pois".
-#     #' @return The regression result
-
-#     formula <- xpd(lhs = add_log(varl), rhs = add_log(varr), add = paste(control, cluster, sep = "|"))
-#     if (method == "ols") {
-#         formula <- xpd(lhs = add_log(varl), rhs = add_log(varr), add = paste(control, cluster, sep = "|"))
-#         res <- feols(formula, data)
-#     }
-
-#     if (method == "pois") {
-#         formula <- xpd(lhs = varl, rhs = add_log(varr), add = paste(control, cluster, sep = "|"))
-#         res <- fepois(formula, data)
-#     }
-
-#     # saveRDS(res, paste0("Results/", year_start, "-", year_end, "/reg_", varl, "_", method, "_", cluster, ".rds"))
-#     etable(res, sdBelow = TRUE, digits = 3, fitstat = ~ n + sq.cor + pr2, digits.stats = 3, tex = TRUE, file = paste0("Tables/2016-2022/reg_", varl, "_", method, ".tex"), signif.code = "letters", replace = TRUE)
-
-#     return(res)
-# }
-
-
-# Error in validObject(.Object) :
-#   invalid class "texreg" object: 1: invalid object for slot "coef.names" in class "texreg": got class "NULL", should be or extend class "character"
-# invalid class "texreg" object: 2: invalid object for slot "coef" in class "texreg": got class "NULL", should be or extend class "numeric"
-# invalid class "texreg" object: 3: invalid object for slot "se" in class "texreg": got class "NULL", should be or extend class "numeric"
-# invalid class "texreg" object: 4: invalid object for slot "pvalues" in class "texreg": got class "NULL", should be or extend class "numeric"

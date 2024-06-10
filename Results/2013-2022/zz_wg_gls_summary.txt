@@ -1,0 +1,23 @@
+Oneway (individual) effect Within FGLS model
+
+Call:
+pggls(formula = formula, data = dt, effect = "individual", model = "within", 
+    index = c("FI", "AN"))
+
+Unbalanced Panel: n = 1484, T = 6-7, N = 9038
+
+Residuals:
+        Min.      1st Qu.       Median      3rd Qu.         Max. 
+-2.428939559 -0.045333617 -0.000231628  0.047095614  1.533457888 
+
+Coefficients:
+                   Estimate Std. Error z-value Pr(>|z|)    
+log(SEJHC_MCO)   0.10879991 0.00591711 18.3873  < 2e-16 ***
+log(SEJHP_MCO)   0.02118053 0.00242091  8.7490  < 2e-16 ***
+log(SEANCES_MED) 0.02448333 0.00230586 10.6179  < 2e-16 ***
+CASEMIX          0.00072979 0.00043558  1.6755  0.09384 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+Total Sum of Squares: 18566
+Residual Sum of Squares: 167.76
+Multiple R-squared: 0.99096

@@ -1,6 +1,8 @@
 rm(list = ls())
 pacman::p_load(data.table)
+
 # ---- Variable Extraction for years 2016-2022 ---- #
+
 # ---- Extract labor input: according to Solen
 doctor <- c("EFFSAL_TOT", "EFFLIB_TOT")
 infirmier <- c("ETP_INFAVECSPE", "ETP_INFSANSSPE", "ETP_DIRINF")
@@ -43,7 +45,7 @@ saveRDS(dt_cap_all, "Data/Out/capacity_2016_2022.rds")
 # ---- Extract output ---- #
 psy <- c("SEJ_HTP_TOT", "VEN_HDJ_TOT", "VEN_HDN_TOT")
 cols_out <- c(
-    "AN", "FI", "FI_EJ", "SEJHC_MCO", "JOU_MCO", "SEJHP_MCO", "PASSU_GEN", "PASSU_PED", "SEANCES_MED",
+    "AN", "FI", "FI_EJ", "SEJHC_MCO", "SEJHP_MCO", "PASSU_GEN", "PASSU_PED", "SEANCES_MED",
     psy, "SEJHC_SSR", "JOUHP_SSR", "ENT", "SEJ_HAD", "CONSULT_EXT"
 )
 dt_out_all <- data.table()
@@ -132,18 +134,9 @@ saveRDS(status, "Data/Out/status_stable_2016_2022.rds")
 
 
 # ---- Variable Extraction for years 2013-2015 ---- #
+
 # Extend to 2013 but only for variables that are going to be used.
 # There's no SYGEN data for 2013-2015, we need to manually aggregate them from various sheets
-# ---- Extract output ---- #
-cols_out <- c("AN", "FI", "FI_EJ", "SEJHC_MCO", "SEJHP_MCO", "SEA_MCO")
-dt_out_all <- data.table()
-for (i in seq(2013, 2015)) {
-    dt_out <- readRDS(paste0("Data/In/MCO/MCO_", i, ".rds"))
-    dt_out <- dt_out[, ..cols_out]
-    setnames(dt_out, "SEA_MCO", "SEANCES_MED")
-    dt_out_all <- rbind(dt_out_all, dt_out)
-}
-saveRDS(dt_out_all, "Data/Out/output_2013_2015.rds")
 
 # ---- Extract labor input ---- #
 # ---- locate the data ---- #
@@ -184,6 +177,98 @@ for (i in seq(2013, 2015)) {
 }
 saveRDS(dt_input_all, "Data/Out/labor_input_2013_2015.rds")
 
+# ---- Extract capacity ---- #
+cols_cap <- c("AN", "FI", "FI_EJ", "LIT_MCO", "PLA_MCO")
+dt_cap_all <- data.table()
+for (i in seq(2013, 2015)) {
+    dt_cap <- readRDS(paste0("Data/In/MCO/MCO_", i, ".rds"))
+    dt_cap <- dt_cap[, ..cols_cap]
+    dt_cap_all <- rbind(dt_cap_all, dt_cap)
+}
+saveRDS(dt_cap_all, "Data/Out/capacity_2013_2015.rds")
+
+# ---- Extract basic output ---- #
+cols_out <- c("AN", "FI", "FI_EJ", "SEJHC_MCO", "SEJHP_MCO", "SEA_MCO", "PCON")
+dt_out_all <- data.table()
+for (i in seq(2013, 2015)) {
+    dt_out <- readRDS(paste0("Data/In/MCO/MCO_", i, ".rds"))
+    dt_out <- dt_out[, ..cols_out]
+    setnames(dt_out, c("SEA_MCO", "PCON"), c("SEANCES_MED", "CONSULT_EXT"))
+    dt_out_all <- rbind(dt_out_all, dt_out)
+}
+saveRDS(dt_out_all, "Data/Out/output_2013_2015.rds")
+
+# ---- Extract PASSU,  PSY, SSR, USLD, HAD,---- #
+start <- 2013
+end <- 2015
+table_name <- "URGENCES2"
+cols <- c("AN", "FI", "FI_EJ", "URG", "PASSU")
+dt_all <- data.table()
+for (i in start:end) {
+    dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", i, ".rds"))
+    colnames(dt)
+    dt <- dt[, ..cols]
+    dt <- dcast(dt, AN + FI + FI_EJ ~ URG, value.var = "PASSU")
+    dt[is.na(dt)] <- 0
+    dt_all <- rbind(dt_all, dt)
+}
+setnames(dt_all, c("GEN", "PED"), c("PASSU_GEN", "PASSU_PED"))
+saveRDS(dt_all, "Data/Out/PASSU_2013_2015.rds")
+
+table_name <- "PSY"
+cols <- c("AN", "FI", "FI_EJ", "VEN_HDJ", "VEN_HDN", "SEJ_HTP")
+dt_all <- data.table()
+for (i in start:end) {
+    dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", i, ".rds"))
+    dt <- dt[, ..cols]
+    dt[is.na(dt)] <- 0
+    setnames(dt, c("VEN_HDJ", "VEN_HDN", "SEJ_HTP"), c("VEN_HDJ_TOT", "VEN_HDN_TOT", "SEJ_HTP_TOT"))
+    dt_all <- rbind(dt_all, dt)
+}
+saveRDS(dt, "Data/Out/PSY_2013_2015.rds")
+
+
+table_name <- "SSR"
+cols <- c("AN", "FI", "FI_EJ", "SEJHC", "JOUHP")
+dt_all <- data.table()
+for (i in start:end) {
+    dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", i, ".rds"))
+    dt <- dt[, ..cols]
+    dt[is.na(dt)] <- 0
+    setnames(dt, c("SEJHC", "JOUHP"), c("SEJHC_SSR", "JOUHP_SSR"))
+    dt_all <- rbind(dt_all, dt)
+}
+saveRDS(dt_all, "Data/Out/SSR_2013_2015.rds")
+
+table_name <- "USLD"
+cols <- c("AN", "FI", "FI_EJ", "ENT")
+dt_all <- data.table()
+for (i in start:end) {
+    dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", i, ".rds"))
+    dt <- dt[, ..cols]
+    dt[is.na(dt)] <- 0
+    dt_all <- rbind(dt_all, dt)
+}
+saveRDS(dt_all, "Data/Out/USLD_2013_2015.rds")
+
+table_name <- "HAD"
+cols <- c("AN", "FI", "FI_EJ", "SEJ_HAD")
+dt_all <- data.table()
+for (i in start:end) {
+    dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", i, ".rds"))
+    dt <- dt[, ..cols]
+    dt[is.na(dt)] <- 0
+    dt_all <- rbind(dt_all, dt)
+}
+saveRDS(dt_all, "Data/Out/HAD_2013_2015.rds")
+
+
+# psy <- c("SEJ_HTP_TOT", "VEN_HDJ_TOT", "VEN_HDN_TOT")
+# cols_out <- c(
+#     "AN", "FI", "FI_EJ", "SEJHC_MCO", "JOU_MCO", "SEJHP_MCO", "PASSU_GEN", "PASSU_PED", "SEANCES_MED",
+#     psy, "SEJHC_SSR", "JOUHP_SSR", "ENT", "SEJ_HAD", "CONSULT_EXT"
+# )
+
 
 # ---- Extract control ---- #
 cols <- c("AN", "finess", "rs", "A7", "A9", "A10", "A11")
@@ -220,7 +305,7 @@ for (i in 2013:2015) {
 }
 saveRDS(status, "Data/Out/status_2013_2015.rds")
 
-# ---- Combine control and status
+# ---- Combine control and status ---- #
 control <- readRDS("Data/Out/control_2013_2015.rds")
 status <- readRDS("Data/Out/status_2013_2015.rds")
 cols <- colnames(control)[!colnames(control) %in% c("FI", "RS")]

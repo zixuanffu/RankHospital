@@ -7,7 +7,10 @@ dt1 <- readRDS("Data/Out/combineddata_2016_2022.rds") # 2016-2022
 dt2 <- readRDS("Data/Out/combineddata_2013_2015.rds") # 2013-2015
 id <- c("AN", "FI", "FI_EJ", "STJR")
 input <- c("ETP_INF", "EFF_MD")
-output <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "PASSU", "VEN_TOT", "SEJ_HTP_TOT", "LIT_MCO", "PLA_MCO")
+output <- c(
+    "SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "CONSULT_EXT", "PASSU", "VEN_TOT", "SEJ_HTP_TOT", "ENTSSR", "SEJ_HAD",
+    "LIT_MCO", "PLA_MCO"
+)
 control <- c("CASEMIX", "CANCER", "TEACHING", "RESEARCH")
 cols <- c(id, input, output, control) # variables of interest
 dt <- rbind(dt1[, ..cols], dt2[, ..cols])
@@ -44,10 +47,12 @@ saveRDS(dt_inf, "Data/Out/dt_inf.rds")
 dt_inf <- readRDS("Data/Out/dt_inf.rds")
 varr1 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
 varr2 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "PASSU", "VEN_TOT", "SEJ_HTP_TOT", "PLA_MCO")
+varr3 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "CONSULT_EXT", "PASSU", "VEN_TOT", "SEJ_HTP_TOT", "PLA_MCO", "ENTSSR", "SEJ_HAD")
 varl <- "ETP_INF"
 rhs1 <- paste(c(add_log(varr1), "CASEMIX-1"), collapse = " + ")
 rhs2a <- paste(c(add_log(varr2), "CANCER", "CASEMIX-1"), collapse = " + ")
 rhs2b <- paste(c(add_log(varr2), "CANCER", "log(PLA_MCO)*CASEMIX", "CASEMIX -1"), collapse = " + ")
+rhs3 <- paste(c(add_log(varr3), "CANCER", "log(PLA_MCO)*CASEMIX", "CASEMIX-1"), collapse = " + ")
 lhs <- add_log(varl)
 formula1 <- as.formula(paste(lhs, "~", rhs1))
 formula1
@@ -55,37 +60,65 @@ formula2a <- as.formula(paste(lhs, "~", rhs2a))
 formula2a
 formula2b <- as.formula(paste(lhs, "~", rhs2b))
 formula2b
+formula3 <- as.formula(paste(lhs, "~", rhs3))
+formula3
 # ---- estimate the regression model ---- #
 
 # ---- assume strict exogeneity ---- #
 
-# ---- fixed effects-within group estimator ---- #
-RegX <- function(formula, dt) {
+zz_wg <- plm(formula2a, data = dt_inf, index = c("FI", "AN"), model = "within")
+se_zz_wg <- vcovHC(zz_wg, method = c("arellano"), cluster = "group")
+
+
+RegX_exo <- function(formula, dt) {
+    # ---- fixed effects-within group estimator ---- #
+
+    # need to calculate the correct R squared
     zz_wg <- plm(formula, data = dt, index = c("FI", "AN"), model = "within")
     se_zz_wg <- vcovHC(zz_wg, method = c("arellano"), cluster = "group")
-    # summary(zz_wg, vcov = se_zz_wg)
+
     zz_wg_gls <- pggls(formula, data = dt, index = c("FI", "AN"), effect = "individual", model = "within")
     se_zz_wg_gls <- vcov(zz_wg_gls, method = c("arellano"), cluster = "group")
-    # summary(zz_wg_gls, vcov = se_zz_wg_gls)
-    output <- capture.output(summary(zz_wg_gls, vcov = se_zz_wg_gls))
-    writeLines(output, "Results/2013-2022/zz_wg_gls_summary.txt")
-
 
     # ---- fixed effects-first difference estimator ---- #
+
+    # need to calculate the correct R squared
     zz_fd <- plm(formula, data = dt, index = c("FI", "AN"), model = "fd")
     se_zz_fd <- vcovHC(zz_fd, method = c("arellano"), cluster = "group")
 
     zz_fd_gls <- pggls(formula, data = dt, index = c("FI", "AN"), effect = "individual", model = "fd")
     se_zz_fd_gls <- vcov(zz_fd_gls, method = c("arellano"), cluster = "group")
 
-
-    return
+    return(list(wg = zz_wg, se_wg = se_zz_wg, wg_gls = zz_wg_gls, se_wg_gls = se_zz_wg_gls, fd = zz_fd, se_fd = se_zz_fd, fd_gls = zz_fd_gls, se_fd_gls = se_zz_fd_gls))
 }
 
-RegX(formula1, dt_inf)
+# ---- specification 1 ---- #
+res1 <- RegX_exo(formula1, dt_inf)
+models1 <- list(extract.plm(res1$wg, vcov = res1$se_wg), extract.pggls(res1$wg_gls, vcov = res1$se_wg_gls), extract.plm(res1$fd, vcov = res1$se_fd), extract.pggls(res1$fd_gls, vcov = res1$se_fd_gls))
+htmlreg(models1, star.symbol = "*", caption = "Estimation results", digits = 4, custom.model.names = c("Within-group", "Within-group (GLS)", "First difference", "First difference (GLS)"), file = "Tables/2013-2022/reg_inf_m1.html")
 
-# z <- readRDS("Results/2013-2022/reg_inf_ols_FI.rds")
-# summary(z)
+# ---- specification 2a ---- #
+res2a <- RegX_exo(formula2a, dt_inf)
+models2a <- list(extract.plm(res2a$wg, vcov = res2a$se_wg), extract.pggls(res2a$wg_gls, vcov = res2a$se_wg_gls), extract.plm(res2a$fd, vcov = res2a$se_fd), extract.pggls(res2a$fd_gls, vcov = res2a$se_fd_gls))
+htmlreg(models2a, star.symbol = "*", caption = "Estimation results", digits = 4, custom.model.names = c("Within-group", "Within-group (GLS)", "First difference", "First difference (GLS)"), file = "Tables/2013-2022/reg_inf_m2a.html")
 
-models <- list(extract.plm(zz_wg, vcov = se_zz_wg), extract.pggls(zz_wg_gls, vcov = se_zz_wg_gls), extract.plm(zz_fd, vcov = se_zz_fd), extract.pggls(zz_fd_gls, vcov = se_zz_fd_gls))
-htmlreg(models, star.symbol = "*", caption = "Estimation results", digits = 4, custom.model.names = c("Within-group", "Within-group (GLS)", "First difference", "First difference (GLS)"), file = "Tables/2013-2022/reg_inf_m.html")
+# ---- specification 2b ---- #
+res2b <- RegX_exo(formula2b, dt_inf)
+models2b <- list(extract.plm(res2b$wg, vcov = res2b$se_wg), extract.pggls(res2b$wg_gls, vcov = res2b$se_wg_gls), extract.plm(res2b$fd, vcov = res2b$se_fd), extract.pggls(res2b$fd_gls, vcov = res2b$se_fd_gls))
+htmlreg(models2b, star.symbol = "*", caption = "Estimation results", digits = 4, custom.model.names = c("Within-group", "Within-group (GLS)", "First difference", "First difference (GLS)"), file = "Tables/2013-2022/reg_inf_m2b.html")
+
+# ---- specification 3 ---- #
+res3 <- RegX_exo(formula3, dt_inf)
+models3 <- list(extract.plm(res3$wg, vcov = res3$se_wg), extract.pggls(res3$wg_gls, vcov = res3$se_wg_gls), extract.plm(res3$fd, vcov = res3$se_fd), extract.pggls(res3$fd_gls, vcov = res3$se_fd_gls))
+htmlreg(models3, star.symbol = "*", caption = "Estimation results", digits = 4, custom.model.names = c("Within-group", "Within-group (GLS)", "First difference", "First difference (GLS)"), file = "Tables/2013-2022/reg_inf_m3.html")
+
+# ---- compare with fixest results ---- #
+pacman::p_load(fixest)
+formula3 <- as.formula(paste(lhs, "~", rhs3, "|FI"))
+zz_fixest <- feols(formula3, data = dt_inf, cluster = "FI")
+zz_fixest
+summary(zz_fixest)
+help(pggls)
+help(feols)
+
+readRDS("Results/2013-2022/reg_inf_ols_FI.rds")
