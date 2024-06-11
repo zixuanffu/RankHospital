@@ -161,6 +161,7 @@ ar <- pgmm(
     data = EmplUK, effect = "twoways", model = "twosteps"
 )
 summary(ar)
+sargan(ar)
 str(EmplUK)
 lhs <- add_log(varl)
 rhs1 <- paste(c(add_log(varr1), "CASEMIX-1"), collapse = " + ")
@@ -175,11 +176,16 @@ add_lag <- function(var_list, lag) {
 }
 add_lag(varr1, "1:2")
 varr1
-rhs1
-rhs1_z <- paste(c(add_lag(add_log("SEJHC_MCO"), "1:99")), collapse = " + ")
+rhs1b <- paste(c(add_log(varr1)), collapse = " + ")
+rhs1b
+rhs1_z <- paste(c(add_lag(add_log("SEJHC_MCO"), "2")), collapse = " + ")
 rhs1_z
-formula4 <- as.formula(paste(lhs, "~", rhs1, "|", rhs1_z))
+formula4 <- as.formula(paste(lhs, "~", rhs1b, "+ CASEMIX |", rhs1_z))
 formula4
 
-zz_gmm <- pgmm(formula4, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "onestep", collapse = TRUE)
-summary(zz_gmm)
+zz_gmm <- pgmm(formula4, data = dt_inf, index = c("FI", "AN"), effect = "individual")
+summary(zz_gmm, robust = TRUE)
+sargan(zz_gmm)
+
+zz_fd <- plm(formula1, data = dt_inf, index = c("FI", "AN"), model = "fd")
+summary(zz_fd)

@@ -168,7 +168,7 @@ select_plot_1d <- function(Z, s, alpha, gamma, tail, rule_index, sub = FALSE, fi
 
 load("Results/2013-2022/pdt_dt1_dt2.Rda") # for the STJR
 Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
-alpha <- 0.20
+alpha <- 0.40
 gamma <- 0.05
 tail <- "L"
 Z <- fit1d(pdt)
