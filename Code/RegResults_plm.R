@@ -65,10 +65,10 @@ formula3 <- as.formula(paste(lhs, "~", rhs3))
 formula3
 # ---- estimate the regression model ---- #
 
-# ---- assume strict exogeneity ---- #
+# ---- 1. assume strict exogeneity ---- #
 
-zz_wg <- plm(formula2a, data = dt_inf, index = c("FI", "AN"), model = "within")
-se_zz_wg <- vcovHC(zz_wg, method = c("arellano"), cluster = "group")
+zz_fd <- plm(formula1, data = dt_inf, index = c("FI", "AN"), model = "fd")
+summary(zz_fd)
 
 
 RegX_exo <- function(formula, dt) {
@@ -142,3 +142,44 @@ p_res <- plot_FE(reg_inf_ols_FI, "FI", status_stable,
 p <- p_res[[1]]
 p_e <- p_res[[2]]
 print(p)
+
+
+# ---- 2. assume some feedback ---- #
+# past errors affect future inputs
+
+data("EmplUK", package = "plm")
+ar_collapse <- pgmm(
+    log(emp) ~ lag(log(emp), 1:2) + lag(log(wage), 0:1) +
+        lag(log(capital), 0:2) + lag(log(output), 0:2) | lag(log(emp), 2:99),
+    data = EmplUK, effect = "twoways", model = "twosteps", collapse = TRUE
+)
+summary(ar_collapse)
+
+ar <- pgmm(
+    log(emp) ~ lag(log(emp), 1:2) + lag(log(wage), 0:1) +
+        lag(log(capital), 0:2) + lag(log(output), 0:2) | lag(log(emp), 2:99),
+    data = EmplUK, effect = "twoways", model = "twosteps"
+)
+summary(ar)
+str(EmplUK)
+lhs <- add_log(varl)
+rhs1 <- paste(c(add_log(varr1), "CASEMIX-1"), collapse = " + ")
+
+add_lag <- function(var_list, lag) {
+    #' @title Add log to a list of variables
+    len <- length(var_list)
+    lag_left <- rep("lag(", length(len))
+    lag_right <- rep(")", length(len))
+    lag_var_list <- paste0(lag_left, var_list, ", ", lag, lag_right)
+    return(lag_var_list)
+}
+add_lag(varr1, "1:2")
+varr1
+rhs1
+rhs1_z <- paste(c(add_lag(add_log("SEJHC_MCO"), "1:99")), collapse = " + ")
+rhs1_z
+formula4 <- as.formula(paste(lhs, "~", rhs1, "|", rhs1_z))
+formula4
+
+zz_gmm <- pgmm(formula4, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "onestep", collapse = TRUE)
+summary(zz_gmm)

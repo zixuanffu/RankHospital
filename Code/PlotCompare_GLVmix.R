@@ -15,6 +15,8 @@ u_max <- max(Z$S)
 v_min <- min(Z$W)
 v_max <- max(Z$W)
 
+# ---- Compare selection results given by different rules ---- #
+
 dir.create("Figures/2013-2022/Spec3/UnknownVariance", showWarnings = FALSE)
 pdf("Figures/2013-2022/Spec3/UnknownVariance/Right_0.22_0.05.pdf", height = 4.5 * 3, width = 8)
 par(mfrow = c(3, 2))

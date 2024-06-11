@@ -2,8 +2,8 @@ rm(list = ls())
 pacman::p_load(data.table, REBayes, lattice, ggplot2)
 
 # ---- load regression results ---- #
-reg_inf_ols_FI <- readRDS("Results/2013-2022/Spec3/reg_inf_ols_FI.rds")
-pdt <- readRDS("Results/2013-2022/Spec3/pdt_inf_ols_FI.rds")
+reg_inf_ols_FI <- readRDS("Results/2013-2022/reg_inf_ols_FI.rds")
+pdt <- readRDS("Results/2013-2022/pdt_inf_ols_FI.rds")
 
 # ---- Location \theta_i and scale \sigma_i^2 parameters ---- #
 # ---- sufficient statistics for \theta_i ---- #
@@ -23,7 +23,7 @@ pdt <- pdt[Nobs >= 6]
 pdt[, id := as.numeric(as.factor(FI))]
 dt1 <- pdt[, .(AN, FI, STJR, id, SEJHC_MCO, SEJHP_MCO, SEANCES_MED, ETP_INF, EFF_MD, FixedEffect, Res, hat_mu, Var_res1, Var_res2, Nobs)]
 dt2 <- pdt[, .(hat_mu = first(hat_mu), Var_res1 = first(Var_res1), Var_res2 = first(Var_res2), Nobs = first(Nobs)), by = .(FI, STJR)]
-save(pdt, dt1, dt2, file = "Results/2013-2022/Spec3/pdt_dt1_dt2.rda")
+save(pdt, dt1, dt2, file = "Results/2013-2022/pdt_dt1_dt2.rda")
 # ---- 4 ways to estimate the mixing density ---- #
 
 # ---- 1. homogeneous known variance ---- #

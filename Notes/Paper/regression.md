@@ -94,7 +94,7 @@ Then we can use fixed effect estimator (demean or first difference almost equiva
 
 ### Case 4
 
-If the case 3 strict exogeneity assumption does not hold, then we need to apply the Arellano-Bond estimator.
+If the case 3 strict exogeneity assumption (e.g. possible violation: current errors affect current regressors and future regressors) does not hold, then we need to apply the Arellano-Bond estimator.
 
 $$ 
 E[\epsilon_{it}|x_{i1},\ldots, x_{it-p},z_{i1},\dots,z_{it-p},\theta_i]=0

@@ -16,7 +16,7 @@ sL <- select2d(Z, alpha = 0.22, gamma = 0.05, tail = "L")
 sR <- select2d(Z, alpha = 0.22, gamma = 0.05, tail = "R")
 save(Z, sL, sR, file = "Results/2013-2022/Spec3/ZsLsR_GLVmix.Rda")
 
-pdt_selected <- cbind(dt2, sL$A)
+
 
 
 fg <- Z$fs
