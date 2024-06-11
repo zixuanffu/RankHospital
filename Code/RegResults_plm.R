@@ -178,7 +178,7 @@ add_lag(varr1, "1:2")
 varr1
 rhs1b <- paste(c(add_log(varr1)), collapse = " + ")
 rhs1b
-rhs1_z <- paste(c(add_lag(add_log("SEJHC_MCO"), "2")), collapse = " + ")
+rhs1_z <- paste(c(add_lag(add_log(varr1), "2:4")), collapse = " + ")
 rhs1_z
 formula4 <- as.formula(paste(lhs, "~", rhs1b, "+ CASEMIX |", rhs1_z))
 formula4
