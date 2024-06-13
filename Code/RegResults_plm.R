@@ -3,91 +3,95 @@ pacman::p_load(data.table, plm, texreg, fixest)
 source("Code/RegX_fixest.R")
 source("Code/RegX_plm.R")
 
-# ---- load the dataset ---- #
-dt1 <- readRDS("Data/Out/combineddata_2016_2022.rds") # 2016-2022
-dt2 <- readRDS("Data/Out/combineddata_2013_2015.rds") # 2013-2015
-id <- c("AN", "FI", "FI_EJ", "STJR")
-input <- c("ETP_INF", "EFF_MD")
-output <- c(
-    "SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "CONSULT_EXT", "PASSU", "VEN_TOT", "SEJ_HTP_TOT", "ENTSSR", "SEJ_HAD",
-    "LIT_MCO", "PLA_MCO"
-)
-control <- c("CASEMIX", "CANCER", "TEACHING", "RESEARCH")
-cols <- c(id, input, output, control) # variables of interest
-dt <- rbind(dt1[, ..cols], dt2[, ..cols])
-
-# ---- select only those with stable legal status ---- #
-FI_stat_change <- unique(dt[, .(FI, STJR)])
-FI_stat_change <- FI_stat_change[, .N, by = .(FI)]
-FI_stat_change <- FI_stat_change[N > 1]
-FI_AN_unique <- unique(dt, by = c("AN", "FI"))
-
-# ---- remove duplicates ---- #
-dt <- unique(dt, by = c("AN", "FI"))
-
-# ---- Prepare the panel for nurses ---- #
-# ---- filter out observations with possible coding errors
-# 2022 760000166
-# 2016 910001973
-dt_inf <- dt[!(FI == 760000166 & AN == 2022) | !(FI == 910001973 & AN == 2016)]
-# ---- filter out zero values on the LHS ---- #
-dt_inf <- dt_inf[ETP_INF > 0]
-# ---- add one to the RHS to avoid zero values in taking log ---- #
-varr1 <- output
-varl <- "ETP_INF"
-dt_inf <- dt_inf[SEJHC_MCO > 1 | SEJHP_MCO > 1 | SEANCES_MED > 1]
-dt_inf[, (varr1) := lapply(.SD, function(x) x <- x + 1), .SDcols = varr1]
-dt_inf[, Nobs := .N, by = .(FI)]
-dt_inf <- dt_inf[Nobs >= 6] # keep only those with at least 6 observations
-num_hospital <- length(unique(dt$FI)) # 1526
-# check if there are duplicates
-# check<-dt_inf[, .N, by = .(AN,FI)] # 330780503 # 370007569
-saveRDS(dt_inf, "Data/Out/dt_inf.rds")
-
 # ---- prepare the formula ---- #
+
+# baseline specification
 dt_inf <- readRDS("Data/Out/dt_inf.rds")
-varr1 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
-varr2 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "PASSU", "VEN_TOT", "SEJ_HTP_TOT", "PLA_MCO")
-varr3 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "CONSULT_EXT", "PASSU", "VEN_TOT", "SEJ_HTP_TOT", "PLA_MCO", "ENTSSR", "SEJ_HAD")
-varl <- "ETP_INF"
-rhs1 <- paste(c(add_log(varr1), "CASEMIX-1"), collapse = " + ")
-rhs2a <- paste(c(add_log(varr2), "CANCER", "CASEMIX-1"), collapse = " + ")
-rhs2b <- paste(c(add_log(varr2), "CANCER", "log(PLA_MCO)*CASEMIX", "CASEMIX -1"), collapse = " + ")
-rhs3 <- paste(c(add_log(varr3), "CANCER", "log(PLA_MCO)*CASEMIX", "CASEMIX-1"), collapse = " + ")
 
-lhs <- add_log(varl)
-formula1 <- as.formula(paste(lhs, "~", rhs1))
-formula1
-formula2a <- as.formula(paste(lhs, "~", rhs2a))
-formula2a
-formula2b <- as.formula(paste(lhs, "~", rhs2b))
-formula2b
-formula3 <- as.formula(paste(lhs, "~", rhs3))
-formula3
 
-# introduce instrumental variables
+# formula for WG and FD
+# lhs
 varl <- "ETP_INF"
 lhs <- add_log(varl)
+# rhs
+varr <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
+
+# WG
+rhs <- paste(c(add_log(varr1), "CASEMIX"), collapse = " + ")
+formula_wg <- as.formula(paste(lhs, "~", rhs))
+z_wg <- plm(formula_fe, data = dt_inf, index = c("FI", "AN"), model = "within")
+summary(z_wg, robust = TRUE)
+# FD
+rhs <- paste(c(add_log(varr), "CASEMIX-1"), collapse = " + ")
+formula_fd <- as.formula(paste(lhs, "~", rhs))
+formula_fd
+z_fd <- plm(formula_fd, data = dt_inf, index = c("FI", "AN"), model = "fd")
+summary(z_fd, robust = TRUE)
+
+
+help(pggls)
+# Assume same variance matrix of the errors for all groups
+# The usual assumptions is "heteroskedasticity $\varepsilon_{it}$ and serial/auto-correlation within individuals but not across them."
+z_fd_gls <- pggls(formula_fd, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "fd")
+View(z_fd_gls$sigma)
+
+
+# formula for GMM
+# lhs
+varl <- "ETP_INF"
+lhs <- add_log(varl)
+# rhs
 varr1 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
-add_log(varr1)
-paste(c(add_log(varr1), "CASEMIX"), collapse = " + ")
-add_lag(add_log(varr1), "2:99")
-rhs_x <- paste(c(add_log(varr1), "CASEMIX"), collapse = " + ")
-rhs_z <- paste(c(add_lag(add_log(c(varr1)), "2")), collapse = " + ")
-rhs <- paste0(rhs_x, " | ", rhs_z) # " + lag(log(ETP_INF),1)",
-rhs
-formula_gmm <- as.formula(paste(lhs, "~", rhs))
-formula_gmm
-gmm <- pgmm(formula_gmm, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "ld", collapse = TRUE)
-summary(gmm)
-help(pgmm)
-help(sargan)
-# ---- estimate the regression model ---- #
+rhs1_x <- paste(c(add_log(varr1), "CASEMIX"), collapse = " + ")
+rhs1_z <- paste(c(add_lag(add_log(c(varr1)), "3")), collapse = " + ")
+rhs <- paste0(rhs1_x, " | ", rhs1_z)
 
-# ---- 1. assume strict exogeneity ---- #
+formual_gmm <- as.formula(paste(lhs, "~", rhs))
+formual_gmm
 
-zz_fd <- plm(formula1, data = dt_inf, index = c("FI", "AN"), model = "fd")
-summary(zz_fd)
+# formula for GMM with lagged dependent variable
+rhs1_x <- paste(c(add_log(varr1), add_lag(add_log(varl), 1), "CASEMIX"), collapse = " + ")
+rhs1_x
+rhs1_z <- paste(c(add_lag(add_log(c(varr1, varl)), "2")), collapse = " + ")
+rhs1_z
+rhs <- paste0(rhs1_x, " | ", rhs1_z)
+formula_gmm_y <- as.formula(paste(lhs, "~", rhs))
+formula_gmm_y
+
+# Diff GMM
+z_gmm_fd <- pgmm(formual_gmm, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "d", collapse = TRUE)
+summary(z_gmm_fd, robust = TRUE)
+z_gmm_fd_y <- pgmm(formula_gmm_y, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "d", collapse = TRUE)
+summary(z_gmm_fd_y, robust = TRUE)
+
+# Sys GMM
+z_gmm_sys <- pgmm(formual_gmm, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "ld")
+summary(z_gmm_sys, robust = TRUE)
+z_gmm_sys_y <- pgmm(formula_gmm_y, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "ld", collapse = TRUE)
+summary(z_gmm_sys_y, robust = TRUE)
+
+# Full fledged specification
+# lhs
+varl <- "ETP_INF"
+lhs <- add_log(varl)
+# rhs
+varr <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "PASSU", "VEN_TOT", "SEJ_HTP_TOT", "PLA_MCO", "LIT_MCO")
+rhs1_x <- paste(c(add_log(varr), "CASEMIX", "CANCER"), collapse = " + ")
+rhs1_z <- paste(c(add_lag(add_log(c(varr)), "2")), collapse = " + ")
+rhs <- paste0(rhs1_x, " | ", rhs1_z)
+formula_gmm_full <- as.formula(paste(lhs, "~", rhs))
+formula_gmm_full
+
+zz_gmm_sys_full <- pgmm(formula_gmm_full, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "ld", collapse = TRUE)
+summary(zz_gmm_sys_full, robust = TRUE)
+
+rhs1_x <- paste(c(add_log(varr), add_lag(add_log(varl), 1), "CASEMIX", "CANCER"), collapse = " + ")
+rhs1_z <- paste(c(add_lag(add_log(c(varr, varl)), "2")), collapse = " + ")
+rhs <- paste0(rhs1_x, " | ", rhs1_z)
+formula_gmm_full_y <- as.formula(paste(lhs, "~", rhs))
+formula_gmm_full_y
+zz_gmm_sys_full_y <- pgmm(formula_gmm_full_y, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "ld", collapse = TRUE)
+summary(zz_gmm_sys_full_y, robust = TRUE)
 
 
 RegX_exo <- function(formula, dt) {
