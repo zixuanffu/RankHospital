@@ -75,3 +75,13 @@ setMethod("extract",
     signature = className("pggls", "plm"),
     definition = extract.pggls
 )
+
+
+add_lag <- function(var_list, lag) {
+    #' @title Add log to a list of variables
+    len <- length(var_list)
+    lag_left <- rep("lag(", length(len))
+    lag_right <- rep(")", length(len))
+    lag_var_list <- paste0(lag_left, var_list, ", ", lag, lag_right)
+    return(lag_var_list)
+}

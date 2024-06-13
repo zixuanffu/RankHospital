@@ -54,6 +54,7 @@ rhs1 <- paste(c(add_log(varr1), "CASEMIX-1"), collapse = " + ")
 rhs2a <- paste(c(add_log(varr2), "CANCER", "CASEMIX-1"), collapse = " + ")
 rhs2b <- paste(c(add_log(varr2), "CANCER", "log(PLA_MCO)*CASEMIX", "CASEMIX -1"), collapse = " + ")
 rhs3 <- paste(c(add_log(varr3), "CANCER", "log(PLA_MCO)*CASEMIX", "CASEMIX-1"), collapse = " + ")
+
 lhs <- add_log(varl)
 formula1 <- as.formula(paste(lhs, "~", rhs1))
 formula1
@@ -63,6 +64,24 @@ formula2b <- as.formula(paste(lhs, "~", rhs2b))
 formula2b
 formula3 <- as.formula(paste(lhs, "~", rhs3))
 formula3
+
+# introduce instrumental variables
+varl <- "ETP_INF"
+lhs <- add_log(varl)
+varr1 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
+add_log(varr1)
+paste(c(add_log(varr1), "CASEMIX"), collapse = " + ")
+add_lag(add_log(varr1), "2:99")
+rhs_x <- paste(c(add_log(varr1), "CASEMIX"), collapse = " + ")
+rhs_z <- paste(c(add_lag(add_log(c(varr1)), "2")), collapse = " + ")
+rhs <- paste0(rhs_x, " | ", rhs_z) # " + lag(log(ETP_INF),1)",
+rhs
+formula_gmm <- as.formula(paste(lhs, "~", rhs))
+formula_gmm
+gmm <- pgmm(formula_gmm, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "ld", collapse = TRUE)
+summary(gmm)
+help(pgmm)
+help(sargan)
 # ---- estimate the regression model ---- #
 
 # ---- 1. assume strict exogeneity ---- #
@@ -145,47 +164,42 @@ print(p)
 
 
 # ---- 2. assume some feedback ---- #
+
+# ---- test the functions used ---- #
 # past errors affect future inputs
 
 data("EmplUK", package = "plm")
-ar_collapse <- pgmm(
-    log(emp) ~ lag(log(emp), 1:2) + lag(log(wage), 0:1) +
-        lag(log(capital), 0:2) + lag(log(output), 0:2) | lag(log(emp), 2:99),
-    data = EmplUK, effect = "twoways", model = "twosteps", collapse = TRUE
-)
-summary(ar_collapse)
 
-ar <- pgmm(
-    log(emp) ~ lag(log(emp), 1:2) + lag(log(wage), 0:1) +
-        lag(log(capital), 0:2) + lag(log(output), 0:2) | lag(log(emp), 2:99),
+## Arellano and Bond (1991), table 4 col. b
+z1 <- pgmm(
+    log(emp) ~ lag(log(emp), 1:2) + lag(log(wage), 0:1)
+        + log(capital) + lag(log(output), 0:1) | lag(log(emp), 2:99),
     data = EmplUK, effect = "twoways", model = "twosteps"
 )
-summary(ar)
-sargan(ar)
-str(EmplUK)
-lhs <- add_log(varl)
-rhs1 <- paste(c(add_log(varr1), "CASEMIX-1"), collapse = " + ")
+summary(z1, robust = FALSE)
 
-add_lag <- function(var_list, lag) {
-    #' @title Add log to a list of variables
-    len <- length(var_list)
-    lag_left <- rep("lag(", length(len))
-    lag_right <- rep(")", length(len))
-    lag_var_list <- paste0(lag_left, var_list, ", ", lag, lag_right)
-    return(lag_var_list)
-}
-add_lag(varr1, "1:2")
-varr1
-rhs1b <- paste(c(add_log(varr1)), collapse = " + ")
-rhs1b
-rhs1_z <- paste(c(add_lag(add_log(varr1), "2:4")), collapse = " + ")
-rhs1_z
-formula4 <- as.formula(paste(lhs, "~", rhs1b, "+ CASEMIX |", rhs1_z))
-formula4
+## Blundell and Bond (1998) table 4 (cf. DPD for OX p. 12 col. 4)
+z2 <- pgmm(
+    log(emp) ~ lag(log(emp), 1) + lag(log(wage), 0:1) +
+        lag(log(capital), 0:1) | lag(log(emp), 2:99) +
+        lag(log(wage), 2:99) + lag(log(capital), 2:99),
+    data = EmplUK, effect = "twoways", model = "onestep",
+    transformation = "ld"
+)
+summary(z2, robust = TRUE)
 
-zz_gmm <- pgmm(formula4, data = dt_inf, index = c("FI", "AN"), effect = "individual")
-summary(zz_gmm, robust = TRUE)
-sargan(zz_gmm)
 
-zz_fd <- plm(formula1, data = dt_inf, index = c("FI", "AN"), model = "fd")
-summary(zz_fd)
+
+# replicate Baltagi (2005, 2013), table 7.4; Baltagi (2021), table 7.5
+data("Wages", package = "plm")
+ht <- plm(
+    lwage ~ wks + south + smsa + married + exp + I(exp^2) +
+        bluecol + ind + union + sex + black + ed |
+        bluecol + south + smsa + ind + sex + black |
+        wks + married + union + exp + I(exp^2),
+    data = Wages, index = 595,
+    random.method = "ht", model = "random", inst.method = "baltagi"
+)
+summary(ht)
+
+# ----
