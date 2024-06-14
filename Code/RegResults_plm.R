@@ -1,5 +1,6 @@
 rm(list = ls())
 pacman::p_load(data.table, plm, texreg, fixest)
+pacman::p_load(pdynmc)
 source("Code/RegX_fixest.R")
 source("Code/RegX_plm.R")
 
@@ -19,7 +20,8 @@ varr <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
 # WG
 rhs <- paste(c(add_log(varr1), "CASEMIX"), collapse = " + ")
 formula_wg <- as.formula(paste(lhs, "~", rhs))
-z_wg <- plm(formula_fe, data = dt_inf, index = c("FI", "AN"), model = "within")
+z_wg <- plm(formula_wg, data = dt_inf, index = c("FI", "AN"), model = "within")
+z_rd <- plm(formula_wg, data = dt_inf, index = c("FI", "AN"), model = "random")
 summary(z_wg, robust = TRUE)
 # FD
 rhs <- paste(c(add_log(varr), "CASEMIX-1"), collapse = " + ")
@@ -28,14 +30,26 @@ formula_fd
 z_fd <- plm(formula_fd, data = dt_inf, index = c("FI", "AN"), model = "fd")
 summary(z_fd, robust = TRUE)
 
+phtest(z_fd, z_rd)
+phtest(z_wg, z_rd)
 
-help(pggls)
+data("Gasoline", package = "plm")
+form <- lgaspcar ~ lincomep + lrpmg + lcarpcap
+wi <- plm(form, data = Gasoline, model = "within")
+re <- plm(form, data = Gasoline, model = "random")
+phtest(wi, re)
+
+
 # Assume same variance matrix of the errors for all groups
 # The usual assumptions is "heteroskedasticity $\varepsilon_{it}$ and serial/auto-correlation within individuals but not across them."
 z_fd_gls <- pggls(formula_fd, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "fd")
 View(z_fd_gls$sigma)
 
-
+# formula for AH
+formula_ah <- as.formula("log(ETP_INF) ~ log(SEJHC_MCO) + log(SEJHP_MCO) + log(SEANCES_MED) + CASEMIX-1 | lag(log(SEJHC_MCO), 0)+lag(log(SEJHP_MCO), 0)+lag(log(SEANCES_MED), 0)+CASEMIX")
+formula_ah
+z_ah <- plm(formula_ah, data = dt_inf, index = c("FI", "AN"), model = "fd")
+summary(z_ah, robust = TRUE)
 # formula for GMM
 # lhs
 varl <- "ETP_INF"
@@ -43,11 +57,12 @@ lhs <- add_log(varl)
 # rhs
 varr1 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
 rhs1_x <- paste(c(add_log(varr1), "CASEMIX"), collapse = " + ")
-rhs1_z <- paste(c(add_lag(add_log(c(varr1)), "3")), collapse = " + ")
+rhs1_z <- paste(c(add_lag(add_log(c(varr1)), "2")), collapse = " + ")
 rhs <- paste0(rhs1_x, " | ", rhs1_z)
 
 formual_gmm <- as.formula(paste(lhs, "~", rhs))
 formual_gmm
+# formula_test<-as.formula("log(ETP_INF) ~ log(SEJHC_MCO) + log(SEJHP_MCO) + log(SEANCES_MED) + CASEMIX | lag(log(SEJHC_MCO), 2)")
 
 # formula for GMM with lagged dependent variable
 rhs1_x <- paste(c(add_log(varr1), add_lag(add_log(varl), 1), "CASEMIX"), collapse = " + ")
@@ -59,8 +74,9 @@ formula_gmm_y <- as.formula(paste(lhs, "~", rhs))
 formula_gmm_y
 
 # Diff GMM
-z_gmm_fd <- pgmm(formual_gmm, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "d", collapse = TRUE)
-summary(z_gmm_fd, robust = TRUE)
+z_gmm_fd <- pgmm(formual_gmm, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twostep", transformation = "d", collapse = TRUE)
+summary(z_gmm_fd)
+
 z_gmm_fd_y <- pgmm(formula_gmm_y, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "d", collapse = TRUE)
 summary(z_gmm_fd_y, robust = TRUE)
 
