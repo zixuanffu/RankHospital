@@ -27,6 +27,11 @@ for (i in seq(2016, 2022)) { # seq(2016, 2022) is the same as 2016:2022
     if (i == 2022) { # to make the names consistent with the previous years
         setnames(dt_labor, "ETP_DIRSOI", "ETP_DIRINF")
     }
+    # correct the missing FI_EJ
+    stat <- readRDS(paste0("Data/In/ID/ID_", i, ".rds"))
+    colnames(stat) <- toupper(colnames(stat))
+    dt_labor <- merge(dt_labor, stat[, .(FI, FI_EJ)], by = "FI", all.x = TRUE)
+    setnames(dt_labor, "FI_EJ.y", "FI_EJ")
     dt_labor_all <- rbind(dt_labor_all, dt_labor)
 }
 saveRDS(dt_labor_all, "Data/Out/labor_input_2016_2022.rds")
@@ -38,6 +43,12 @@ dt_cap_all <- data.table()
 for (i in seq(2016, 2022)) {
     dt_cap <- readRDS(paste0("Data/In/SYGEN/SYGEN_", i, ".rds"))
     dt_cap <- dt_cap[, ..cols_cap]
+
+    stat <- readRDS(paste0("Data/In/ID/ID_", i, ".rds"))
+    colnames(stat) <- toupper(colnames(stat))
+    dt_cap <- merge(dt_cap, stat[, .(FI, FI_EJ)], by = "FI", all.x = TRUE)
+    setnames(dt_cap, "FI_EJ.y", "FI_EJ")
+
     dt_cap_all <- rbind(dt_cap_all, dt_cap)
 }
 saveRDS(dt_cap_all, "Data/Out/capacity_2016_2022.rds")
@@ -52,6 +63,12 @@ dt_out_all <- data.table()
 for (i in seq(2016, 2022)) {
     dt_out <- readRDS(paste0("Data/In/SYGEN/SYGEN_", i, ".rds"))
     dt_out <- dt_out[, ..cols_out]
+
+    stat <- readRDS(paste0("Data/In/ID/ID_", i, ".rds"))
+    colnames(stat) <- toupper(colnames(stat))
+    dt_out <- merge(dt_out, stat[, .(FI, FI_EJ)], by = "FI", all.x = TRUE)
+    setnames(dt_out, "FI_EJ.y", "FI_EJ")
+
     dt_out_all <- rbind(dt_out_all, dt_out)
 }
 saveRDS(dt_out_all, "Data/Out/output_2016_2022.rds")
@@ -62,6 +79,12 @@ for (i in seq(2016, 2022)) {
     dt <- readRDS(paste0("Data/In/SYGEN/SYGEN_", i, ".rds"))
     dt[, `:=`(OPE = !(SEJHC_MCO > 0), PSY = (EFFSAL_PSY > 0 | EFFLIB_PSY > 0))]
     dt <- dt[, .(AN, FI, FI_EJ, OPE, PSY)]
+
+    stat <- readRDS(paste0("Data/In/ID/ID_", i, ".rds"))
+    colnames(stat) <- toupper(colnames(stat))
+    dt <- merge(dt, stat[, .(FI, FI_EJ)], by = "FI", all.x = TRUE)
+    setnames(dt, "FI_EJ.y", "FI_EJ")
+
     dt_dummy <- rbind(dt_dummy, dt)
 }
 saveRDS(dt_dummy, "Data/Out/dummy_2016_2022.rds")
@@ -221,7 +244,13 @@ cols <- c("AN", "FI", "FI_EJ", "VEN_HDJ", "VEN_HDN", "SEJ_HTP")
 dt_all <- data.table()
 for (i in start:end) {
     dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", i, ".rds"))
-    dt <- dt[, ..cols]
+    stat <- readRDS(paste0("Data/In/ID/ID_", i, ".rds"))
+    dt <- dt[DIS == "TOT", ..cols]
+
+    # correct the missing FI_EJ
+    dt <- merge(dt, stat[, .(FI, FI_EJ, RS)], by = "FI", all.x = TRUE)
+    setnames(dt, "FI_EJ.y", "FI_EJ")
+
     dt[is.na(dt)] <- 0
     setnames(dt, c("VEN_HDJ", "VEN_HDN", "SEJ_HTP"), c("VEN_HDJ_TOT", "VEN_HDN_TOT", "SEJ_HTP_TOT"))
     dt_all <- rbind(dt_all, dt)
@@ -235,7 +264,7 @@ cols <- c("AN", "FI", "FI_EJ", "SEJHC", "JOUHP")
 dt_all <- data.table()
 for (i in start:end) {
     dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", i, ".rds"))
-    dt <- dt[, ..cols]
+    dt <- dt[GDE == "SSR_TOT", ..cols]
     dt[is.na(dt)] <- 0
     setnames(dt, c("SEJHC", "JOUHP"), c("SEJHC_SSR", "JOUHP_SSR"))
     dt_all <- rbind(dt_all, dt)
@@ -328,7 +357,7 @@ saveRDS(control_stat, "Data/Out/control_stat_2013_2015.rds")
 status1 <- readRDS("Data/Out/status_2013_2015.rds")
 status2 <- readRDS("Data/Out/status_2016_2022.rds")
 status <- rbind(status1, status2)
-stat_unique <- unique(status[, .(FI, FI_EJ, STJR)])
+stat_unique <- unique(status[, .(FI, STJR)])
 stat_unique <- stat_unique[, .N, by = .(FI)]
 stat_unique <- stat_unique[N == 1]
 fi <- stat_unique$FI

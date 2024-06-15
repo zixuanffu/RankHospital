@@ -31,12 +31,18 @@ dt <- input
 for (i in c("output", "capacity", "control_status")) {
     dt <- merge_full(dt, get(i))
 }
+dt[, `:=`(FI_EJ.x.x = NULL, FI_EJ.x = NULL, FI_EJ.x.y = NULL)]
 
 colnames(dt)
 dt <- dt[!(is.na(AN) | is.na(FI) | is.na(FI_EJ) | is.na(STJR))]
 
 dt[is.na(dt)] <- 0
 dt <- dt[AN != 2020]
+dt[, Nobs := .N, by = .(AN, FI, FI_EJ)]
+# correct the duplicates
+# for Nobs>1, take the maximum of the variables
+dt <- dt[, lapply(.SD, function(x) if (.N > 1) max(x) else x), by = .(AN, FI, FI_EJ)]
+
 dt[, EFF_MD := EFFSAL_TOT + EFFLIB_TOT]
 dt[, ETP_INF := ETP_INFAVECSPE + ETP_INFSANSSPE + ETP_DIRINF]
 dt[, ETP_NONMED := ETP_CAD + ETP_DIR + ETP_AUTADM]
