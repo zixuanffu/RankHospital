@@ -116,8 +116,8 @@ cols <- colnames(control)[!colnames(control) %in% c("FI", "RS")]
 for (i in cols) {
     control[, (i) := as.numeric(gsub(",", ".", get(i)))]
 }
-control_stat_23 <- status[STJR == 2 | STJR == 3][control, on = .(AN, FI), nomatch = 0]
-control_stat_01 <- status[STJR == 0 | STJR == 1][control, on = .(AN, FI_EJ = FI), nomatch = 0]
+control_stat_23 <- merge(status[STJR == 2 | STJR == 3], control, by = c("AN", "FI"), all.x = TRUE)
+control_stat_01 <- merge(status[STJR == 0 | STJR == 1], control, by.x = c("AN", "FI_EJ"), by.y = c("AN", "FI"), all.x = TRUE)
 control_stat <- rbind(control_stat_01, control_stat_23)
 colnames(control_stat)
 control_stat <- unique(control_stat, by = c("AN", "FI", "FI_EJ"))
@@ -201,6 +201,7 @@ saveRDS(dt_out_all, "Data/Out/output_2013_2015.rds")
 # ---- Extract PASSU,  PSY, SSR, USLD, HAD,---- #
 start <- 2013
 end <- 2015
+
 table_name <- "URGENCES2"
 cols <- c("AN", "FI", "FI_EJ", "URG", "PASSU")
 dt_all <- data.table()
@@ -229,6 +230,7 @@ saveRDS(dt, "Data/Out/PSY_2013_2015.rds")
 
 
 table_name <- "SSR"
+dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", 2013, ".rds"))
 cols <- c("AN", "FI", "FI_EJ", "SEJHC", "JOUHP")
 dt_all <- data.table()
 for (i in start:end) {
@@ -238,6 +240,7 @@ for (i in start:end) {
     setnames(dt, c("SEJHC", "JOUHP"), c("SEJHC_SSR", "JOUHP_SSR"))
     dt_all <- rbind(dt_all, dt)
 }
+dt_all <- unique(dt_all, by = c("AN", "FI", "FI_EJ"))
 saveRDS(dt_all, "Data/Out/SSR_2013_2015.rds")
 
 table_name <- "USLD"
@@ -284,12 +287,14 @@ setnames(control, cols, cols_new)
 saveRDS(control, "Data/Out/control_2013_2015.rds")
 
 # ---- Extract legal status ---- #
-a <- readRDS(paste0("Data/In/ID/ID_", 2013, ".rds"))
+a <- readRDS(paste0("Data/In/ID/ID_", 2016, ".rds"))
 colnames(a) <- toupper(colnames(a))
 cols_id <- c("AN", "FI", "FI_EJ", "RS", "GRP", "STJ", "STJR", "CAT", "CATR", "NAT", "SIR", "REG", "DEP")
 a <- a[, ..cols_id]
 CHU <- a[CATR == "PUB1" & CAT == "101"]
 CHU_FI_EJ <- unique(CHU$FI_EJ)
+# Centre hospitalier universitaire (CHU)
+# 32 résultat(s) sur tout le territoire
 
 lookup <- data.table(STJR = c(0, 1, 2, 3), STJR_LABEL = c("CHU", "PUB", "PLU", "PNL"))
 
@@ -312,8 +317,8 @@ cols <- colnames(control)[!colnames(control) %in% c("FI", "RS")]
 for (i in cols) {
     control[, (i) := as.numeric(gsub(",", ".", get(i)))]
 }
-control_stat_23 <- status[STJR == 2 | STJR == 3][control, on = .(AN, FI), nomatch = 0]
-control_stat_01 <- status[STJR == 0 | STJR == 1][control, on = .(AN, FI_EJ = FI), nomatch = 0]
+control_stat_23 <- merge(status[STJR == 2 | STJR == 3], control, by = c("AN", "FI"), all.x = TRUE)
+control_stat_01 <- merge(status[STJR == 0 | STJR == 1], control, by.x = c("AN", "FI_EJ"), by.y = c("AN", "FI"), all.x = TRUE)
 control_stat <- rbind(control_stat_01, control_stat_23)
 colnames(control_stat)
 control_stat <- unique(control_stat, by = c("AN", "FI", "FI_EJ"))
@@ -329,5 +334,3 @@ stat_unique <- stat_unique[N == 1]
 fi <- stat_unique$FI
 status <- unique(status[FI %in% fi, .(FI, FI_EJ, STJR, STJR_LABEL)])
 saveRDS(status, "Data/Out/status_stable_2013_2022.rds")
-
-str(reg_inf_ols_FI)

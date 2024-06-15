@@ -8,7 +8,8 @@ source("Code/RegX_plm.R")
 
 # baseline specification
 dt_inf <- readRDS("Data/Out/dt_inf.rds")
-
+dt_inf[, SEJ_MCO := SEJHC_MCO + SEJHP_MCO]
+dt_inf[, SEJ_PSY := VEN_TOT + SEJ_HTP_TOT]
 
 # formula for WG and FD
 # lhs
@@ -83,7 +84,7 @@ summary(z_gmm_fd_y, robust = TRUE)
 # Sys GMM
 z_gmm_sys <- pgmm(formual_gmm, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "ld")
 summary(z_gmm_sys, robust = TRUE)
-z_gmm_sys_y <- pgmm(formula_gmm_y, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "ld", collapse = TRUE)
+z_gmm_sys_y <- pgmm(formula_gmm_y, data = dt_inf, index = c("FI", "AN"), effect = "individual", model = "twosteps", transformation = "ld")
 summary(z_gmm_sys_y, robust = TRUE)
 
 # Full fledged specification

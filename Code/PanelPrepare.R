@@ -1,7 +1,10 @@
 # ---- Prepare panel for the regression ---- #
 # ---- load the dataset ---- #
+rm(list = ls())
 dt1 <- readRDS("Data/Out/combineddata_2016_2022.rds") # 2016-2022
+dt1 <- unique(dt1, by = c("AN", "FI"))
 dt2 <- readRDS("Data/Out/combineddata_2013_2015.rds") # 2013-2015
+dt2 <- unique(dt2, by = c("AN", "FI"))
 id <- c("AN", "FI", "FI_EJ", "STJR")
 input <- c("ETP_INF", "EFF_MD")
 output <- c(
@@ -39,7 +42,7 @@ dt_inf <- dt_inf[SEJHC_MCO > 1 | SEJHP_MCO > 1 | SEANCES_MED > 1]
 dt_inf[, (varr1) := lapply(.SD, function(x) x <- x + 1), .SDcols = varr1]
 dt_inf[, Nobs := .N, by = .(FI)]
 dt_inf <- dt_inf[Nobs >= 6] # keep only those with at least 6 observations
-num_hospital <- length(unique(dt$FI)) # 1526
+num_hospital <- length(unique(dt$FI)) # 4697
 # check if there are duplicates
 # check<-dt_inf[, .N, by = .(AN,FI)] # 330780503 # 370007569
-saveRDS(dt_inf, "Data/Out/dt_inf.rds")
+saveRDS(dt_inf, "Data/Out/dt_inf_pool.rds")
