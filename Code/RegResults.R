@@ -138,9 +138,18 @@ for (i in c(var_input, var_output)) {
 var_y <- add_log(var_input)
 var_x <- paste(c(add_log(var_output)), collapse = "+")
 var_z <- paste(add_l(add_dd(var_output), 1), collapse = "+")
-formula_fd_sys <- as.formula(paste0(var_y, "~", "0", "|", var_x, "-1", "~", var_z, "-1"))
+formula_fd_sys <- as.formula(paste0(var_y, "~", "-1", "|", var_x, "-1", "~", var_z, "-1"))
 formula_fd_sys
 # help(feols)
 reg_fd_sys <- feols(formula_fd_sys, data = pd_inf, cluster = "FI")
 summary(reg_fd_sys)
 # seems like a better instrument:)
+
+# compare with the results from plm
+var_y <- add_log(var_input)
+var_x <- paste(c(add_log(var_output)), collapse = "+")
+var_z <- paste(c(add_lag(add_log(var_output), "2")), collapse = "+")
+formula_gmm <- as.formula(paste0(var_y, "~", var_x, "|", var_z))
+print(formula_gmm)
+reg_gmm <- pgmm(formula_gmm, data = dt_inf, effect = "individual", index = c("FI", "AN"), transformation = "ld", collapse = TRUE)
+summary(reg_gmm)

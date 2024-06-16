@@ -14,14 +14,14 @@ output <- c(
 control <- c("CASEMIX", "CANCER", "TEACHING", "RESEARCH")
 cols <- c(id, input, output, control) # variables of interest
 dt <- rbind(dt1[, ..cols], dt2[, ..cols]) # 36653
-
+saveRDS(dt, "Data/Out/dt_all.rds")
 # ---- select only those with stable legal status ---- #
 stat_stable <- readRDS("Data/Out/status_stable_2013_2022.rds")
 fi <- stat_stable$FI
 dt <- dt[FI %in% fi] # 36258
 # ---- remove duplicates ---- #
 dt <- unique(dt, by = c("AN", "FI")) # no duplicates
-
+saveRDS(dt, "Data/Out/dt_stable.rds")
 # ---- 1. Prepare the panel for nurses ---- #
 
 
