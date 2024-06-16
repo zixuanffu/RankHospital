@@ -10,6 +10,23 @@ add_log <- function(var_list) {
     return(log_var_list)
 }
 
+add_l <- function(x, lag) {
+    len <- length(x)
+    left <- rep("l(", len)
+    right <- rep(")", len)
+    l <- paste0(left, x, ",", lag, right)
+    return(l)
+}
+
+add_d <- function(x) {
+    len <- length(x)
+    left <- rep("d(", len)
+    right <- rep(")", len)
+    l <- paste0(left, x, right)
+    return(l)
+}
+
+add_d
 
 reg_X <- function(data, varl, varr, control = "CASEMIX", cluster = "FI", method = "ols") {
     #' @title Regression using fixest package

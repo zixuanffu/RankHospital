@@ -39,3 +39,13 @@ dt_inf <- dt_inf[Nobs >= 6] # keep only those with at least 6 observations
 num_hospital <- length(unique(dt$FI)) # 4677
 # note that even for <1 nurses, there can be a huge number of sessions
 saveRDS(dt_inf, "Data/Out/dt_inf_pool.rds")
+
+# ---- 2. Prepare the panel for medical doctors ---- #
+dt_md <- dt[EFF_MD > 0 & ETP_INF > 0 & ETP_AID > 0]
+dt_md <- dt_md[SEJHC_MCO > 1 | SEJHP_MCO > 1 | SEANCES_MED > 1]
+varr1 <- output
+dt_md[, (varr1) := lapply(.SD, function(x) x <- x + 1), .SDcols = varr1]
+dt_md[, Nobs := .N, by = .(FI)]
+dt_md <- dt_md[Nobs >= 6] # keep only those with at least 6 observations
+num_hospital <- length(unique(dt$FI)) # 4677
+saveRDS(dt_md, "Data/Out/dt_md_pool.rds")
