@@ -26,6 +26,11 @@ add_d <- function(x) {
     return(l)
 }
 
+add_dd <- function(x) {
+    d <- rep("d_", length(x))
+    return(paste0(d, x))
+}
+
 add_d
 
 reg_X <- function(data, varl, varr, control = "CASEMIX", cluster = "FI", method = "ols") {

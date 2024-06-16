@@ -20,7 +20,7 @@ var_input <- c("ETP_INF")
 var_output <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "CONSULT_EXT", "PASSU", "ENTSSR", "SEJ_HAD", "SEJ_PSY")
 # var_output <- c("SEJ_MCO", "SEANCES_MED", "CONSULT_EXT", "PASSU", "ENTSSR", "SEJ_HAD", "SEJ_PSY")
 var_control <- c("STJR")
-pd_inf <- panel(data = dt_inf, panel.id = ~ FI + AN, time.step = ) # set the time and id index
+pd_inf <- panel(data = dt_inf, panel.id = ~ FI + AN, time.step = "consecutive") # set the time and id index
 help(panel)
 # ---- 2. Regression (without individual fixed effects) ---- #
 
@@ -118,98 +118,29 @@ formula_plm <- as.formula(paste0(var_y, "~", var_x, -1))
 reg_plm <- plm(formula_plm, data = dt_inf, index = c("FI", "AN"), model = "within")
 summary(reg_plm)
 
-
-for (i in c(var_input, var_output)) {
-    pd_inf[, paste0("d_", i) := d(log(get(i)), 1)]
-}
-add_d <- function(x) {
-    d <- rep("d_", length(x))
-    return(paste0(d, x))
-}
-var_y <- (add_d(var_input))
-var_x <- paste((add_d(var_output)), collapse = "+")
-formula_fd <- as.formula(paste0(var_y, "~", var_x, "-1"))
-print(formula_fd)
-reg_fd <- feols(formula_fd, data = pd_inf, panel.id = ~ FI + AN, cluster = "FI")
-summary(reg_fd)
-add_lag <- function(var_list, lag) {
-    len <- length(var_list)
-    lag_left <- rep("l(", length(len))
-    lag_right <- rep(")", length(len))
-    lag_var_list <- paste0(lag_left, var_list, ", ", lag, lag_right)
-    return(lag_var_list)
-}
-
-# FD GMM
-var_z <- paste(add_log(add_lag(var_output, 2)), collapse = "+")
+# ---- 4.1 FD GMM (current error affect current and future regressors) ---- #
+var_y <- (add_d(add_log(var_input)))
+var_x <- paste((add_d(add_log(var_output))), collapse = "+")
+var_z <- paste(add_log(add_l(var_output, 2)), collapse = "+")
 var_z
 formula_fd_iv <- as.formula(paste0(var_y, "~", "-1", "|", var_x, "~", var_z))
 print(formula_fd_iv)
-reg_fd_iv <- feols(formula_fd_iv, data = pd_inf, panel.id = ~ FI + AN, cluster = "FI")
+reg_fd_iv <- feols(formula_fd_iv, data = pd_inf, cluster = "FI")
 summary(reg_fd_iv)
-# SYS GMM
+
+# very weak instruments I have to say
+
+# ---- 4.2 Sys GMM (stationarity assumption) ---- #
+for (i in c(var_input, var_output)) {
+    pd_inf[, paste0("d_", i) := d(log(get(i)), 1)]
+}
+
 var_y <- add_log(var_input)
 var_x <- paste(c(add_log(var_output)), collapse = "+")
-for (i in var_output) {
-    pd_inf[, paste0("ld_", i) := l(d(log(get(i)), 1), 1)]
-}
-add_ld <- function(x) {
-    ld <- rep("ld_", length(x))
-    return(paste0(ld, x))
-}
-add_diff <- function(x, lag) {
-    len <- length(x)
-    diff_left <- rep("d(", length(len))
-    diff_right <- rep(")", length(len))
-    diff_var_list <- paste0(diff_left, x, ", ", lag, diff_right)
-    return(diff_var_list)
-}
-var_z <- paste((add_ld(var_output)), collapse = "+")
-var_z
-formula_fd_sys <- as.formula(paste0(var_y, "~", "-1", "|", var_x, "~", var_z))
-print(formula_fd_sys)
-reg_fd_sys <- feols(formula_fd_sys, data = pd_inf, panel.id = ~ FI + AN, cluster = "FI")
+var_z <- paste(add_l(add_dd(var_output), 1), collapse = "+")
+formula_fd_sys <- as.formula(paste0(var_y, "~", "0", "|", var_x, "-1", "~", var_z, "-1"))
+formula_fd_sys
+# help(feols)
+reg_fd_sys <- feols(formula_fd_sys, data = pd_inf, cluster = "FI")
 summary(reg_fd_sys)
-
-# Fixed effect regression
-var_y <- add_log(var_input)
-var_x <- paste(c(add_log(var_output)), collapse = "+")
-var_z <- paste(c(add_lag(add_log(var_output), 2)), collapse = "+")
-formula_fe <- as.formula(paste(var_y, "~", var_x, "|FI"))
-print(formula_fe)
-reg_fe <- feols(formula_fe, data = dt_inf, cluster = "FI")
-summary(reg_fe)
-
-formula_plm <- as.formula(paste(var_y, "~", var_x))
-print(formula_plm)
-reg_wg <- plm(formula_plm, data = dt_inf, effect = "individual", index = c("FI", "AN"), model = "within")
-summary(reg_wg, robust = TRUE)
-formula_plm <- as.formula(paste(var_y, "~", var_x, "-1"))
-print(formula_plm)
-reg_fd <- plm(formula_plm, data = dt_inf, effect = "individual", index = c("FI", "AN"), model = "fd")
-summary(reg_fd, robust = TRUE)
-
-# GMM
-var_y <- add_log(var_input)
-var_x <- paste(c(add_log(var_output)), collapse = "+")
-var_z <- paste(c(add_lag(add_log(var_output), "2")), collapse = "+")
-formula_gmm <- as.formula(paste0(var_y, "~", var_x, "|", var_z))
-print(formula_gmm)
-reg_gmm <- pgmm(formula_gmm, data = dt_inf, effect = "individual", index = c("FI", "AN"), transformation = "ld", collapse = TRUE)
-
-summary(reg_gmm)
-
-help(pgmm)
-mtest(reg_gmm, order = 1L)
-mtest(reg_gmm, order = 2L)
-
-# as a test
-data("EmplUK", package = "plm")
-ar <- pgmm(
-    log(emp) ~ lag(log(emp), 1:2) + lag(log(wage), 0:1) +
-        lag(log(capital), 0:2) + lag(log(output), 0:2) | lag(log(emp), 2:99),
-    data = EmplUK, effect = "twoways", model = "twosteps"
-)
-mtest(ar, order = 1L)
-mtest(ar, order = 2L, vcov = vcovHC)
-sargan(ar)
+# seems like a better instrument:)
