@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2022)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: apalike.bst
+Database file #1: ref.bib
+Warning--entry type for "croiset2024hospitals" isn't style-file defined
+--line 32 of file ref.bib
+Warning--I didn't find a database entry for ""
+You've used 16 entries,
+            1935 wiz_defined-function locations,
+            579 strings with 6380 characters,
+and the built_in function-call counts, 6397 in all, are:
+= -- 662
+> -- 211
+< -- 15
++ -- 72
+- -- 66
+* -- 547
+:= -- 1081
+add.period$ -- 47
+call.type$ -- 16
+change.case$ -- 113
+chr.to.int$ -- 16
+cite$ -- 16
+duplicate$ -- 238
+empty$ -- 463
+format.name$ -- 104
+if$ -- 1261
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 14
+newline$ -- 81
+num.names$ -- 48
+pop$ -- 77
+preamble$ -- 1
+purify$ -- 113
+quote$ -- 0
+skip$ -- 193
+stack$ -- 0
+substring$ -- 544
+swap$ -- 32
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 96
+warning$ -- 0
+while$ -- 62
+width$ -- 0
+write$ -- 205
+(There were 2 warnings)

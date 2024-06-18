@@ -26,7 +26,7 @@ fit1d <- function(pdt, bwt = 2, rtol = 1e-20, ...) {
     pdt[, id := as.numeric(as.factor(FI))]
     dt2 <- pdt[, .(id = first(id), hat_mu = first(hat_mu), Var_res1 = first(Var_res1), Var_res2 = first(Var_res2), Nobs = first(Nobs)), by = .(FI)]
     # ---- Hetereogeneous Known Variance ---- #
-    f <- GLmix(dt2$hat_mu, sigma = sqrt(dt2$Var_res1), verb = 5) # assume the estimated variance is the known variance
+    f <- GLmix(dt2$hat_mu, sigma = dt2$Var_res1, verb = 5) # assume the estimated variance is the known variance
     fs <- KWsmooth(f, bw = bwKW(f, bwt))
 
     list(f = f, fs = fs, S = dt2$hat_mu, s = dt2$Var_res1, id = dt2$id)

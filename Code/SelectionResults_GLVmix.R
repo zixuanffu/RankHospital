@@ -7,13 +7,13 @@
 
 require(REBayes)
 source("Code/SelectX_GLVmix.R")
-load("Results/2013-2022/Spec3/pdt_dt1_dt2.Rda")
+load("Results/2013-2022/pdt_dt1_dt2.Rda")
 
 # ---- NPMLE estimate the prior distritbuion of (theta, sigma^2) ---- #
 Z <- fit2d(pdt)
 # ---- Perform the selection ---- #
-sL <- select2d(Z, alpha = 0.22, gamma = 0.05, tail = "L")
-sR <- select2d(Z, alpha = 0.22, gamma = 0.05, tail = "R")
+sL <- select2d(Z, alpha = 0.20, gamma = 0.10, tail = "L")
+sR <- select2d(Z, alpha = 0.20, gamma = 0.10, tail = "R")
 save(Z, sL, sR, file = "Results/2013-2022/Spec3/ZsLsR_GLVmix.Rda")
 
 
@@ -42,7 +42,7 @@ dev.off()
 
 
 # ---- Caculate the threshold and cutoff ---- #
-alpha <- 0.22
+alpha <- 0.20
 gamma <- 0.1
 
 pm <- PM(t = dt2$hat_mu, s = dt2$Var_res1, m = dt2$Nobs, w = dt2$Nobs, G = fg)

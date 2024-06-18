@@ -45,7 +45,7 @@ reg_X <- function(data, varl, varr, control = "CASEMIX", cluster = "FI", method 
     #' @return The regression result
 
     if (method == "ols") {
-        formula <- xpd(lhs = add_log(varl), rhs = add_log(varr), add = paste(control, cluster, sep = "|"))
+        formula <- as.formula(paste0(add_log(varl), "~", paste(add_log(varr), collapse = "+"), "|", cluster))
         res <- feols(formula, data)
     }
 
@@ -55,7 +55,7 @@ reg_X <- function(data, varl, varr, control = "CASEMIX", cluster = "FI", method 
     }
 
     # saveRDS(res, paste0("Results/", year_start, "-", year_end, "/reg_", varl, "_", method, "_", cluster, ".rds"))
-    etable(res, sdBelow = TRUE, digits = 3, fitstat = ~ n + sq.cor + pr2, digits.stats = 3, tex = TRUE, file = paste0("Tables/2016-2022/reg_", varl, "_", method, ".tex"), signif.code = "letters", replace = TRUE)
+    etable(res, se.below = TRUE, digits = 3, fitstat = ~ n + sq.cor + pr2, digits.stats = 3, tex = TRUE, file = paste0("Tables/2016-2022/reg_", varl, "_", method, ".tex"), signif.code = "letters", replace = TRUE)
 
     return(res)
 }
@@ -85,12 +85,14 @@ plot_FE <- function(reg_res, cluster, dt_status, year_start, year_end, filename,
     reg_name <- deparse(substitute(reg_res))
     p <- ggplot(dt_FE_status, aes(x = Rank, y = FixedEffect)) +
         geom_point(aes(color = STJR_LABEL), size = 1) +
-        theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5))
+        theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5)) +
+        scale_color_manual(values = c("0" = "red", "1" = "orange", "2" = "blue", "3" = "darkgreen"))
 
     ggsave(paste(filename, format, sep = "."), p, width = 6, height = 4, dpi = 300)
     pe <- ggplot(dt_FE_status, aes(x = Rank, y = exp(FixedEffect))) +
         geom_point(aes(color = STJR_LABEL), size = 1) +
-        theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5))
+        theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5)) +
+        scale_color_manual(values = c("0" = "red", "1" = "orange", "2" = "blue", "3" = "darkgreen"))
     ggsave(paste(paste0(filename, "_e"), format, sep = "."), pe, width = 6, height = 4, dpi = 300)
 
     return(list(p, pe))

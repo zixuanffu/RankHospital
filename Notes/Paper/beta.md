@@ -4,7 +4,7 @@ Section 1: Introduction
 
 % Hook: 
 
-It is almost of human nature to compare, rank and select. And competition, be it good or bad, emerges in the wake. As invidious as ranking and selection can be, in many cases it is one of the driving forces behind any improvement (e.g. natural selection in the history of evolution). The society is constantly constructing league table. It rewards the meritous and question or even punishes the unsatisfactory. The measure based on which rank is constructed ranges from teacher's evaluation to communities' mobility index as pioneered by \cite{}. 
+It is almost of human nature to compare, rank and select. And competition, be it good or bad, emerges in the wake. As invidious as ranking and selection can be, in many cases it is one of the driving forces behind improvement in performance (e.g. natural selection in the history of evolution). The society is constantly constructing league table. It rewards the meritous and question or even punishes the unsatisfactory. The measure based on which rank is constructed ranges from teacher's evaluation to communities' mobility index as pioneered by \cite{}. 
 
 The present article extends the practice to the health sectors. To be more specific, it studies the labor efficiency across all hospitals in France. By exploring a comprehensive database (SAE) of French hospitals, we first construct a measure of labor efficiency. Then based on the estimates, we compare the public and private hospitals by selecting the top-performing units. We borrow from the recent developments in Empirical Bayes method to achieve the comparison.  
 

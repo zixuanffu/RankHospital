@@ -10,6 +10,7 @@
 \usepackage{booktabs} % for regression table display (toprule, midrule, bottomrule)
 \usepackage{adjustbox} % for regression table display
 \input newcommand.tex
+\bibliographystyle{apalike}
 % \setlength{\parindent}{0pt} % remove the automatic indentation
 
 \title{Something interesting}
@@ -34,12 +35,12 @@
 
 It is almost of human nature to compare, rank and select. And competition, be
 it good or bad, emerges in the wake. As invidious as ranking and selection can
-be, in many cases it is one of the driving forces behind any improvement (e.g.
-natural selection in the history of evolution). The society itself is
-constantly constructing league table. It rewards the meritous and question or
-even punishes the unsatisfactory. The measure based on which rank is
-constructed ranges from teacher's evaluation to communities' mobility index as
-pioneered by \cite{}.
+be, in many cases it is one of the driving forces behind improvement in
+performances, not to mention the role of natural selection in the history of
+evolution. The society itself is constantly constructing league table. It
+rewards the meritorious and question or even punishes the unsatisfactory. The
+measure based on which rank is constructed ranges from teacher's evaluation to
+communities' mobility index.
 
 The present article extends the practice to the health sectors. To be more
 specific, it studies the labor efficiency across all hospitals in France. By
@@ -52,14 +53,16 @@ comparison.
 \textbf{Conclusion here}
 
 The article bridges two fields of interests. One is on productivity analysis.
-The most popular methods are Data Envelopment Analysis \cite{} and Stochastic
-Frontier Analysis \cite{}. Yet we abstract from both of them for the
-convenience of statistical inference. We use the simple method applied in
-\cite{CroisetGarybobo_2024} by estimating a conditional input demand function.
-To put it simply, we estimate a linear function of how much labor input is
-needed to produce a give list of outputs \footnote{We refer the audience to xxx
-    for detailed reasons of adopting this approach.}. We only focus on the
-employment level of nurses for (reasons) \footnote{} in the specification.
+The most popular methods are Data Envelopment Analysis
+\cite{charnes1978measuring} and Stochastic Frontier Analysis
+\cite{aigner1977formulation,meeusen1977efficiency}. Yet we abstract from both
+of them for the convenience of statistical inference. We use the simple method
+applied in \cite{croiset2024hospitals} by estimating a conditional input demand
+function. To put it simply, we estimate a linear function of how much labor
+input is needed to produce a give list of outputs \footnote{We refer the
+    audience to xxx for detailed reasons of adopting this approach.}. We only focus
+on the employment level of nurses for (reasons) \footnote{} in the
+specification.
 
 The second area of interests is the Empirical Bayes Methods. The name
 "Empirical Bayes" is self-telling in the sense that Bayes implies a prior
@@ -67,15 +70,16 @@ distribution while Empirical means empirically estimate the prior from the
 data. Details on how it can be of use in ranking and selection will be
 presented in the rest of the section.
 
-In \cite{}, the authors argue that public hospital is less efficient than
-private counterpart in the sense that it would need a smaller size of personnel
-if it were to use the input demand function of the private hospital, which is
-the main result of their counterfactuals.
+In \cite{croiset2024hospitals}, the authors argue that public hospital is less
+efficient than private counterpart in the sense that it would need a smaller
+size of personnel if it were to use the input demand function of the private
+hospital, which is the main result of their counterfactuals.
 
 Having roughly replicated the results after doubling the length of the panel,
 the paper differentiates itself by including/adding the standard/classical
 panel data methods in demand function estimation, specifically the fixed-effect
-within-group estimation and GMM \cite{}.
+within-group estimation and GMM
+\cite{arellano1991some,arellano1995another,blundell1998initial}.
 
 \textbf{A tiny bit about the literature of GMM}
 
@@ -91,13 +95,14 @@ incorporating our knowledge of $G$.
 
 The usefulness of a prior $G$ is further exemplified/highlighted in the ranking
 and selection problem mentioned above, when the object of interests is the
-noisy estimate of $\theta_i$. For example, in \cite{}, we are given the task of
-selecting the top 20\% out of the population of $\alpha_i$, that is to say
-selecting those $i$ whose $alpha_i>G^{-1}(0.8)$, while controlling for the
-overall false discovery rate ($\frac{x}{y}$) at 5\%. In \cite{}, the authors
-try to develop an optimal decision rule for the given task. To put it in the
-language of optimization, they want to have a decision rule that optimizes the
-performance of selection, equivalently, minimize the loss of selection
+noisy estimate of $\theta_i$. For example, in \cite{gu2023invidious}, we are
+given the task of selecting the top 20\% out of the population of $\alpha_i$,
+that is to say selecting those $i$ whose $alpha_i>G^{-1}(0.8)$, while
+controlling for the overall false discovery rate ($\frac{x}{y}$) at 5\%. In
+\cite{gu2023invidious}, the authors try to develop an optimal decision rule for
+the given task. To put it in the language of optimization, they want to have a
+decision rule that optimizes the performance of selection, equivalently,
+minimize the loss of selection
 \begin{equation*}
     \delta^* = \min_{\delta} \text{Loss} \quad \text{subject to contstraints}
 \end{equation*}
@@ -105,10 +110,10 @@ where the loss function can take different forms, for example the
 expected number of total type 1 and 2 mistakes.
 
 The task at hand falls naturally under the compound decision framework
-pioneered by \cite{} if we define the loss function in such a way that takes
-into account the results of all the individual decisions $\delta(Y_i)$. For
-instance, summing all mistakes would be one way to aggregate/compound
-individual decisions,
+pioneered by \cite{robbins1992empirical} if we define the loss function in such
+a way that takes into account the results of all the individual decisions
+$\delta(Y_i)$. For instance, summing all mistakes would be one way to
+aggregate/compound individual decisions,
 
 It is obvious that in order to impose the two stated constraints (capacity and
 FDR) in formulating the optimization problem, we need to know the prior
@@ -117,23 +122,24 @@ heaven. Therefore, Empirical Bayes methods come to the rescue, as its name
 suggests, we will have to empirically estimating the unknown prior $G$.
 
 Often times "empirically estimating \(G\)" is done with parametric assumption
-that \(G\) is normal. Notable use cases are found in \cite{} which aroused the
-ensuing/lasting interests on teacher evaluation and social mobility in
-communities. By assuming a Gaussian $G$, they shrink the estimated fixed effect
-linearly, thus giving the name "linear shrinkage". However, departure from
-normality may render the linear shrinkage rule as unhelpful. Thanks to the
-foundational work of \cite{} who has shown that non-parametric estimation is
-also feasible and consistent, it is preferable to relax the normality
-assumption and estimate the prior $G$ non-parametrically. In terms of
-computation method, \cite{} has formulated the non-parmetric estimation as a
-convex optimization problem. Compared to other popular methods such as EM
-algorithm \cite{}, recent advancements in convex optimization computation
-methods \cite{} has made the novel approach of \cite{} computationally more
-attractive.
+that \(G\) is normal. Notable use cases are found in teacher evaluation
+\cite{chetty2014measuring}, social mobility in communities
+\cite{chetty2018impacts} and job discrimination \cite{kline2021reasonable}. By
+assuming a Gaussian $G$, they shrink the estimated fixed effect linearly, thus
+giving the name "linear shrinkage". However, departure from normality may
+render the linear shrinkage rule as unhelpful. Thanks to the foundational work
+of \cite{} who has shown that non-parametric estimation is also feasible and
+consistent, it is preferable to relax the normality assumption and estimate the
+prior $G$ non-parametrically. In terms of computation method, \cite{} has
+formulated the non-parmetric estimation as a convex optimization problem.
+Compared to other popular methods such as EM algorithm
+\cite{laird1978nonparametric}, recent advancements in convex optimization
+computation methods \cite{andersen2010mosek} has made the novel approach of
+\cite{koenker2014convex} computationally more attractive.
 
 It is worth mentioning here that though a discrete $G$ with at most x atoms can
-be estimated using the REBayes package \cite{}, we are not free of imposing any
-assumptions, that is the distribution of estimate
+be estimated using the REBayes package \cite{koenker2017rebayes}, we are not
+free of imposing any assumptions, that is the distribution of estimate
 $\hat{\alpha}_i|\alpha_i,\sigma_i^2.$ To illustrate, in the case of the
 estimate of fixed effect, we have
 
@@ -170,5 +176,8 @@ with a comparison of the different selection outcome as a result of imposing
 varying constraints and assumptions. In section 6, we try to draw preliminary
 conclusion on the comparative performance of public and private hospitals.
 Section 7 discusses potential issues and concludes.
+
+\newpage
+\bibliography{ref.bib}
 
 \end{document}

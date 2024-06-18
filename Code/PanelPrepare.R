@@ -21,6 +21,7 @@ fi <- stat_stable$FI
 dt <- dt[FI %in% fi] # 36258
 # ---- remove duplicates ---- #
 dt <- unique(dt, by = c("AN", "FI")) # no duplicates
+length(unique(dt$FI)) # 4677
 saveRDS(dt, "Data/Out/dt_stable.rds")
 # ---- 1. Prepare the panel for nurses ---- #
 
@@ -36,7 +37,7 @@ dt_inf <- dt_inf[SEJHC_MCO > 1 | SEJHP_MCO > 1 | SEANCES_MED > 1]
 dt_inf[, (varr1) := lapply(.SD, function(x) x <- x + 1), .SDcols = varr1]
 dt_inf[, Nobs := .N, by = .(FI)]
 dt_inf <- dt_inf[Nobs >= 6] # keep only those with at least 6 observations
-num_hospital <- length(unique(dt$FI)) # 4677
+num_hospital <- length(unique(dt_inf$FI)) # 1833
 # note that even for <1 nurses, there can be a huge number of sessions
 saveRDS(dt_inf, "Data/Out/dt_inf_pool.rds")
 
@@ -47,5 +48,5 @@ varr1 <- output
 dt_md[, (varr1) := lapply(.SD, function(x) x <- x + 1), .SDcols = varr1]
 dt_md[, Nobs := .N, by = .(FI)]
 dt_md <- dt_md[Nobs >= 6] # keep only those with at least 6 observations
-num_hospital <- length(unique(dt$FI)) # 4677
+num_hospital <- length(unique(dt_md$FI)) # 1535
 saveRDS(dt_md, "Data/Out/dt_md_pool.rds")

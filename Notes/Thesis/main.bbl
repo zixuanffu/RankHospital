@@ -1,0 +1,93 @@
+\begin{thebibliography}{}
+
+\bibitem[Aigner et~al., 1977]{aigner1977formulation}
+Aigner, D., Lovell, C.~K., and Schmidt, P. (1977).
+\newblock Formulation and estimation of stochastic frontier production function
+  models.
+\newblock {\em Journal of econometrics}, 6(1):21--37.
+
+\bibitem[Andersen and Andersen, 2010]{andersen2010mosek}
+Andersen, E.~D. and Andersen, K.~D. (2010).
+\newblock The mosek optimization tools manual, version 6.0.
+
+\bibitem[Arellano and Bond, 1991]{arellano1991some}
+Arellano, M. and Bond, S. (1991).
+\newblock Some tests of specification for panel data: Monte carlo evidence and
+  an application to employment equations.
+\newblock {\em The review of economic studies}, 58(2):277--297.
+
+\bibitem[Arellano and Bover, 1995]{arellano1995another}
+Arellano, M. and Bover, O. (1995).
+\newblock Another look at the instrumental variable estimation of
+  error-components models.
+\newblock {\em Journal of econometrics}, 68(1):29--51.
+
+\bibitem[Blundell and Bond, 1998]{blundell1998initial}
+Blundell, R. and Bond, S. (1998).
+\newblock Initial conditions and moment restrictions in dynamic panel data
+  models.
+\newblock {\em Journal of econometrics}, 87(1):115--143.
+
+\bibitem[Charnes et~al., 1978]{charnes1978measuring}
+Charnes, A., Cooper, W.~W., and Rhodes, E. (1978).
+\newblock Measuring the efficiency of decision making units.
+\newblock {\em European journal of operational research}, 2(6):429--444.
+
+\bibitem[Chetty et~al., 2014]{chetty2014measuring}
+Chetty, R., Friedman, J.~N., and Rockoff, J.~E. (2014).
+\newblock Measuring the impacts of teachers i: Evaluating bias in teacher
+  value-added estimates.
+\newblock {\em American economic review}, 104(9):2593--2632.
+
+\bibitem[Chetty and Hendren, 2018]{chetty2018impacts}
+Chetty, R. and Hendren, N. (2018).
+\newblock The impacts of neighborhoods on intergenerational mobility ii:
+  County-level estimates.
+\newblock {\em The Quarterly Journal of Economics}, 133(3):1163--1228.
+
+\bibitem[Croiset and Gary-Bobo, 2024]{croiset2024hospitals}
+Croiset, S. and Gary-Bobo, R. (2024).
+\newblock Are public hospitals inefficient? an empirical study on french data.
+
+\bibitem[Gu and Koenker, 2023]{gu2023invidious}
+Gu, J. and Koenker, R. (2023).
+\newblock Invidious comparisons: Ranking and selection as compound decisions.
+\newblock {\em Econometrica}, 91(1):1--41.
+
+\bibitem[Kline and Walters, 2021]{kline2021reasonable}
+Kline, P. and Walters, C. (2021).
+\newblock Reasonable doubt: Experimental detection of job-level employment
+  discrimination.
+\newblock {\em Econometrica}, 89(2):765--792.
+
+\bibitem[Koenker and Gu, 2017]{koenker2017rebayes}
+Koenker, R. and Gu, J. (2017).
+\newblock Rebayes: an r package for empirical bayes mixture methods.
+\newblock {\em Journal of Statistical Software}, 82:1--26.
+
+\bibitem[Koenker and Mizera, 2014]{koenker2014convex}
+Koenker, R. and Mizera, I. (2014).
+\newblock Convex optimization, shape constraints, compound decisions, and
+  empirical bayes rules.
+\newblock {\em Journal of the American Statistical Association},
+  109(506):674--685.
+
+\bibitem[Laird, 1978]{laird1978nonparametric}
+Laird, N. (1978).
+\newblock Nonparametric maximum likelihood estimation of a mixing distribution.
+\newblock {\em Journal of the American Statistical Association},
+  73(364):805--811.
+
+\bibitem[Meeusen and van Den~Broeck, 1977]{meeusen1977efficiency}
+Meeusen, W. and van Den~Broeck, J. (1977).
+\newblock Efficiency estimation from cobb-douglas production functions with
+  composed error.
+\newblock {\em International economic review}, pages 435--444.
+
+\bibitem[Robbins, 1992]{robbins1992empirical}
+Robbins, H.~E. (1992).
+\newblock An empirical bayes approach to statistics.
+\newblock In {\em Breakthroughs in Statistics: Foundations and basic theory},
+  pages 388--394. Springer.
+
+\end{thebibliography}

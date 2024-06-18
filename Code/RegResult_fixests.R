@@ -1,37 +1,22 @@
 rm(list = ls())
-source("Code/RegX.R")
-# ---- load the dataset ---- #
-dt1 <- readRDS("Data/Out/combineddata_2016_2022.rds") # 2016-2022
-dt2 <- readRDS("Data/Out/combineddata_2013_2015.rds") # 2013-2015
-cols <- c("AN", "FI", "FI_EJ", "EFF_MD", "ETP_INF", "SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "CASEMIX", "STJR") # variables of interest
-dt <- rbind(dt1[, ..cols], dt2[, ..cols])
+source("Code/RegX_fixest.R")
 
-# ---- select only those with stable legal status ---- #
-FI_stat_change <- unique(dt[, .(FI, STJR)])
-FI_stat_change <- FI_stat_change[, .N, by = .(FI)]
-FI_stat_change <- FI_stat_change[N > 1]
-dt <- dt[!FI %in% FI_stat_change$FI]
-
-# ---- Prepare the panel for nurses ---- #
-# ---- filter out observations with possible coding errors
-# 2022 760000166
-# 2016 910001973
-dt_inf <- dt[!(FI == 760000166 & AN == 2022) | !(FI == 910001973 & AN == 2016)]
-# ---- filter out zero values on the LHS ---- #
+dt_inf <- readRDS("Data/Out/dt_inf_pool.rds")
+dt_inf[, ETP_INF := ETP_INF + ETP_AID] # registered and assistant nurses
 dt_inf <- dt_inf[ETP_INF > 0]
-# ---- add one to the RHS to avoid zero values in taking log ---- #
-varr1 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
+dt_inf[, SEJ_MCO := SEJHC_MCO + SEJHP_MCO]
+dt_inf[, SEJ_PSY := VEN_TOT + SEJ_HTP_TOT]
+dt_inf[, MCO := (SEJHC_MCO > 1)]
+dt_inf[, PSY := (SEJ_PSY > 2)]
+level_order <- c(1, 2, 3, 0) # use public as base level
+dt_inf$STJR <- factor(dt_inf$STJR, levels = level_order)
+colnames(dt_inf)
+varr1 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "CONSULT_EXT", "PASSU", "ENTSSR", "SEJ_HAD", "SEJ_PSY")
 varl <- "ETP_INF"
-dt_inf <- dt_inf[SEJHC_MCO > 1 | SEJHP_MCO > 1 | SEANCES_MED > 1]
-dt_inf[, (varr1) := lapply(.SD, function(x) x <- x + 1), .SDcols = varr1]
-dt_inf[, Nobs := .N, by = .(FI)]
-dt_inf <- dt_inf[Nobs >= 6] # keep only those with at least 6 observations
-num_hospital <- length(unique(dt$FI)) # 1526
+length(unique(dt_inf$FI)) # 1833
 
-# ---- set data.table in panel data format ---- #
+# ---- Set data.table in panel data format ---- #
 pdt <- panel(dt_inf, panel.id = ~ FI + AN, time.step = "consecutive", duplicate.method = "first")
-# construct lagged variables
-# pdt[, `:=`(SEJHC_MCO_l1 = l(SEJHC_MCO, 1), SEJHP_MCO_l1 = l(SEJHP_MCO, 1), SEANCES_MED_l1 = l(SEANCES_MED, 1))]
 
 # ---- Regression ---- #
 start_year <- 2013
