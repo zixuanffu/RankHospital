@@ -357,6 +357,7 @@ saveRDS(control_stat, "Data/Out/control_stat_2013_2015.rds")
 status1 <- readRDS("Data/Out/status_2013_2015.rds")
 status2 <- readRDS("Data/Out/status_2016_2022.rds")
 status <- rbind(status1, status2)
+# FI_EJ may change while FI stays the same, we don't care about them:)
 stat_unique <- unique(status[, .(FI, STJR)])
 stat_unique <- stat_unique[, .N, by = .(FI)]
 stat_unique <- stat_unique[N == 1]

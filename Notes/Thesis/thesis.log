@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.13)  18 JUN 2024 12:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.13)  18 JUN 2024 20:40
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Thesis/main.tex
-(c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Thesis/main.tex
+**c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Thesis/thesis.tex
+(c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Thesis/thesis.tex
 LaTeX2e <2022-06-01> patch level 5
 L3 programming layer <2022-08-05> (c:/texlive/2022/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
@@ -385,8 +385,8 @@ Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 File: l3backend-pdftex.def 2022-08-05 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count304
 \l__pdf_internal_box=\box56
-) (./main.aux)
-\openout1 = `main.aux'.
+) (./thesis.aux)
+\openout1 = `thesis.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
 LaTeX Font Info:    ... okay on input line 19.
@@ -429,9 +429,9 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
 Package hyperref Info: Link coloring OFF on input line 19.
- (./main.out) (./main.out)
+ (./thesis.out) (./thesis.out)
 \@outlinefile=\write4
-\openout4 = `main.out'.
+\openout4 = `thesis.out'.
 
 LaTeX Font Info:    Trying to load font information for U+msa on input line 21.
  (c:/texlive/2022/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -449,27 +449,40 @@ Underfull \hbox (badness 10000) in paragraph at lines 23--24
 Non-PDF special ignored!
 <special> header=psfrag.pro
 
-{c:/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./main.toc)
+{c:/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./thesis.toc)
 \tf@toc=\write5
-\openout5 = `main.toc'.
+\openout5 = `thesis.toc'.
 
- [2] [3] [4] [5] (./main.bbl [6]) [7] (./main.aux)
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 9814C2D956916ADB9290ECA4E25C967A;103.
+ [2] [3]
+
+LaTeX Warning: Citation `herbert1956empirical' on page 4 undefined on input line 118.
+
+[4] [5]
+<../../Figures/Descriptive/nurses.pdf, id=107, 722.7pt x 433.62pt>
+File: ../../Figures/Descriptive/nurses.pdf Graphic file (type pdf)
+<use ../../Figures/Descriptive/nurses.pdf>
+Package pdftex.def Info: ../../Figures/Descriptive/nurses.pdf  used on input line 244.
+(pdftex.def)             Requested size: 722.69823pt x 433.61894pt.
+ [6] (../../Tables/2013-2022/reg_pool_dummy.tex) (../../Tables/2013-2022/reg_sep_iv.tex) (../../Tables/2013-2022/reg_fe_plm.tex) [7 <../../Figures/Descriptive/nurses.pdf>] [8] [9] (./thesis.bbl [10]) [11] (./thesis.aux)
+
+LaTeX Warning: There were undefined references.
+
+Package rerunfilecheck Info: File `thesis.out' has not changed.
+(rerunfilecheck)             Checksum: 43B0EA1E849FED6C3599287125370830;633.
  ) 
 Here is how much of TeX's memory you used:
- 12780 strings out of 479560
- 209407 string characters out of 5876399
- 507590 words of memory out of 5000000
- 31114 multiletter control sequences out of 15000+600000
- 479989 words of font info for 69 fonts, out of 8000000 for 9000
+ 12833 strings out of 479560
+ 210632 string characters out of 5876399
+ 524542 words of memory out of 5000000
+ 31136 multiletter control sequences out of 15000+600000
+ 480296 words of font info for 70 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 72i,11n,77p,752b,554s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{c:/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on main.pdf (7 pages, 186020 bytes).
+ 72i,11n,77p,754b,560s stack positions out of 10000i,1000n,20000p,200000b,200000s
+{c:/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on thesis.pdf (11 pages, 218879 bytes).
 PDF statistics:
- 174 PDF objects out of 1000 (max. 8388607)
- 131 compressed objects within 2 object streams
- 29 named destinations out of 1000 (max. 500000)
- 9 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 241 PDF objects out of 1000 (max. 8388607)
+ 190 compressed objects within 2 object streams
+ 48 named destinations out of 1000 (max. 500000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

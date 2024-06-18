@@ -77,11 +77,16 @@ hospital, which is the main result of their counterfactuals.
 
 Having roughly replicated the results after doubling the length of the panel,
 the paper differentiates itself by including/adding the standard/classical
-panel data methods in demand function estimation, specifically the fixed-effect
-within-group estimation and GMM
-\cite{arellano1991some,arellano1995another,blundell1998initial}.
+panel data methods in input demand function estimation, specifically the
+fixed-effect within-group estimation and GMM.
 
-\textbf{A tiny bit about the literature of GMM}
+With respect to the latter estimator, we may relax the assumption of strict
+exogeneity of the regressors, claiming that current regressors (output) may be
+endogeneous/affect current and future errors term.
+\begin{equation*}
+    y_{it}  = x_{it} \beta + \alpha y_{i,t-1}+\theta_i + \varepsilon_{it} \quad  \E\bra{\varepsilon_{it}|x_{i1},\ldots,x_{it-1}} =0
+\end{equation*}
+Note that the panel used in my estimation has relatively high persistency in the variables. This kind of characteristics was pointed out in \cite{blundell1998initial} as well. It argues that when $T$ is relatively small and the regressors exhibit relatively high auto correlation, the lagged levels of regressors $x_{i,t-2}$ only serve as weak instruments for first differences equation $\Delta \varepsilon_{i,t}$. By imposing a reasonable assumption that $\E{\Delta x_{i,t-1}\varepsilon_{i,t}}$, I instrument the current level with lagged first differences, implementing the so-called system GMM explained in \cite{arellano1995another,blundell1998initial}.
 
 Though the original focus of the panel data estimator is on the $\beta$
 parameters. It also provides us with a noisy estimate of the underlying
@@ -110,7 +115,7 @@ where the loss function can take different forms, for example the
 expected number of total type 1 and 2 mistakes.
 
 The task at hand falls naturally under the compound decision framework
-pioneered by \cite{robbins1992empirical} if we define the loss function in such
+pioneered by \cite{herbert1956empirical} if we define the loss function in such
 a way that takes into account the results of all the individual decisions
 $\delta(Y_i)$. For instance, summing all mistakes would be one way to
 aggregate/compound individual decisions,
@@ -128,14 +133,14 @@ that \(G\) is normal. Notable use cases are found in teacher evaluation
 assuming a Gaussian $G$, they shrink the estimated fixed effect linearly, thus
 giving the name "linear shrinkage". However, departure from normality may
 render the linear shrinkage rule as unhelpful. Thanks to the foundational work
-of \cite{} who has shown that non-parametric estimation is also feasible and
-consistent, it is preferable to relax the normality assumption and estimate the
-prior $G$ non-parametrically. In terms of computation method, \cite{} has
-formulated the non-parmetric estimation as a convex optimization problem.
-Compared to other popular methods such as EM algorithm
-\cite{laird1978nonparametric}, recent advancements in convex optimization
-computation methods \cite{andersen2010mosek} has made the novel approach of
-\cite{koenker2014convex} computationally more attractive.
+of \cite{kiefer1956consistency} who has shown that non-parametric estimation is
+also feasible and consistent, it is preferable to relax the normality
+assumption and estimate the prior $G$ non-parametrically. In terms of
+computation method, \cite{koenker2014convex} has formulated the non-parmetric
+estimation as a convex optimization problem. Compared to other popular methods
+such as EM algorithm \cite{laird1978nonparametric}, recent advancements in
+convex optimization computation methods \cite{andersen2010mosek} has made the
+novel approach of \cite{koenker2014convex} computationally more attractive.
 
 It is worth mentioning here that though a discrete $G$ with at most x atoms can
 be estimated using the REBayes package \cite{koenker2017rebayes}, we are not
@@ -168,14 +173,103 @@ central limit theorem from the claim that $T\to \infty$, which may seem unrealis
 The rest of the paper is organized as follows. Section 2 briefly describes the
 data and lays out the reduced form estimation of the input demand function,
 treating the number of nurses as the dependent variable and a list of 9 output
-measures as the regressors. Section 3 applies the classical panel data
+measures as the regressors. Section 2 applies the classical panel data
 estimators to the same specification, distinguishing between whether strict
-exogeneity is assumed. In section 4, we introduce the compound decision
-framework and specifically/xxx define the selection problem. Section 5 follows
+exogeneity is assumed. In section 3, we introduce the compound decision
+framework and specifically/xxx define the selection problem. Section 4 follows
 with a comparison of the different selection outcome as a result of imposing
-varying constraints and assumptions. In section 6, we try to draw preliminary
+varying constraints and assumptions. In section 5, we try to draw preliminary
 conclusion on the comparative performance of public and private hospitals.
-Section 7 discusses potential issues and concludes.
+Section 6 discusses potential issues and concludes.
+
+\section{Data and Estimation}
+\subsection{Data}
+The data we used is called \textit{The Annual Statistics of Health
+    Establishments
+    (SAE)}\footnote{\href{https://data.drees.solidarites-sante.gouv.fr/explore/dataset/708_bases-statistiques-sae/information/}{La
+        Statistique annuelle des établissements (SAE)}}. It is a comprehensive,
+mandatory administrative survey and the primary source of data on all health
+establishments in France. We primarily exploited the report of healthcare
+output (a list of 10 output measure) and labor input (registered and assistant
+nurses). The panel covers 9 years from 2013 to 2022, with 2020 missing due to
+the pandemic. The number of healthcare units is rather stable. The SAE data
+only distinguishes 3 types of units based on legal status. \textit{
+    \begin{enumerate}
+        \item Ordinary public hospitals
+        \item Private for-profit hospitals
+        \item Private non-profit hospitals
+    \end{enumerate}}
+Following \cite{croiset2024hospitals}, we further single out the \textit{public teaching hospitals} because its main objective consists not only of patient treatment, but also teaching and research by and large.
+
+\begin{table}
+    \begin{tabular}{rrrrrrr}
+        \toprule
+          & Year & Teaching & Normal Public & Private For Profit & Private Non Profit & Total \\
+        \midrule
+        1 & 2013 & 198      & 1312          & 1305               & 1382               & 4197  \\
+        2 & 2014 & 201      & 1274          & 1293               & 1349               & 4117  \\
+        3 & 2015 & 211      & 1275          & 1297               & 1349               & 4132  \\
+        4 & 2016 & 212      & 1266          & 1297               & 1313               & 4088  \\
+        5 & 2017 & 211      & 1249          & 1297               & 1306               & 4063  \\
+        6 & 2018 & 214      & 1247          & 1296               & 1288               & 4045  \\
+        7 & 2019 & 214      & 1236          & 1287               & 1281               & 4018  \\
+        8 & 2021 & 219      & 1222          & 1293               & 1264               & 3998  \\
+        9 & 2022 & 220      & 1220          & 1296               & 1259               & 3995  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{Summarize the output categories}
+
+\begin{adjustbox}{width=1\textwidth}
+    \begin{tabular}{rlllll}
+        \toprule
+          & Output                            & Normal Public & Private Non Profit & Private For Profit & Teaching \\
+        \midrule
+        1 & STAC inpatient                    & 8.08\%        & 5.66\%             & 16.3\%             & 7.9\%    \\
+        2 & STAC oupatient                    & 2.26\%        & 4.02\%             & 22.61\%            & 3.59\%   \\
+        3 & Sessions                          & 4.34\%        & 23.31\%            & 27.17\%            & 4.8\%    \\
+        4 & Outpatient Consultations          & 58.23\%       & 43.55\%            & 0.8\%              & 69.18\%  \\
+        5 & Emergency                         & 21.14\%       & 6.78\%             & 17.3\%             & 12.64\%  \\
+        6 & Follow-up care and Long-term care & 1.67\%        & 11.26\%            & 12.16\%            & 1.09\%   \\
+        7 & Home hospitalization              & 0.06\%        & 0.76\%             & 0.17\%             & 0.08\%   \\
+        8 & Psychiatry stays                  & 4.22\%        & 4.66\%             & 3.49\%             & 0.72\%   \\
+        \bottomrule
+    \end{tabular}
+\end{adjustbox}
+
+\textbf{Summarize the input}: explain the reason why we use nurses instead of medical doctors.
+
+\begin{adjustbox}{width=1\textwidth}
+    \includegraphics{../../Figures/Descriptive/nurses.pdf}
+\end{adjustbox}
+
+\subsection{Estimation (OLS)}
+
+\footnote{On a side note, we filtered the panel such that
+    \begin{enumerate}
+        \item the number of nurses is positive,
+        \item at least one of STAC inpatient, STAC outpatient, Sessions is positive,
+        \item the number of observations is larger than 6
+    \end{enumerate}}
+
+\begin{table}
+    \input{../../Tables/2013-2022/reg_pool_dummy.tex}
+\end{table}
+
+\begin{table}
+    \input{../../Tables/2013-2022/reg_sep_iv.tex}
+\end{table}
+
+\subsection{Panel Data Estimator}
+Though \cite{croiset2024hospitals} has mentioned that identification (and
+significance level) is mainly attributed to \textit{between-group} variation,
+there's still some level of \textit{within-group} variation that guarantee the
+estimation of parameters.
+
+\begin{table}
+    \input{../../Tables/2013-2022/reg_fe_plm.tex}
+\end{table}
 
 \newpage
 \bibliography{ref.bib}

@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2022)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: thesis.aux
+The style file: apalike.bst
+Database file #1: ref.bib
+Warning--I didn't find a database entry for "herbert1956empirical"
+Warning--empty journal in croiset2024hospitals
+You've used 15 entries,
+            1935 wiz_defined-function locations,
+            571 strings with 6239 characters,
+and the built_in function-call counts, 6016 in all, are:
+= -- 619
+> -- 204
+< -- 14
++ -- 68
+- -- 64
+* -- 517
+:= -- 1018
+add.period$ -- 43
+call.type$ -- 15
+change.case$ -- 107
+chr.to.int$ -- 15
+cite$ -- 16
+duplicate$ -- 223
+empty$ -- 429
+format.name$ -- 101
+if$ -- 1182
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 14
+newline$ -- 76
+num.names$ -- 45
+pop$ -- 74
+preamble$ -- 1
+purify$ -- 107
+quote$ -- 0
+skip$ -- 185
+stack$ -- 0
+substring$ -- 505
+swap$ -- 31
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 90
+warning$ -- 1
+while$ -- 58
+width$ -- 0
+write$ -- 191
+(There were 2 warnings)

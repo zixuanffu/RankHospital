@@ -3,48 +3,46 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 The style file: apalike.bst
 Database file #1: ref.bib
-Warning--entry type for "croiset2024hospitals" isn't style-file defined
---line 32 of file ref.bib
-Warning--I didn't find a database entry for ""
+Warning--empty journal in croiset2024hospitals
 You've used 16 entries,
             1935 wiz_defined-function locations,
-            579 strings with 6380 characters,
-and the built_in function-call counts, 6397 in all, are:
-= -- 662
+            577 strings with 6371 characters,
+and the built_in function-call counts, 6516 in all, are:
+= -- 674
 > -- 211
-< -- 15
+< -- 16
 + -- 72
 - -- 66
 * -- 547
-:= -- 1081
+:= -- 1090
 add.period$ -- 47
 call.type$ -- 16
 change.case$ -- 113
 chr.to.int$ -- 16
-cite$ -- 16
-duplicate$ -- 238
-empty$ -- 463
+cite$ -- 17
+duplicate$ -- 250
+empty$ -- 473
 format.name$ -- 104
-if$ -- 1261
+if$ -- 1296
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 14
+missing$ -- 15
 newline$ -- 81
 num.names$ -- 48
-pop$ -- 77
+pop$ -- 82
 preamble$ -- 1
 purify$ -- 113
 quote$ -- 0
-skip$ -- 193
+skip$ -- 207
 stack$ -- 0
-substring$ -- 544
-swap$ -- 32
-text.length$ -- 2
+substring$ -- 551
+swap$ -- 41
+text.length$ -- 3
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 96
-warning$ -- 0
-while$ -- 62
+warning$ -- 1
+while$ -- 63
 width$ -- 0
 write$ -- 205
-(There were 2 warnings)
+(There was 1 warning)

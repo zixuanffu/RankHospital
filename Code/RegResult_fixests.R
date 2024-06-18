@@ -37,7 +37,7 @@ pdt_used[, `:=`(Res = RES)] # add residuals to the panel
 FE <- reg_inf_ols_FI$sumFE
 pdt_used[, `:=`(FixedEffect = FE)]
 
-saveRDS(pdt_used, paste0("Results/", start_year, "-", end_year, "/pdt_inf_ols_FI.rds"))
+saveRDS(pdt_used, paste0("Results/", start_year, "-", end_year, "/pdt_inf_ols.rds"))
 saveRDS(reg_inf_ols_FI, paste0("Results/", start_year, "-", end_year, "/reg_inf_ols_FI.rds"))
 # ---- plot the fixed effect ---- #
 reg_inf_ols_FI <- readRDS(paste0("Results/", start_year, "-", end_year, "/reg_inf_ols_FI.rds"))

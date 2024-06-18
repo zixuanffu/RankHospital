@@ -19,7 +19,14 @@ In \cite{}, the authors argue that public hospital is less efficient than privat
 
 Having roughly replicated the results after doubling the length of the panel, the paper differentiates itself by including/adding the standard/classical panel data methods in demand function estimation, specifically the fixed-effect within-group estimation and GMM \cite{}. 
 
-***A tiny bit about the literature of GMM*** 
+With respect to the latter estimator, we may relax the assumption of strict exogeneity of
+the regressors, while assuming that current regressors may affect current and
+future errors term.
+\begin{equation*}
+    y_{it}  = x_{it} \beta + \alpha y_{i,t-1}+\theta_i + \varepsilon_{it} \quad  \E{\varepsilon_{it}|x_{i1},\ldots,x_{it-1}}=0
+\end{equation*}
+As illustrated in \cite{blundell1998initial}, when
+$T$ is relatively small and the regressors exhibit relatively high auto correlation, the lagged levels of regressors $x_{i,t-2}$ only serve as weak instruments for first differences equation $\Delta \varepsilon_{i,t}$. By imposing a reasonable assumption that $\E{\Delta x_{i,t-1}\varepsilon_{i,t}}$, I instrument the current level with lagged first differences, implementing the so-called system GMM explained in \cite{arellano1995another,blundell1998initial}.
 
 Though the original focus of the panel data estimator is on the $\beta$ parameters. It also provides us with a noisy estimate of the underlying unobserved heterogeneity term denoted as $\theta_i$. (It's important to note that this heterogeneity
 is not necessarily indicative of inefficiency). Now that we have set the stage for empirical bayes, it is time to bring about the prior distribution of $\theta_i$, denoted as $G_{\theta}$. If the
@@ -88,6 +95,17 @@ varying constraints and assumptions. In section 6, we try to draw preliminary
 conclusion on the comparative performance of public and private hospitals.
 Section 7 discusses potential issues and concludes.
 
+
+Section 2: Data and preliminary estimation
+
+Describe the data: 
+
+Descriptive statistics:
+1. The number of hospitals each year, by legal status.
+1. The share of each output (MCO, SEANCES, etc. ) in total output for 4 legal status.
+2. The 3 quantiles of stays/personnel (2013-2022)
+
+Section 3: 
 
 A bit of history here and the standard methods. (但不要放第一段这不是重点)
 

@@ -7,10 +7,11 @@ source("Code/SelectX.R")
 # ---- load regression results ---- #
 
 
-pdt <- readRDS("Results/2013-2022/pdt_inf_ols_FI.rds")
+library(data.table)
+pdt_both <- merge_full(pdt_new[, .(AN, FI, FI_EJ, STJR, FixedEffect, Res)], pdt_old[, .(AN, FI, FI_EJ, STJR, FixedEffect, Res)])
+pdt_both <- merge(pdt_new, pdt_old, by = c("AN", "FI"), all.x = TRUE, all.y = TRUE)
+Z <- fit1d(pdt_new)
 
-Z <- fit1d(pdt)
-str(Z)
 sL <- selectL1d(Z, alpha = 0.22, gamma = 0.05)
 sL <- select1d(Z, alpha = 0.22, gamma = 0.05, "L")
 sR <- selectR1d(Z, alpha = 0.22, gamma = 0.05)
@@ -20,7 +21,7 @@ save(Z, sL, sR, file = "Results/2013-2022/ZsLsR.Rda")
 
 
 # ---- extra plot for estimated G ---- #
-load("Results/2013-2022/Spec3/ZsLsR.Rda")
+load("Results/2013-2022/ZsLsR.Rda")
 png("Figures/2013-2022/GLmix.png", height = 500, width = 800)
 plot(Z$f, xlab = expression(mu), main = "Estimated Location Mixing Density with Heterogeneous Known Variance")
 dev.off()

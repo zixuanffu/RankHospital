@@ -1,6 +1,7 @@
 # ---- Prepare panel for the regression ---- #
 # ---- load the dataset ---- #
 rm(list = ls())
+pacman::p_load(data.table)
 dt1 <- readRDS("Data/Out/combineddata_2016_2022.rds") # 2016-2022
 dt1 <- unique(dt1, by = c("AN", "FI", "FI_EJ"))
 dt2 <- readRDS("Data/Out/combineddata_2013_2015.rds") # 2013-2015

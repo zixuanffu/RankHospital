@@ -73,17 +73,17 @@ header <- c("Pool", "Pool IV", "Dummy", "Dummy IV")
 etable(reg_pool, reg_pool_iv, reg_dum, reg_dum_iv, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_pool_dummy.tex", replace = TRUE)
 
 # ---- 2.3 Separate regression by legal status ---- #
-reg_0 <- feols(formula_pool, data = pd_inf[STJR == 0])
+reg_0 <- feols(formula_pool_iv, data = pd_inf[STJR == 0])
 summary(reg_0)
-reg_1 <- feols(formula_pool, data = pd_inf[STJR == 1])
+reg_1 <- feols(formula_pool_iv, data = pd_inf[STJR == 1])
 summary(reg_1)
-reg_2 <- feols(formula_pool, data = pd_inf[STJR == 2])
+reg_2 <- feols(formula_pool_iv, data = pd_inf[STJR == 2])
 summary(reg_2)
-reg_3 <- feols(formula_pool, data = pd_inf[STJR == 3])
+reg_3 <- feols(formula_pool_iv, data = pd_inf[STJR == 3])
 summary(reg_3)
 
 header <- c("Teaching", "Public", "Forprofit", "Nonprofit")
-etable(reg_0, reg_1, reg_2, reg_3, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_sep.tex", signif.code = "letters", replace = TRUE)
+etable(reg_0, reg_1, reg_2, reg_3, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_sep_iv.tex", signif.code = "letters", replace = TRUE)
 
 
 # ---- 3. Regression with individual fixed effects ---- #
@@ -98,6 +98,15 @@ formula_wg <- as.formula(paste0(var_y, "~", var_x, "|FI"))
 
 reg_wg <- feols(formula_wg, data = pd_inf, cluster = "FI")
 summary(reg_wg)
+# compare with plm
+var_y <- add_log(var_input)
+var_x <- paste(c(add_log(var_output)), collapse = "+")
+formula_plm <- as.formula(paste0(var_y, "~", var_x, -1))
+reg_wg_plm <- plm(formula_plm, data = pd_inf, index = c("FI", "AN"), model = "within")
+reg_fd_plm <- plm(formula_plm, data = pd_inf, index = c("FI", "AN"), model = "fd")
+help(texreg)
+texreg(list(reg_wg_plm, reg_fd_plm), digits = 3, custom.model.names = c("Within", "First Diff"), file = "Tables/2013-2022/reg_fe_plm.tex", booktabs = TRUE, table = FALSE)
+
 
 # ---- 3.1b First difference estimation (relaxed assumption) ---- #
 var_y <- (add_d(add_log(var_input)))
@@ -115,7 +124,7 @@ summary(reg_fd)
 var_y <- add_log(var_input)
 var_x <- paste(c(add_log(var_output)), collapse = "+")
 formula_plm <- as.formula(paste0(var_y, "~", var_x, -1))
-reg_plm <- plm(formula_plm, data = dt_inf, index = c("FI", "AN"), model = "within")
+reg_plm <- plm(formula_plm, data = dt_inf, index = c("FI", "AN"), model = "fd")
 summary(reg_plm)
 
 # ---- 4.1 FD GMM (current error affect current and future regressors) ---- #
