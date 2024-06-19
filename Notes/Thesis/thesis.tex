@@ -20,7 +20,7 @@
 \maketitle
 
 \begin{abstract}
-    \noindent  someting interesting\\
+    \noindent  Something interesting\\
 
     % \noindent\textbf{Keywords:} \\
 
@@ -84,7 +84,7 @@ With respect to the latter estimator, we may relax the assumption of strict
 exogeneity of the regressors, claiming that current regressors (output) may be
 endogeneous/affect current and future errors term.
 \begin{equation*}
-    y_{it}  = x_{it} \beta + \alpha y_{i,t-1}+\theta_i + \varepsilon_{it} \quad  \E\bra{\varepsilon_{it}|x_{i1},\ldots,x_{it-1}} =0
+    y_{it}  = x_{it} \beta + \theta y_{i,t-1}+\theta_i + \varepsilon_{it} \quad  \E\bra{\varepsilon_{it}|x_{i1},\ldots,x_{it-1}} =0
 \end{equation*}
 Note that the panel used in my estimation has relatively high persistency in the variables. This kind of characteristics was pointed out in \cite{blundell1998initial} as well. It argues that when $T$ is relatively small and the regressors exhibit relatively high auto correlation, the lagged levels of regressors $x_{i,t-2}$ only serve as weak instruments for first differences equation $\Delta \varepsilon_{i,t}$. By imposing a reasonable assumption that $\E{\Delta x_{i,t-1}\varepsilon_{i,t}}$, I instrument the current level with lagged first differences, implementing the so-called system GMM explained in \cite{arellano1995another,blundell1998initial}.
 
@@ -101,7 +101,7 @@ incorporating our knowledge of $G$.
 The usefulness of a prior $G$ is further exemplified/highlighted in the ranking
 and selection problem mentioned above, when the object of interests is the
 noisy estimate of $\theta_i$. For example, in \cite{gu2023invidious}, we are
-given the task of selecting the top 20\% out of the population of $\alpha_i$,
+given the task of selecting the top 20\% out of the population of $\theta_i$,
 that is to say selecting those $i$ whose $alpha_i>G^{-1}(0.8)$, while
 controlling for the overall false discovery rate ($\frac{x}{y}$) at 5\%. In
 \cite{gu2023invidious}, the authors try to develop an optimal decision rule for
@@ -145,13 +145,13 @@ novel approach of \cite{koenker2014convex} computationally more attractive.
 It is worth mentioning here that though a discrete $G$ with at most x atoms can
 be estimated using the REBayes package \cite{koenker2017rebayes}, we are not
 free of imposing any assumptions, that is the distribution of estimate
-$\hat{\alpha}_i|\alpha_i,\sigma_i^2.$ To illustrate, in the case of the
+$\hat{\theta}_i|\theta_i,\sigma_i^2.$ To illustrate, in the case of the
 estimate of fixed effect, we have
 
 \begin{align*}
-    \hat{\alpha}_i & =\frac{1}{T}\sum_t (y_{it}-x_{it}\hat{\beta})                         \\
-                   & =\frac{1}{T}\sum(\alpha_i+\varepsilon_{it}+x_{it}(\beta-\hat{\beta})) \\
-                   & \to^d \alpha_i+\frac{1}{T}\sum_t \varepsilon_{it}                     \\
+    \hat{\theta}_i & =\frac{1}{T}\sum_t (y_{it}-x_{it}\hat{\beta})                         \\
+                   & =\frac{1}{T}\sum(\theta_i+\varepsilon_{it}+x_{it}(\beta-\hat{\beta})) \\
+                   & \to^d \theta_i+\frac{1}{T}\sum_t \varepsilon_{it}                     \\
 \end{align*}
 
 The asymptotic distribution follows from the consistency of $\hat{\beta}$ when
@@ -165,7 +165,7 @@ each $i$
 Then a fixed/small $T$ won't do jeopardize/imperil xxx our argument too much since we do not need to invoke central
 limit theorem to have
 \begin{equation*}
-    \hat{\alpha}_i\to^d N(\alpha_i,\sigma_i^2/T)
+    \hat{\theta}_i\to^d N(\theta_i,\sigma_i^2/T)
 \end{equation*}
 However without the normality assumption on the error terms, we have to resort to the
 central limit theorem from the claim that $T\to \infty$, which may seem unrealistic for a wide panel ($N>>T$).
@@ -173,14 +173,14 @@ central limit theorem from the claim that $T\to \infty$, which may seem unrealis
 The rest of the paper is organized as follows. Section 2 briefly describes the
 data and lays out the reduced form estimation of the input demand function,
 treating the number of nurses as the dependent variable and a list of 9 output
-measures as the regressors. Section 2 applies the classical panel data
-estimators to the same specification, distinguishing between whether strict
-exogeneity is assumed. In section 3, we introduce the compound decision
-framework and specifically/xxx define the selection problem. Section 4 follows
-with a comparison of the different selection outcome as a result of imposing
-varying constraints and assumptions. In section 5, we try to draw preliminary
-conclusion on the comparative performance of public and private hospitals.
-Section 6 discusses potential issues and concludes.
+measures as the regressors. It then applies the classical panel data estimators
+to the same specification, distinguishing between whether strict exogeneity is
+assumed. In section 3, we introduce the compound decision framework and
+specifically/xxx define the selection problem, we then . Section 4 follows with
+a comparison of the different selection outcome as a result of imposing varying
+constraints and assumptions. We try to draw preliminary conclusion on the
+comparative performance of public and private hospitals. Section 5 discusses
+potential issues and concludes.
 
 \section{Data and Estimation}
 \subsection{Data}
@@ -240,11 +240,11 @@ Following \cite{croiset2024hospitals}, we further single out the \textit{public 
 
 \textbf{Summarize the input}: explain the reason why we use nurses instead of medical doctors.
 
-\begin{adjustbox}{width=1\textwidth}
-    \includegraphics{../../Figures/Descriptive/nurses.pdf}
-\end{adjustbox}
+% \begin{adjustbox}{width=1\textwidth}
+%     \includegraphics{../../Figures/Descriptive/nurses.pdf}
+% \end{adjustbox}
 
-\subsection{Estimation (OLS)}
+\subsection{Estimation (Pooling)}
 
 \footnote{On a side note, we filtered the panel such that
     \begin{enumerate}
@@ -261,15 +261,175 @@ Following \cite{croiset2024hospitals}, we further single out the \textit{public 
     \input{../../Tables/2013-2022/reg_sep_iv.tex}
 \end{table}
 
-\subsection{Panel Data Estimator}
+A simple counterfactual to perform:
+% insert a table where we compare the number of nurses needed in public hospitals if they were to use the input demand function of private hospitals.
+
+\subsection{Estimation (Fixed effect)}
 Though \cite{croiset2024hospitals} has mentioned that identification (and
 significance level) is mainly attributed to \textit{between-group} variation,
 there's still some level of \textit{within-group} variation that guarantee the
 estimation of parameters.
 
+The strict exogeneity assumption is not always realistic, especially in the
+case of production or factor demand function estimation. Therefore, we resort
+to a series of seminal work in panel data estimation
+\cite{anderson1982formulation,arellano1991some,arellano1995another,blundell1998initial}.
+
 \begin{table}
-    \input{../../Tables/2013-2022/reg_fe_plm.tex}
+    \label{tab:reg_wg_fd_gmm}
+    \input{../../Tables/2013-2022/reg_wg_fd_gmm.tex}
 \end{table}
+
+It is worth mentioning that the standard first difference GMM where lagged
+level $x_{i,t-2}$ is used as instruments for the first difference equation
+$\Delta \varepsilon = \Delta y_{i,t}-\Delta x_{i,t} \beta$ does not produce
+results of pure noise. This weak instrument issue was pointed out by
+\cite{blundell1998initial}.
+
+In the rest of the article, I proceed with the estimation results of system GMM
+as in col 3 of Table \ref{tab:reg_wg_fd_gmm}.
+
+\section{Compound Decision: The Selection Problem}
+% this is where it finally gets interesting
+% from James Stein to Parametric to Non-parametric. Gives an overview of the history of Empirical Bayes Compound Decision
+
+\subsection{Compound Decision}
+Leaving the estimation above aside, I will first introduce the idea of compound
+decision pioneered by \cite{robbins1956empirical} before entering into the
+ranking and selection problem.
+
+Now there are $N$ units, each has an unobserved parameter labelled as
+$(\theta_1,\ldots, \theta_n)$. We are given $N$ estimates
+$(\hat{\theta}_1,\ldots, \hat{\theta}_n) $ of the underlying heterogeneous
+parameters. And each estimate $\hat{\theta}_i$ conditioned on $\theta_i$
+follows a distribution $\hat{\theta}_i | \theta_i \sim P_{\theta_i}$. No matter
+what the specific task is, I care about the collective performance of my
+decision. That being said, I will explicitly define the loss function to
+reflect my attention to the so-called collective performance.
+
+First the decision rule is defined as a vector of individual decisions
+\begin{equation*}
+    \delta(Y) = (\delta_1(\hat{\theta}), \ldots, \delta_n(\hat{\theta}))
+\end{equation*}
+where each $\delta_i(\cdot)$ is a decision rule for the estimate of $\theta_i$ with the vector $\hat{\theta}$ as input.
+The individual loss for a decision is $L(\theta_i, \delta_i(\hat{\theta}_i))$, giving rise to the aggregated \textbf{compound loss}
+\begin{equation*}
+    L_n(\theta, \delta(\hat{\theta})) = \sum_{i=1}^n L(\theta_i, \delta_i(\hat{\theta})).
+\end{equation*}
+While the compound risk, defined as the expectation of compound loss can be expressed as
+\begin{align*}
+    R_n(\theta, \delta(\hat{\theta})) & = \E[L_n(\theta, \delta(\hat{\theta}))]                                                                                                                                    \\
+                                      & = \frac{1}{n}\sum_{i=1}^n \E[L(\theta_i, \delta_i(\hat{\theta}))]                                                                                                          \\
+                                      & = \frac{1}{n}\sum_{i=1}^n \int \ldots \int L(\theta_i, \delta_i(\hat{\theta}_1, \ldots, \hat{\theta}_n))dP_{\theta_1}(\hat{\theta}_1)\ldots dP_{\theta_n}(\hat{\theta}_n). \\
+\end{align*}
+
+Given the objective function which is the compound risk, our goal is to find a
+decision rule $\delta(\cdot)$ that minimizes it. This is the optimal compound
+decision rule for a given vector $\hat{\theta}$.
+\begin{equation*}
+    {\delta}^*(\hat{\theta}) =
+    \arg\min_{\delta} R_n(\theta, \delta(\hat{\theta}))
+\end{equation*}
+
+If $\delta^*(\hat{\theta})$ is separable \footnote{The linear shrinkage class
+    belongs to this class as well. See appendix.}, which means that
+$\delta^*(\hat{\theta})=\{t(\hat{\theta}_1), \ldots, t(\hat{\theta}_n)\}$, the
+compound risk can be written as
+\begin{align*}
+    R_n(\theta, \delta(\hat{\theta})) f & =  \frac{1}{n}\sum \int\ldots\int L(\theta_i, \delta(\hat{\theta}_1,\dots,\hat{\theta}_n))dP_{\theta_1}(\hat{\theta}_1)\ldots dP_{\theta_n}(\hat{\theta}_n) \\
+                                        & = \int_{\theta} \int L(\theta_i, t(\hat{\theta}_i))dP_{\theta_i}(\hat{\theta}_i)dG_n(\theta)                                                                \\
+                                        & =\E_{G_n}{\E_\theta\bra{L(\theta_i, \delta_i(\hat{\theta}))}}                                                                                               \\
+\end{align*}
+where $G_n(\theta)$ is the empirical distribution of $\theta$.\footnote{ $\E_{G_n}\bra{(f(x))} = 1/n \sum_i^n f(x_i)$}
+
+It is worth mentioning that up til now we treat each $\theta_i$ as fixed
+unknown parameters \footnote{By abuse of terminology, we called this
+    \textit{fixed effect view} while the other assumption \textit{random effect
+        view}. Yet the two terms have nothing to do with whether $\theta_i$ is
+    correlated with $x_{it}$}. However, if we take a Bayesian view on the vector
+$\boldsymbol{\theta}$ by assuming that each $\theta_i$ is an $i.i.d.$ draw from
+an underlying common distribution $G$. The Bayesian risk is
+\begin{equation*}
+    \E_{G}{\E_\theta\bra{L(\theta_i, \delta_i(\hat{\theta}))}}
+\end{equation*}
+The two views are closely linked via the $G_n$ and $G$.
+
+\begin{quotation}
+    Compound Risk is equivalent to the Bayes risk with prior $G_n$.
+\end{quotation}
+
+\subsection{Selection Problem}
+Our task at hand is to select the top $\alpha\%$ (e.g. 20\%) of the hospitals
+in terms of labor use efficiency. If $\theta_i$ represents a measure of
+\emph{inefficiency} which is the fixed effect term in the linear input demand
+function specified in Section 2. We want to select the top $\theta_i$s that is
+below than the $\alpha$ quantile of the population $\theta_i<G_n^{-1}(\alpha)$.
+Moreover, we want to subject the selection to another constraint which is the
+False Discovery Rate constraint at level $\gamma$, that is
+\begin{align*}
+    \p\bra{\theta_i>\theta_{\alpha}|\delta_i=1} & =\frac{\p\bra{\theta_i>\theta_{\alpha},\delta_i=1}}{\p\bra{\delta_i=1}}           \\
+                                                & = \frac{\E_G\bra{1\set{\theta_i>\theta_{\alpha},\delta_i=1}}}{\E_G\bra{\delta_i}} \\
+                                                & \le \gamma                                                                        \\
+\end{align*}
+Now we are in the position to write down the selection problem subject to the
+capacity constraint at $\alpha$ and FDR constraint at $\gamma$ level, with multiplier $\tau_1$ and $\tau_2$ respectively. We denote
+$\delta_i=1$ when unit $i$ is selected and $h_i=1\{\theta_i<\theta_\alpha\}=1$ when unit $i$ is truly below
+the threshold $\theta_\alpha =G^{-1}(\alpha)$. The compound loss
+function is defined as
+\begin{equation*}
+    L(\delta,\theta)=\sum h_i(1-\delta_i) +\tau_1\pa{\sum (1-h_i)\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}
+\end{equation*}
+To minimize the compound risk is thus
+\begin{align*}
+    \min_{\delta} & \E_G\E_{\theta|\hat{\theta}}\bra{L(\delta,\theta)}                                                                                                        \\
+                  & =\E_G{\sum \E(h_i)(1-\delta_i) +\tau_1\pa{\sum (1-\E(h_i))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}}                               \\
+                  & =\E_G{\sum v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}} \\
+\end{align*}
+where $v_\alpha(\hat{\theta})=\p(\theta<\theta_\alpha|\hat{\theta})$, which we called \textbf{posterior tail probability}. This is in contrast to the posterior mean widely used to shrink the estimate $\hat{\theta}_i$.
+For the moment, it may not immediately obvious how important the prior distribution $G$ is. I will further illustrate it in the next section.
+\subsection{Posterior tail probability}
+For each $\theta_i$, I observe a sequence of $Y_{it}$ coming from a
+longitudinal model
+\begin{equation*}
+    Y_{it} = \theta_i + \varepsilon_{it} \quad \varepsilon_{it} \sim \caln(0,\sigma_i^2) \quad (\theta_i,\sigma_i^2) \sim G
+\end{equation*}
+Neither $\theta_i$ nor $\sigma_i^2$ is known to us. But there are two sufficient statistics for $(\theta_i,\sigma_i^2)$.
+\begin{align*}
+    Y_i=\frac{1}{T_i}\sum_{t=1}^{T_i}Y_{it}           & \quad \text{where}\quad Y_i|\theta_i,\sigma_i^2 \sim \caln(\theta_i,\sigma_i^2/T_i)     \\
+    S_i=\frac{1}{T_i-1}\sum_{t=1}^{T_i}(Y_{it}-Y_i)^2 & \quad \text{where} \quad S_i|\sigma_i^2 \sim \Gamma(r_i= (T_i-1)/2,2\sigma_i^2/(T_i-1)) \\
+\end{align*}
+
+The tail probability $v_\alpha(y_i,s_i)$ given the two sufficient statistics is
+defined as
+\begin{align*}
+    v_\alpha(Y_i,S_i) & = P( \theta_i > \theta_{\alpha} | Y_i,S_i)                                                                                 \\
+                      & = \frac{{\int_{-\infty}^{\theta_{\alpha}} \Gamma(s_i|r_i,\sigma_i^2) f(y_i|\theta_i, \sigma_i^2) dG(\theta_i,\sigma_i^2)}}
+    {{\int_{-\infty}^{\infty} \Gamma(s_i|r_i,\sigma_i^2) f(y_i|\theta_i, \sigma_i^2) dG(\theta_i,\sigma_i^2)}}
+\end{align*}
+
+\paragraph{Write out the capacity constraint}
+\paragraph{Write out the FDR constraint}
+
+If our specification and assumptions on exogeneity are correct, the consistency
+of $\hat{\beta}$ is guaranteed by $N$'s asymptotic. However, our estimate of
+the fixed effect is
+\begin{align*}
+    \hat{\theta}_i & =\frac{1}{T}\sum(\theta_i+\varepsilon_{it}+x_{it}(\beta-\hat{\beta}))              \\
+                   & \overset{N\to \infty}{\longrightarrow} \theta_i+\frac{1}{T}\sum_t \varepsilon_{it} \\
+\end{align*}
+When $T$ is relatively small (or even fixed), I am not in a good position to use central limit theorem to claim that $\hat{\theta}_i \overset{d}{\to} \caln(\theta_i,\frac{\sigma_i^2}{T})$. A bold assumption that $\varepsilon_{it} \sim \caln(0,\sigma_i^2)$ will save me from the $T$ issue, which I will impose for the rest of the section (and abstract from whether that  for each $i$ is a testable/reasonable/feasible assumption).
+
+\section{Selection results}
+
+Although \cite{gu2023invidious} has presented the decision rule when
+$(\theta_i,\sigma_i^2)$ are unknown. The application assumes that $\sigma_i^2$
+is known/observable. In this section, I will compare the selection results
+under known variance $\sigma_i^2$ and estimated variance $S_i$.
+
+\paragraph{Known variance, and 4 rules}
+\paragraph{Unknown variance, and 4 rules}
+
+\section{Conclusion}
 
 \newpage
 \bibliography{ref.bib}

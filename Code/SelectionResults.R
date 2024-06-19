@@ -8,9 +8,8 @@ source("Code/SelectX.R")
 
 
 library(data.table)
-pdt_both <- merge_full(pdt_new[, .(AN, FI, FI_EJ, STJR, FixedEffect, Res)], pdt_old[, .(AN, FI, FI_EJ, STJR, FixedEffect, Res)])
-pdt_both <- merge(pdt_new, pdt_old, by = c("AN", "FI"), all.x = TRUE, all.y = TRUE)
-Z <- fit1d(pdt_new)
+load()
+Z <- fit1d(pdt)
 
 sL <- selectL1d(Z, alpha = 0.22, gamma = 0.05)
 sL <- select1d(Z, alpha = 0.22, gamma = 0.05, "L")

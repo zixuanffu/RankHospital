@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.13)  18 JUN 2024 20:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.13)  19 JUN 2024 19:12
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -457,32 +457,38 @@ Non-PDF special ignored!
 
 LaTeX Warning: Citation `herbert1956empirical' on page 4 undefined on input line 118.
 
-[4] [5]
-<../../Figures/Descriptive/nurses.pdf, id=107, 722.7pt x 433.62pt>
-File: ../../Figures/Descriptive/nurses.pdf Graphic file (type pdf)
-<use ../../Figures/Descriptive/nurses.pdf>
-Package pdftex.def Info: ../../Figures/Descriptive/nurses.pdf  used on input line 244.
-(pdftex.def)             Requested size: 722.69823pt x 433.61894pt.
- [6] (../../Tables/2013-2022/reg_pool_dummy.tex) (../../Tables/2013-2022/reg_sep_iv.tex) (../../Tables/2013-2022/reg_fe_plm.tex) [7 <../../Figures/Descriptive/nurses.pdf>] [8] [9] (./thesis.bbl [10]) [11] (./thesis.aux)
+[4] [5] (../../Tables/2013-2022/reg_pool_dummy.tex) [6] (../../Tables/2013-2022/reg_sep_iv.tex) (../../Tables/2013-2022/reg_wg_fd_gmm.tex)
+Overfull \hbox (0.97575pt too wide) in paragraph at lines 283--288
+\OT1/cmr/m/n/12 sults of pure noise. This weak in-stru-ment is-sue was pointed out by [[]]. 
+ []
+
+
+Package caption Warning: \label without proper reference on input line 279.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `tab:reg_wg_fd_gmm' on page 7 undefined on input line 290.
+
+[7] [8] [9] [10] [11] [12] [13] [14] (./thesis.bbl [15]) [16] (./thesis.aux)
 
 LaTeX Warning: There were undefined references.
 
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 43B0EA1E849FED6C3599287125370830;633.
+(rerunfilecheck)             Checksum: AE782E7F283C62EFE2FEE0CAC1995693;1648.
  ) 
 Here is how much of TeX's memory you used:
- 12833 strings out of 479560
- 210632 string characters out of 5876399
- 524542 words of memory out of 5000000
- 31136 multiletter control sequences out of 15000+600000
- 480296 words of font info for 70 fonts, out of 8000000 for 9000
+ 12874 strings out of 479560
+ 210940 string characters out of 5876399
+ 529818 words of memory out of 5000000
+ 31149 multiletter control sequences out of 15000+600000
+ 483104 words of font info for 79 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 72i,11n,77p,754b,560s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{c:/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on thesis.pdf (11 pages, 218879 bytes).
+ 72i,15n,77p,754b,554s stack positions out of 10000i,1000n,20000p,200000b,200000s
+{c:/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on thesis.pdf (16 pages, 295552 bytes).
 PDF statistics:
- 241 PDF objects out of 1000 (max. 8388607)
- 190 compressed objects within 2 object streams
- 48 named destinations out of 1000 (max. 500000)
- 46 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 342 PDF objects out of 1000 (max. 8388607)
+ 275 compressed objects within 3 object streams
+ 69 named destinations out of 1000 (max. 500000)
+ 89 words of extra memory for PDF output out of 10000 (max. 10000000)
 

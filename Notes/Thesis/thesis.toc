@@ -1,5 +1,15 @@
 \contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
 \contentsline {section}{\numberline {2}Data and Estimation}{6}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Data}{6}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Estimation (OLS)}{7}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Panel Data Estimator}{7}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.2}Estimation (Pooling)}{7}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Estimation (Fixed effect)}{7}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Compound Decision: The Selection Problem}{7}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Compound Decision}{7}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Selection Problem}{12}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Posterior tail probability}{12}{subsection.3.3}%
+\contentsline {paragraph}{Write out the capacity constraint}{13}{section*.6}%
+\contentsline {paragraph}{Write out the FDR constraint}{13}{section*.7}%
+\contentsline {section}{\numberline {4}Selection results}{13}{section.4}%
+\contentsline {paragraph}{Known variance, and 4 rules}{13}{section*.8}%
+\contentsline {paragraph}{Unknown variance, and 4 rules}{13}{section*.9}%
+\contentsline {section}{\numberline {5}Conclusion}{14}{section.5}%

@@ -4,6 +4,7 @@ pacman::p_load(data.table, REBayes, lattice, ggplot2)
 # ---- load regression results ---- #
 reg_inf_ols_FI <- readRDS("Results/2013-2022/reg_inf_ols_FI.rds")
 pdt <- readRDS("Results/2013-2022/pdt_inf_ols_FI.rds")
+pdt <- readRDS("Results/2013-2022/pdt_used_gmm_sys.rds")
 
 # ---- Location \theta_i and scale \sigma_i^2 parameters ---- #
 # ---- sufficient statistics for \theta_i ---- #
@@ -29,14 +30,15 @@ save(pdt, dt1, dt2, file = "Results/2013-2022/pdt_dt1_dt2.rda")
 # ---- 1. homogeneous known variance ---- #
 help(GLmix) # GLmix(x, v = 300, sigma = 1, hist = FALSE, histm = 300, weights = NULL, ...)
 f <- GLmix(dt2$hat_mu, verb = 5) # assume sigma = 1
-pdf("Figures/2013-2022/Spec3/HomoKnownVar.pdf", width = 8, height = 5)
+pdf("Figures/2013-2022/GMM/HomoKnownVar.pdf", width = 8, height = 5)
 plot(f, xlab = expression(mu), main = "Estimated Location Mixing Density with Homogeneous Known Variance (sigma^2 = 1)")
 dev.off()
 
 # ---- 2. heterogeneous known variance ---- #
+dir.create("Figures/2013-2022/GMM", showWarnings = FALSE)
 help(GLmix)
 f <- GLmix(dt2$hat_mu, sigma = sqrt(dt2$Var_res1), verb = 5) # assume the estimated variance is the known variance
-pdf("Figures/2013-2022/Spec3/HeteroKnownVar.pdf", width = 8, height = 5)
+pdf("Figures/2013-2022/GMM/HeteroKnownVar.pdf", width = 8, height = 5)
 plot(f, xlab = expression(mu), main = "Estimated Location Mixing Density with Heterogeneous Known Variance")
 dev.off()
 
@@ -51,18 +53,19 @@ f_t <- WTLVmix(y = pdt$hat_mu, id = pdt$id, u = 300, v = 300)
 
 X11(width = 8, height = 5)
 par(mfrow = c(1, 2))
-pdf("Figures/2013-2022/Spec3/WTLVmix_u.pdf", width = 8, height = 5)
+pdf("Figures/2013-2022/GMM/WTLVmix_u.pdf", width = 8, height = 5)
 plot(f_t$u, f_t$fu,
     main = expression(paste("Density of ", theta, sep = "")),
     xlab = expression(theta), ylab = expression(f(theta)), type = "l"
 )
 dev.off()
-pdf("Figures/2013-2022/Spec3/WTLVmix_v.pdf", width = 8, height = 5)
+pdf("Figures/2013-2022/GMM/WTLVmix_v.pdf", width = 8, height = 5)
 plot(f_t$v[2:300], f_t$fv,
     main = expression(paste("Density of ", sigma, sep = "")),
     xlab = expression(sigma), ylab = expression(f(sigma)), type = "l"
 )
 dev.off()
+View(f_t$v)
 min(f_t$v)
 
 
@@ -75,7 +78,7 @@ str(f_g)
 require(lattice)
 g <- expand.grid(theta = f_g$u, sigma = f_g$v)
 g$fuv <- f_g$fuv
-pdf("Figures/2013-2022/Spec3/WGLVmix.pdf", width = 8, height = 5)
+pdf("Figures/2013-2022/GMM/WGLVmix.pdf", width = 8, height = 5)
 pl <- cloud(fuv ~ theta * sigma,
     data = g, type = "h", lwd = 2,
     zlim = c(0, max(g$fuv)), scales = list(
@@ -95,7 +98,7 @@ str(fg)
 require(lattice) # a visualisation package
 g <- expand.grid(theta = fg$u, sigma = fg$v)
 g$fuv <- fg$fuv
-pdf("Figures/2013-2022/Spec3/GLVmix.pdf", width = 8, height = 5)
+pdf("Figures/2013-2022/GMM/GLVmix.pdf", width = 8, height = 5)
 pl <- cloud(fuv ~ theta * sigma,
     data = g, type = "h", lwd = 2,
     zlim = c(0, max(g$fuv)), scales = list(
@@ -110,7 +113,7 @@ dev.off()
 # smooth the estimated GLVmix
 fg_s <- KW2smooth(fg, bw = bwKW2(fg, 2))
 g$fuv <- fg_s$fuv
-pdf("Figures/2013-2022/Spec3/GLVmix_s.pdf", width = 8, height = 5)
+pdf("Figures/2013-2022/GMM/GLVmix_s.pdf", width = 8, height = 5)
 pl <- cloud(fuv ~ theta * sigma,
     data = g, type = "h", lwd = 2,
     zlim = c(0, max(g$fuv)), scales = list(
@@ -131,7 +134,7 @@ for (i in 0:3) {
     assign(paste0("f", i), GLmix(dt2[STJR == i]$hat_mu, sigma = sqrt(dt2[STJR == i]$Var_res1), verb = 5)) # assume the estimated variance is the known variance
 }
 
-png("Figures/2013-2022/Spec3/HeteroKnownVar_sep.png", width = 800, height = 500 * 4)
+png("Figures/2013-2022/GMM/HeteroKnownVar_sep.png", width = 800, height = 500 * 4)
 par(mfrow = c(4, 1))
 for (i in 0:3) {
     plot(get(paste0("f", i)), xlab = expression(mu), main = paste("Estimated G (STJR = ", i, ")", sep = ""))
@@ -139,7 +142,7 @@ for (i in 0:3) {
 dev.off()
 
 # ---- 2.2 smoothed G ---- #
-png("Figures/2013-2022/Spec3/HeteroKnownVar_sep_s.png", width = 800, height = 500 * 4)
+png("Figures/2013-2022/GMM/HeteroKnownVar_sep_s.png", width = 800, height = 500 * 4)
 par(mfrow = c(4, 1))
 for (i in 0:3) {
     f <- get(paste0("f", i))

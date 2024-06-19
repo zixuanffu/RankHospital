@@ -5,45 +5,45 @@ The style file: apalike.bst
 Database file #1: ref.bib
 Warning--I didn't find a database entry for "herbert1956empirical"
 Warning--empty journal in croiset2024hospitals
-You've used 15 entries,
+You've used 18 entries,
             1935 wiz_defined-function locations,
-            571 strings with 6239 characters,
-and the built_in function-call counts, 6016 in all, are:
-= -- 619
-> -- 204
-< -- 14
-+ -- 68
-- -- 64
-* -- 517
-:= -- 1018
-add.period$ -- 43
-call.type$ -- 15
-change.case$ -- 107
-chr.to.int$ -- 15
-cite$ -- 16
-duplicate$ -- 223
-empty$ -- 429
-format.name$ -- 101
-if$ -- 1182
+            590 strings with 6766 characters,
+and the built_in function-call counts, 7302 in all, are:
+= -- 754
+> -- 237
+< -- 19
++ -- 80
+- -- 74
+* -- 621
+:= -- 1222
+add.period$ -- 52
+call.type$ -- 18
+change.case$ -- 127
+chr.to.int$ -- 18
+cite$ -- 19
+duplicate$ -- 278
+empty$ -- 529
+format.name$ -- 118
+if$ -- 1447
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 14
-newline$ -- 76
-num.names$ -- 45
-pop$ -- 74
+missing$ -- 17
+newline$ -- 91
+num.names$ -- 54
+pop$ -- 90
 preamble$ -- 1
-purify$ -- 107
+purify$ -- 127
 quote$ -- 0
-skip$ -- 185
+skip$ -- 230
 stack$ -- 0
-substring$ -- 505
-swap$ -- 31
-text.length$ -- 2
+substring$ -- 619
+swap$ -- 44
+text.length$ -- 4
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 90
+type$ -- 108
 warning$ -- 1
-while$ -- 58
+while$ -- 71
 width$ -- 0
-write$ -- 191
+write$ -- 231
 (There were 2 warnings)

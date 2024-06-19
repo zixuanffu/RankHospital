@@ -10,6 +10,17 @@ Aigner, D., Lovell, C.~K., and Schmidt, P. (1977).
 Andersen, E.~D. and Andersen, K.~D. (2010).
 \newblock The mosek optimization tools manual, version 6.0.
 
+\bibitem[Anderson and Hsiao, 1982]{anderson1982formulation}
+Anderson, T.~W. and Hsiao, C. (1982).
+\newblock Formulation and estimation of dynamic models using panel data.
+\newblock {\em Journal of econometrics}, 18(1):47--82.
+
+\bibitem[Arellano and Bond, 1991]{arellano1991some}
+Arellano, M. and Bond, S. (1991).
+\newblock Some tests of specification for panel data: Monte carlo evidence and
+  an application to employment equations.
+\newblock {\em The review of economic studies}, 58(2):277--297.
+
 \bibitem[Arellano and Bover, 1995]{arellano1995another}
 Arellano, M. and Bover, O. (1995).
 \newblock Another look at the instrumental variable estimation of
@@ -83,5 +94,11 @@ Meeusen, W. and van Den~Broeck, J. (1977).
 \newblock Efficiency estimation from cobb-douglas production functions with
   composed error.
 \newblock {\em International economic review}, pages 435--444.
+
+\bibitem[Robbins, 1956]{robbins1956empirical}
+Robbins, H.~E. (1956).
+\newblock An empirical bayes approach to statistics.
+\newblock In {\em Proceedings of the third berkeley symposium on mathematical
+  statistics and probability}, volume~1, pages 157--163.
 
 \end{thebibliography}

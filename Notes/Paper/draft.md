@@ -111,7 +111,7 @@ A bit of history here and the standard methods. (但不要放第一段这不是�
 
 Efficiency and performance analysis are popular. While it is always firms whose main objective is to maximize profit, efficiency analysis has been extended to numerous fields. In the public sectors, education program and hospitals are the two most considered/studies areas. In fact, the classical data envolopment analysis (DEA) was first introduced to measure the performance of education programs. Parametric and non parametric methods are both developed. (An overview of the methods)
 
-Having a measure/index of efficiency, it is often a natural subsequent step to compare/rank/select those most efficient ones and investigate those that are less satisfactory. The action that is taken falls under the philosophy of compound decision. Because we are given a a collection of measure and want to perform a collective action. We care about the performacne of the collective action. Empiriical bayes is useful in this regard. 
+Having a measure/index of efficiency, it is often a natural subsequent step to compare/rank/select those most efficient ones and investigate those that are less satisfactory. The action that is taken falls under the philosophy of compound decision. Because we are given a collection of measure and want to perform a collective action. We care about the performance of the collective action. Empirical bayes is useful in this regard. 
 
 We explored underexploited dataset SAE. A panel of hospital data in France. The dataset covers all hospitals in France, with both public and private. Following the instruction given in CroisetGarybobo's paper, we extended the dataset to include earlier and later periods. Currently, it covers the period from 2013 to 2022, with the year 2020 missing.
 
@@ -160,7 +160,7 @@ The results based on two assumptions are reported in the table.
 
 Section 4: Empirical Bayes
 
-The reason why we resort to fixed effect model is that we are interested in the estimated fixed effect however noisy they can be. The value added model on teachers has long been the example where empirical bayes is applied. Here, we adapted the method to hospital "value added" whether the value is efficiency. 
+The reason why we resort to fixed effect model is that we are interested in the estimated fixed effect however noisy they can be. The value added model on teachers has long been the example where empirical bayes is applied. Here, we adapted the method to hospital "value added" where the value is efficiency. 
 
 Put the framework here. 
 
