@@ -119,7 +119,7 @@ SheetExtract <- function(sheet_names, start, end) {
         zipfilename <- paste0("Data/In/Raw/sae_stat_", i, ".7z")
         zipfiletable <- setDT(archive(zipfilename))
         for (sheet_name in sheet_names) {
-            row_number <- (grep(paste0(sheet_name, "_"), zipfiletable$path))
+            row_number <- (grep(paste0(sheet_name, "_"), zipfiletable$path))[1]
             x <- setDT(read.csv2(archive_read(zipfilename, row_number, mode = "r")))
             colnames(x) <- toupper(colnames(x))
             x[, `:=`(AN = as.numeric(AN), FI = as.character(FI))]
@@ -136,3 +136,8 @@ SheetExtract <- function(sheet_names, start, end) {
 # ID contains the hospital ID
 sheet <- c("MCO", "Q20", "Q21", "Q23", "Q24", "ID")
 SheetExtract(sheet, 2013, 2015)
+
+SheetExtract(c("URGENCES2"), 2013, 2015)
+SheetExtract(c("PSY"), 2013, 2015)
+SheetExtract(c("SSR", "USLD", "HAD"), 2013, 2015)
+SheetExtract("HAD", 2013, 2015)

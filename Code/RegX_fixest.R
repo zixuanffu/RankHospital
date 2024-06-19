@@ -10,6 +10,28 @@ add_log <- function(var_list) {
     return(log_var_list)
 }
 
+add_l <- function(x, lag) {
+    len <- length(x)
+    left <- rep("l(", len)
+    right <- rep(")", len)
+    l <- paste0(left, x, ",", lag, right)
+    return(l)
+}
+
+add_d <- function(x) {
+    len <- length(x)
+    left <- rep("d(", len)
+    right <- rep(")", len)
+    l <- paste0(left, x, right)
+    return(l)
+}
+
+add_dd <- function(x) {
+    d <- rep("d_", length(x))
+    return(paste0(d, x))
+}
+
+add_d
 
 reg_X <- function(data, varl, varr, control = "CASEMIX", cluster = "FI", method = "ols") {
     #' @title Regression using fixest package
@@ -23,7 +45,7 @@ reg_X <- function(data, varl, varr, control = "CASEMIX", cluster = "FI", method 
     #' @return The regression result
 
     if (method == "ols") {
-        formula <- xpd(lhs = add_log(varl), rhs = add_log(varr), add = paste(control, cluster, sep = "|"))
+        formula <- as.formula(paste0(add_log(varl), "~", paste(add_log(varr), collapse = "+"), "|", cluster))
         res <- feols(formula, data)
     }
 
@@ -33,13 +55,13 @@ reg_X <- function(data, varl, varr, control = "CASEMIX", cluster = "FI", method 
     }
 
     # saveRDS(res, paste0("Results/", year_start, "-", year_end, "/reg_", varl, "_", method, "_", cluster, ".rds"))
-    etable(res, sdBelow = TRUE, digits = 3, fitstat = ~ n + sq.cor + pr2, digits.stats = 3, tex = TRUE, file = paste0("Tables/2016-2022/reg_", varl, "_", method, ".tex"), signif.code = "letters", replace = TRUE)
+    etable(res, se.below = TRUE, digits = 3, fitstat = ~ n + sq.cor + pr2, digits.stats = 3, tex = TRUE, file = paste0("Tables/2016-2022/reg_", varl, "_", method, ".tex"), signif.code = "letters", replace = TRUE)
 
     return(res)
 }
 
 
-plot_FE <- function(reg_res, cluster, dt_status, year_start, year_end, plot_format = "pdf") {
+plot_FE <- function(reg_res, cluster, dt_status, year_start, year_end, filename, format = "pdf") {
     #' @title Plot the fixed effect classified by the legal status
     #' @description This function is used to plot the fixed effect classified by the legal status.
     #' @param reg_res The regression result.
@@ -63,13 +85,15 @@ plot_FE <- function(reg_res, cluster, dt_status, year_start, year_end, plot_form
     reg_name <- deparse(substitute(reg_res))
     p <- ggplot(dt_FE_status, aes(x = Rank, y = FixedEffect)) +
         geom_point(aes(color = STJR_LABEL), size = 1) +
-        theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5))
+        theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5)) +
+        scale_color_manual(values = c("0" = "red", "1" = "orange", "2" = "blue", "3" = "darkgreen"))
 
-    ggsave(paste0("Figures/", year_start, "-", year_end, "/", reg_name, "_FE_on_", cluster, ".", plot_format), p, width = 6, height = 4, dpi = 300)
+    ggsave(paste(filename, format, sep = "."), p, width = 6, height = 4, dpi = 300)
     pe <- ggplot(dt_FE_status, aes(x = Rank, y = exp(FixedEffect))) +
         geom_point(aes(color = STJR_LABEL), size = 1) +
-        theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5))
-    ggsave(paste0("Figures/", year_start, "-", year_end, "/", reg_name, "_FE_on_", cluster, "_e.", plot_format), pe, width = 6, height = 4, dpi = 300)
+        theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5)) +
+        scale_color_manual(values = c("0" = "red", "1" = "orange", "2" = "blue", "3" = "darkgreen"))
+    ggsave(paste(paste0(filename, "_e"), format, sep = "."), pe, width = 6, height = 4, dpi = 300)
 
     return(list(p, pe))
 }

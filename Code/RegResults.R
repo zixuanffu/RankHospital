@@ -1,170 +1,209 @@
 rm(list = ls())
-source("Code/RegX.R")
-# ---- load the dataset ---- #
-dt1 <- readRDS("Data/Out/combineddata_2016_2022.rds") # 2016-2022
-dt2 <- readRDS("Data/Out/combineddata_2013_2015.rds") # 2013-2015
-cols <- c("AN", "FI", "FI_EJ", "EFF_MD", "ETP_INF", "SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "CASEMIX", "STJR") # variables of interest
-dt <- rbind(dt1[, ..cols], dt2[, ..cols])
+pacman::p_load(data.table, plm, texreg, fixest)
+source("Code/RegX_fixest.R")
+source("Code/RegX_plm.R")
 
-# ---- select only those with stable legal status ---- #
-FI_stat_change <- unique(dt[, .(FI, STJR)])
-FI_stat_change <- FI_stat_change[, .N, by = .(FI)]
-FI_stat_change <- FI_stat_change[N > 1]
-dt <- dt[!FI %in% FI_stat_change$FI]
-
-# ---- Prepare the panel for nurses ---- #
-# ---- filter out observations with possible coding errors
-# 2022 760000166
-# 2016 910001973
-dt_inf <- dt[!(FI == 760000166 & AN == 2022) | !(FI == 910001973 & AN == 2016)]
-# ---- filter out zero values on the LHS ---- #
+dt_inf <- readRDS("Data/Out/dt_inf_pool.rds")
+dt_inf[, ETP_INF := ETP_INF + ETP_AID] # registered and assistant nurses
 dt_inf <- dt_inf[ETP_INF > 0]
-# ---- add one to the RHS to avoid zero values in taking log ---- #
-varr1 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
-varl <- "ETP_INF"
-dt_inf <- dt_inf[SEJHC_MCO > 1 | SEJHP_MCO > 1 | SEANCES_MED > 1]
-dt_inf[, (varr1) := lapply(.SD, function(x) x <- x + 1), .SDcols = varr1]
-dt_inf[, Nobs := .N, by = .(FI)]
-dt_inf <- dt_inf[Nobs >= 6] # keep only those with at least 6 observations
-num_hospital <- length(unique(dt$FI)) # 1526
+dt_inf[, SEJ_MCO := SEJHC_MCO + SEJHP_MCO]
+dt_inf[, SEJ_PSY := VEN_TOT + SEJ_HTP_TOT]
+dt_inf[, MCO := (SEJHC_MCO > 1)]
+dt_inf[, PSY := (SEJ_PSY > 2)]
+level_order <- c(1, 2, 3, 0) # use public as base level
+dt_inf$STJR <- factor(dt_inf$STJR, levels = level_order)
+colnames(dt_inf)
 
-# ---- set data.table in panel data format ---- #
-pdt <- panel(dt_inf, panel.id = ~ FI + AN, time.step = "consecutive", duplicate.method = "first")
-# construct lagged variables
-# pdt[, `:=`(SEJHC_MCO_l1 = l(SEJHC_MCO, 1), SEJHP_MCO_l1 = l(SEJHP_MCO, 1), SEANCES_MED_l1 = l(SEANCES_MED, 1))]
+# ---- 1. Input and output variables ---- #
+var_input <- c("ETP_INF")
+# we distinguish 8 types of output (combine psychiatric inpatient and outpatient)
+var_output <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "CONSULT_EXT", "PASSU", "ENTSSR", "SEJ_HAD", "SEJ_PSY")
+# var_output <- c("SEJ_MCO", "SEANCES_MED", "CONSULT_EXT", "PASSU", "ENTSSR", "SEJ_HAD", "SEJ_PSY")
+var_control <- c("STJR")
+pd_inf <- panel(data = dt_inf, panel.id = ~ FI + AN, time.step = "consecutive") # set the time and id index
 
-# ---- Regression ---- #
-start_year <- 2013
-end_year <- 2022
-# ---- OLS regression with all types of hospitals ---- #
-# ---- With nurses ---- #
-reg_inf_ols_FI <- reg_X(pdt, varl, varr1)
-summary(reg_inf_ols_FI)
-str(reg_inf_ols_FI)
+# ---- 2. Regression (without individual fixed effects) ---- #
 
-obs_removed <- reg_inf_ols_FI$obs_selection$obsRemoved * (-1) # get the observations removed
-pdt_used <- pdt[!obs_removed, ] # keep only the observations used
+# ---- 2.1a Pooling ---- #
+# sort of replicate the regression in Table 6 col 4
 
-# ---- add residuals to the panel
-RES <- reg_inf_ols_FI$residuals
-pdt_used[, `:=`(Res = RES)] # add residuals to the panel
-# ---- add fixed effect to the panel
-FE <- reg_inf_ols_FI$sumFE
-pdt_used[, `:=`(FixedEffect = FE)]
+var_y <- add_log(var_input)
+var_x <- paste(c(add_log(var_output)), collapse = "+")
 
-saveRDS(pdt_used, paste0("Results/", start_year, "-", end_year, "/pdt_inf_ols_FI.rds"))
-saveRDS(reg_inf_ols_FI, paste0("Results/", start_year, "-", end_year, "/reg_inf_ols_FI.rds"))
-# ---- plot the fixed effect ---- #
-reg_inf_ols_FI <- readRDS(paste0("Results/", start_year, "-", end_year, "/reg_inf_ols_FI.rds"))
-status_stable <- readRDS(paste0("Data/Out/status_stable_", start_year, "_", end_year, ".rds"))
-p_res <- plot_FE(reg_inf_ols_FI, "FI", status_stable, year_start = start_year, year_end = end_year)
-p <- p_res[[1]]
-p_e <- p_res[[2]]
+formula_pool <- as.formula(paste0(var_y, "~", var_x))
+# print(formula_pool)
+# log(ETP_INF) ~ log(SEJHC_MCO) + log(SEJHP_MCO) + log(SEANCES_MED) +
+#     log(CONSULT_EXT) + log(PASSU) + log(ENTSSR) + log(SEJ_HAD) +
+#     log(SEJ_PSY)
 
-# ---- OLS regression with only public and private hospitals ---- #
-reg_inf_ols_FI_pub <- reg_X(pdt[STJR == 1 | STJR == 2], varl, varr1)
-summary(reg_inf_ols_FI_pub)
-p_res <- plot_FE(reg_inf_ols_FI_pub, "FI", status_stable, year_start = start_year, year_end = end_year)
-p <- p_res[[1]]
-p_e <- p_res[[2]]
+reg_pool <- feols(formula_pool, data = dt_inf)
+summary(reg_pool)
+
+# ---- 2.1b Pooling IV ---- #
+var_z <- paste(c(add_log(add_l(var_output, 1))), collapse = "+")
+#  "log(l(SEJHC_MCO,1))+log(l(SEJHP_MCO,1))+log(l(SEANCES_MED,1))+log(l(CONSULT_EXT,1))+log(l(PASSU,1))+log(l(ENTSSR,1))+log(l(SEJ_HAD,1))+log(l(SEJ_PSY,1))"
+formula_pool_iv <- as.formula(paste0(var_y, "~", 1, "|", var_x, "~", var_z))
+
+# log(ETP_INF) ~ 1 | log(SEJHC_MCO)... ~ log(l(SEJHC_MCO, 1)) ...
+
+reg_pool_iv <- feols(formula_pool_iv, data = pd_inf)
+# reg_pool_iv <- plm(formula_pool_iv, data = dt_inf, index = c("FI", "AN"), model = "pooling")
+summary(reg_pool_iv)
+
+# ---- 2.2a Dummy variable regression ---- #
+var_y <- add_log(var_input)
+var_x <- paste(c(add_log(var_output), var_control), collapse = "+")
+formula_dum <- as.formula(paste0(var_y, "~", var_x))
+print(formula_dum)
+# log(ETP_INF) ~ log(SEJHC_MCO) + log(SEJHP_MCO) + log(SEANCES_MED) +
+#     log(CONSULT_EXT) + log(PASSU) + log(ENTSSR) + log(SEJ_HAD) +
+#     log(SEJ_PSY) + STJR
+reg_dum <- feols(formula_dum, data = pd_inf)
+summary(reg_dum)
+
+# ---- 2.2b Dummy variable IV regression ---- #
+var_x <- paste(c(add_log(var_output)), collapse = "+")
+var_z <- paste(c(add_log(add_l(var_output, 1))), collapse = "+") # log(l(SEJHC_MCO,1))
+formula_dum_iv <- as.formula(paste0(var_y, "~", var_control, "|", var_x, "~", var_z))
+print(formula_dum_iv)
+# log(ETP_INF) ~ STJR | log(SEJHC_MCO) ... ~ log(l(SEJHC_MCO, 1)) ...
+reg_dum_iv <- feols(formula_dum_iv, data = pd_inf)
+summary(reg_dum_iv)
+
+header <- c("Pool", "Pool IV", "Dummy", "Dummy IV")
+etable(reg_pool, reg_pool_iv, reg_dum, reg_dum_iv, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_pool_dummy.tex", replace = TRUE)
+
+# ---- 2.3 Separate regression by legal status ---- #
+reg_0 <- feols(formula_pool_iv, data = pd_inf[STJR == 0])
+summary(reg_0)
+reg_1 <- feols(formula_pool_iv, data = pd_inf[STJR == 1])
+summary(reg_1)
+reg_2 <- feols(formula_pool_iv, data = pd_inf[STJR == 2])
+summary(reg_2)
+reg_3 <- feols(formula_pool_iv, data = pd_inf[STJR == 3])
+summary(reg_3)
+
+header <- c("Teaching", "Public", "Forprofit", "Nonprofit")
+etable(reg_0, reg_1, reg_2, reg_3, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_sep_iv.tex", signif.code = "letters", replace = TRUE)
+
+# to generate a table with 2 columns...
+header <- c("Within Group", "First Differece")
+etable(reg_0, reg_1, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_plm_fe.tex", replace = TRUE)
 
 
-# ---- Prepare the panel for doctors ---- #
-# ---- filter out observations with possible coding errors
-dt_md <- dt[!(FI == 760000166 & AN == 2022) | !(FI == 910001973 & AN == 2016)]
-# ---- filter out zero values on the LHS ---- #
-dt_md <- dt_md[EFF_MD > 0]
-# ---- add one to the RHS to avoid zero values in taking log ---- #
-varr1 <- c("SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED")
-varl <- "EFF_MD"
-dt_md <- dt_md[SEJHC_MCO > 1 | SEJHP_MCO > 1 | SEANCES_MED > 1]
-dt_md[, (varr1) := lapply(.SD, function(x) x <- x + 1), .SDcols = varr1]
-dt_md[, Nobs := .N, by = .(FI)]
-dt_md <- dt_md[Nobs >= 6] # keep only those with at least 6 observations
-num_hospital <- length(unique(dt$FI)) # 2231
+# ---- 3. Regression with individual fixed effects ---- #
 
-# ---- set data.table in panel data format ---- #
-pdt <- panel(dt_md, panel.id = ~ FI + AN, time.step = "consecutive", duplicate.method = "first")
-# construct lagged variables
-# pdt[, `:=`(SEJHC_MCO_l1 = l(SEJHC_MCO, 1), SEJHP_MCO_l1 = l(SEJHP_MCO, 1), SEANCES_MED_l1 = l(SEANCES_MED, 1))]
+# ---- 3.1a Within Group estimation (strict exogeneity) ---- #
+var_y <- add_log(var_input)
+var_x <- paste(c(add_log(var_output)), collapse = "+")
+formula_wg <- as.formula(paste0(var_y, "~", var_x, "|FI"))
+# log(ETP_INF) ~ log(SEJHC_MCO) + log(SEJHP_MCO) + log(SEANCES_MED) +
+#     log(CONSULT_EXT) + log(PASSU) + log(ENTSSR) + log(SEJ_HAD) +
+#     log(SEJ_PSY) | FI
 
-varl <- "EFF_MD"
-reg_md_ols_FI <- reg_X(pdt, varl, varr1)
-summary(reg_md_ols_FI)
-# ---- remove observations that are not used in the regression ---- #
-obs_removed <- reg_md_ols_FI$obs_selection$obsRemoved * (-1)
-pdt_used <- pdt[!obs_removed, ]
-# ---- add residuals to the panel
-residuals <- reg_md_ols_FI$residuals
-pdt_used[, `:=`(Res = residuals)] # add residuals to the panel
-# ---- add fixed effect to the panel
-FE <- reg_md_ols_FI$sumFE
-pdt_used[, `:=`(FixedEffect = FE)]
-saveRDS(pdt_used, paste0("Results/", start_year, "-", end_year, "/pdt_md_ols_FI.rds"))
-saveRDS(reg_md_ols_FI, paste0("Results/", start_year, "-", end_year, "/reg_md_ols_FI.rds"))
+reg_wg <- feols(formula_wg, data = pd_inf, cluster = "FI")
+summary(reg_wg)
+# compare with plm
+var_y <- add_log(var_input)
+var_x <- paste(c(add_log(var_output)), collapse = "+")
+formula_plm <- as.formula(paste0(var_y, "~", var_x, -1))
+reg_wg_plm <- plm(formula_plm, data = pd_inf, index = c("FI", "AN"), model = "within")
+reg_fd_plm <- plm(formula_plm, data = pd_inf, index = c("FI", "AN"), model = "fd")
+help(texreg)
+texreg(list(reg_wg_plm, reg_fd_plm), digits = 3, custom.model.names = c("Within", "First Diff"), file = "Tables/2013-2022/reg_fe_plm.tex", booktabs = TRUE, table = FALSE)
 
-# ---- plot the fixed effect by legal status ---- #
-reg_md_ols_FI <- readRDS(paste0("Results/", start_year, "-", end_year, "/reg_md_ols_FI.rds"))
-status_stable <- readRDS(paste0("Data/Out/status_stable_", start_year, "_", end_year, ".rds"))
-p_res <- plot_FE(reg_md_ols_FI, "FI", status_stable, year_start = start_year, year_end = end_year)
-p <- p_res[[1]]
-p_e <- p_res[[2]]
 
-# ---- IGNORE: Preliminary test with Poisson regression ----- #
-# Multiplicative model Pseudo Poisson regression
-# If we actually assume Poisson distribution of the multiplicative error term, we are in the case of heterogeneous known variance, where the variance stabilizing transformation gives $z_{it} =\sqrt{\frac{y_it}{m_{it}}} \sim \caln (\theta_i, \frac{1}{w_{it}}= \frac{1}{4m_{it}})$
+# ---- 3.1b First difference estimation (relaxed assumption) ---- #
+var_y <- (add_d(add_log(var_input)))
+var_x <- paste((add_d(add_log(var_output))), collapse = "+")
+formula_fd <- as.formula(paste0(var_y, "~", var_x, "-1"))
+formula_fd
+# d(log(ETP_INF)) ~ d(log(SEJHC_MCO)) + d(log(SEJHP_MCO)) + d(log(SEANCES_MED)) +
+#     d(log(CONSULT_EXT)) + d(log(PASSU)) + d(log(ENTSSR)) + d(log(SEJ_HAD)) +
+#     d(log(SEJ_PSY)) - 1
 
-# 1. estimate m_{it}
-reg_inf_pois_FI <- reg_X(pdt, varl, varr1, method = "pois")
-summary(reg_inf_pois_FI)
-check <- data.table()
-check[, test1 := reg_inf_pois_FI$fitted.values + reg_inf_pois_FI$residuals]
-check[, y := pdt$ETP_INF]
+reg_fd <- feols(formula_fd, data = pd_inf, cluster = "FI")
+summary(reg_fd)
 
-coef <- as.matrix(reg_inf_pois_FI$coefficients)
-x <- as.matrix(pdt[, .(log(SEJHC_MCO), log(SEJHP_MCO), log(SEANCES_MED), CASEMIX)])
-m_it <- exp(x %*% coef)
+# compare with the results from plm
+var_y <- add_log(var_input)
+var_x <- paste(c(add_log(var_output)), collapse = "+")
+formula_plm <- as.formula(paste0(var_y, "~", var_x, -1))
+reg_plm <- plm(formula_plm, data = dt_inf, index = c("FI", "AN"), model = "fd")
+summary(reg_plm)
 
-check[, test2 := m_it * exp(reg_inf_pois_FI$sumFE) + reg_inf_pois_FI$residuals]
-check[, fe := exp(reg_inf_pois_FI$sumFE)]
-check[, m_it := m_it]
-View(check)
-# this is so stupid...it's like everything is fixed effect...
+# ---- 4.1 FD GMM (current error affect current and future regressors) ---- #
+var_y <- (add_d(add_log(var_input)))
+var_x <- paste((add_d(add_log(var_output))), collapse = "+")
+var_z <- paste(add_log(add_l(var_output, 2)), collapse = "+")
+var_z
+formula_fd_iv <- as.formula(paste0(var_y, "~", "-1", "|", var_x, "~", var_z))
+print(formula_fd_iv)
+reg_fd_iv <- feols(formula_fd_iv, data = pd_inf, cluster = "FI")
+summary(reg_fd_iv)
 
-panel <- data.table(FI = pdt$FI, AN = pdt$AN, m_it = m_it, y_it = pdt$ETP_INF, FE = exp(reg_inf_pois_FI$sumFE))
-# 2. construct z_{it} =\sqrt{\frac{y_it}{m_{it}}}
-panel[, `:=`(w_it = (4 * m_it))]
-panel[, `:=`(z_it = sqrt(y_it / m_it))]
-# 3. construct T_i= \sum w_{it}z_{it}/w_i \sim N(\theta_i, 1/w_i)
-T_i <- panel[, .(T_i = sum(z_it / w_it) / sum(w_it), FE, w_i = sum(w_it)), by = .(FI)]
-View(T_i[, .(T_i, 1 / sqrt(w_i))])
-saveRDS(T_i, "Results/2016-2022/T_i.rds")
-# 3.2 construct a data.frame to feed into the fit1d function
+# very weak instruments I have to say
 
-# to transform the data.frame into a matrix of 3d dimension [1:1526,1:6,1:2]
-d <- panel[, .(FI, AN, w_it, z_it, y_it, m_it)]
-d_vec <- as.vector(t(d[, .(y_it, m_it)]))
-dim1 <- length(unique(d$FI))
-dim2 <- length(unique(d$AN))
-dim3 <- 2
-dim <- c(dim1, dim2, dim3)
-d_mat <- array(d_vec, dim)
-saveRDS(d_mat, "Results/2016-2022/d_mat.rds")
+# ---- 4.2 Sys GMM (stationarity assumption) ---- #
+for (i in c(var_input, var_output)) {
+    pd_inf[, paste0("d_", i) := d(log(get(i)), 1)]
+}
 
-# 4. NPMLE to estimate G while the variance is known and is equal to 1/4m_{it}
-# We can input the T_i$T_i and variance as 1/T_i$w_i
-# Then we can estimate G by NPMLE
-pacman::p_load(REBayes)
-# help(GLmix)
-f <- GLmix(x = T_i$T_i, v = 300, sigma = 1 / sqrt(T_i$w_i))
-str(f)
-pdf("Figures/2016-2022/GLmix_pois.pdf", width = 8, height = 5)
-plot(f, xlab = expression(mu), main = "Estimated Location Mixing Density")
-dev.off()
 
-fs <- KWsmooth(f, bw)
-pdf("Figures/2016-2022/GLmix_pois_smoothed.pdf", width = 8, height = 5)
-plot(fs, xlab = expression(mu), main = "Estimated Smoothed Location Mixing Density")
-dev.off()
+var_y <- add_log(var_input)
+var_x <- paste(c(add_log(var_output)), collapse = "+")
+var_z <- paste(add_l(add_dd(var_output), 1), collapse = "+")
+formula_fd_sys <- as.formula(paste0(var_y, "~", "-1", "|", var_x, "-1", "~", var_z, "-1"))
+formula_fd_sys
+# help(feols)
+reg_fd_sys <- feols(formula_fd_sys, data = pd_inf, cluster = "FI")
+summary(reg_fd_sys)
+# seems like a better instrument:)
 
-# Note: The distribution of the statistics T_i is a convolution of G and the normal distribution N(\theta_i, 1/w_i))
+# seems like we can not get rid of the intercept for some reasons...
+# maybe we can perform just identified GMM/IV with manually constructed instrument?
+pacman::p_load(AER, gmm) # to run iv regression
+help(l)
+for (i in c(var_input, var_output)) {
+    pd_inf[, paste0("ld_", i) := l(get(paste0("d_", i)), 1)]
+}
+
+var_y <- add_log(var_input)
+var_x <- paste(c(add_log(var_output)), collapse = "+")
+var_x
+var_z <- paste(paste("ld", var_output, sep = "_"), collapse = "+")
+var_z
+formula <- as.formula(paste0(var_y, "~", var_x, "-1|", var_z))
+formula
+reg_iv <- ivreg(formula, data = as.data.frame(pd_inf), na.action = na.omit)
+summary(reg_iv)
+
+# compare with the results from plm
+var_y <- add_log(var_input)
+var_x <- paste(c(add_log(var_output)), collapse = "+")
+var_z <- paste(c(add_lag(add_log(var_output), "2")), collapse = "+")
+formula_gmm <- as.formula(paste0(var_y, "~", var_x, "|", var_z))
+print(formula_gmm)
+reg_gmm_sys <- pgmm(formula_gmm, data = dt_inf, effect = "individual", index = c("FI", "AN"), transformation = "ld", robust = TRUE, collapse = TRUE)
+reg_gmm_fd <- pgmm(formula_gmm, data = dt_inf, effect = "individual", index = c("FI", "AN"), transformation = "d", robust = TRUE, collapse = TRUE)
+summary(reg_gmm_sys, robust = TRUE)
+texreg(list(reg_gmm_fd, reg_gmm_sys), file = "Tables/2013-2022/reg_gmm.tex", booktabs = TRUE, table = FALSE)
+
+texreg(list(reg_wg_plm, reg_fd_plm, reg_gmm_sys), file = "Tables/2013-2022/reg_wg_fd_gmm_b.tex", booktabs = TRUE, table = FALSE)
+# to generate a table with 3 columns
+header <- c("Within Group", "First Difference", "System GMM")
+etable(reg_0, reg_1, reg_2, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_wg_fd_gmm.tex", replace = TRUE)
+
+# manually calculate the residuals
+coef <- reg_gmm_sys$coefficients
+mat <- log(as.matrix(dt_inf[, ..var_output]))
+coef <- as.vector(coef)
+fitted_value <- mat %*% coef
+
+dt_inf[, fitted := fitted_value]
+dt_inf[, residual := log(ETP_INF) - fitted]
+dt_inf[, FixedEffect := mean(residual), by = (FI)]
+dt_inf[, Res := residual - FixedEffect]
+pdt_used <- dt_inf[, .(AN, FI, STJR, fitted, residual, FixedEffect, Res)]
+saveRDS(pdt_used, "Data/Out/pdt_used_gmm_sys.rds")
+saveRDS(pdt_used, "Results/2013-2022/pdt_used_gmm_sys.rds")

@@ -1,6 +1,8 @@
 rm(list = ls())
 pacman::p_load(data.table)
+
 # ---- Variable Extraction for years 2016-2022 ---- #
+
 # ---- Extract labor input: according to Solen
 doctor <- c("EFFSAL_TOT", "EFFLIB_TOT")
 infirmier <- c("ETP_INFAVECSPE", "ETP_INFSANSSPE", "ETP_DIRINF")
@@ -25,6 +27,11 @@ for (i in seq(2016, 2022)) { # seq(2016, 2022) is the same as 2016:2022
     if (i == 2022) { # to make the names consistent with the previous years
         setnames(dt_labor, "ETP_DIRSOI", "ETP_DIRINF")
     }
+    # correct the missing FI_EJ
+    stat <- readRDS(paste0("Data/In/ID/ID_", i, ".rds"))
+    colnames(stat) <- toupper(colnames(stat))
+    dt_labor <- merge(dt_labor, stat[, .(FI, FI_EJ)], by = "FI", all.x = TRUE)
+    setnames(dt_labor, "FI_EJ.y", "FI_EJ")
     dt_labor_all <- rbind(dt_labor_all, dt_labor)
 }
 saveRDS(dt_labor_all, "Data/Out/labor_input_2016_2022.rds")
@@ -36,6 +43,12 @@ dt_cap_all <- data.table()
 for (i in seq(2016, 2022)) {
     dt_cap <- readRDS(paste0("Data/In/SYGEN/SYGEN_", i, ".rds"))
     dt_cap <- dt_cap[, ..cols_cap]
+
+    stat <- readRDS(paste0("Data/In/ID/ID_", i, ".rds"))
+    colnames(stat) <- toupper(colnames(stat))
+    dt_cap <- merge(dt_cap, stat[, .(FI, FI_EJ)], by = "FI", all.x = TRUE)
+    setnames(dt_cap, "FI_EJ.y", "FI_EJ")
+
     dt_cap_all <- rbind(dt_cap_all, dt_cap)
 }
 saveRDS(dt_cap_all, "Data/Out/capacity_2016_2022.rds")
@@ -43,13 +56,19 @@ saveRDS(dt_cap_all, "Data/Out/capacity_2016_2022.rds")
 # ---- Extract output ---- #
 psy <- c("SEJ_HTP_TOT", "VEN_HDJ_TOT", "VEN_HDN_TOT")
 cols_out <- c(
-    "AN", "FI", "FI_EJ", "SEJHC_MCO", "JOU_MCO", "SEJHP_MCO", "PASSU_GEN", "PASSU_PED", "SEANCES_MED",
+    "AN", "FI", "FI_EJ", "SEJHC_MCO", "SEJHP_MCO", "PASSU_GEN", "PASSU_PED", "SEANCES_MED",
     psy, "SEJHC_SSR", "JOUHP_SSR", "ENT", "SEJ_HAD", "CONSULT_EXT"
 )
 dt_out_all <- data.table()
 for (i in seq(2016, 2022)) {
     dt_out <- readRDS(paste0("Data/In/SYGEN/SYGEN_", i, ".rds"))
     dt_out <- dt_out[, ..cols_out]
+
+    stat <- readRDS(paste0("Data/In/ID/ID_", i, ".rds"))
+    colnames(stat) <- toupper(colnames(stat))
+    dt_out <- merge(dt_out, stat[, .(FI, FI_EJ)], by = "FI", all.x = TRUE)
+    setnames(dt_out, "FI_EJ.y", "FI_EJ")
+
     dt_out_all <- rbind(dt_out_all, dt_out)
 }
 saveRDS(dt_out_all, "Data/Out/output_2016_2022.rds")
@@ -60,6 +79,12 @@ for (i in seq(2016, 2022)) {
     dt <- readRDS(paste0("Data/In/SYGEN/SYGEN_", i, ".rds"))
     dt[, `:=`(OPE = !(SEJHC_MCO > 0), PSY = (EFFSAL_PSY > 0 | EFFLIB_PSY > 0))]
     dt <- dt[, .(AN, FI, FI_EJ, OPE, PSY)]
+
+    stat <- readRDS(paste0("Data/In/ID/ID_", i, ".rds"))
+    colnames(stat) <- toupper(colnames(stat))
+    dt <- merge(dt, stat[, .(FI, FI_EJ)], by = "FI", all.x = TRUE)
+    setnames(dt, "FI_EJ.y", "FI_EJ")
+
     dt_dummy <- rbind(dt_dummy, dt)
 }
 saveRDS(dt_dummy, "Data/Out/dummy_2016_2022.rds")
@@ -114,8 +139,8 @@ cols <- colnames(control)[!colnames(control) %in% c("FI", "RS")]
 for (i in cols) {
     control[, (i) := as.numeric(gsub(",", ".", get(i)))]
 }
-control_stat_23 <- status[STJR == 2 | STJR == 3][control, on = .(AN, FI), nomatch = 0]
-control_stat_01 <- status[STJR == 0 | STJR == 1][control, on = .(AN, FI_EJ = FI), nomatch = 0]
+control_stat_23 <- merge(status[STJR == 2 | STJR == 3], control, by = c("AN", "FI"), all.x = TRUE)
+control_stat_01 <- merge(status[STJR == 0 | STJR == 1], control, by.x = c("AN", "FI_EJ"), by.y = c("AN", "FI"), all.x = TRUE)
 control_stat <- rbind(control_stat_01, control_stat_23)
 colnames(control_stat)
 control_stat <- unique(control_stat, by = c("AN", "FI", "FI_EJ"))
@@ -132,18 +157,9 @@ saveRDS(status, "Data/Out/status_stable_2016_2022.rds")
 
 
 # ---- Variable Extraction for years 2013-2015 ---- #
+
 # Extend to 2013 but only for variables that are going to be used.
 # There's no SYGEN data for 2013-2015, we need to manually aggregate them from various sheets
-# ---- Extract output ---- #
-cols_out <- c("AN", "FI", "FI_EJ", "SEJHC_MCO", "SEJHP_MCO", "SEA_MCO")
-dt_out_all <- data.table()
-for (i in seq(2013, 2015)) {
-    dt_out <- readRDS(paste0("Data/In/MCO/MCO_", i, ".rds"))
-    dt_out <- dt_out[, ..cols_out]
-    setnames(dt_out, "SEA_MCO", "SEANCES_MED")
-    dt_out_all <- rbind(dt_out_all, dt_out)
-}
-saveRDS(dt_out_all, "Data/Out/output_2013_2015.rds")
 
 # ---- Extract labor input ---- #
 # ---- locate the data ---- #
@@ -184,6 +200,107 @@ for (i in seq(2013, 2015)) {
 }
 saveRDS(dt_input_all, "Data/Out/labor_input_2013_2015.rds")
 
+# ---- Extract capacity ---- #
+cols_cap <- c("AN", "FI", "FI_EJ", "LIT_MCO", "PLA_MCO")
+dt_cap_all <- data.table()
+for (i in seq(2013, 2015)) {
+    dt_cap <- readRDS(paste0("Data/In/MCO/MCO_", i, ".rds"))
+    dt_cap <- dt_cap[, ..cols_cap]
+    dt_cap_all <- rbind(dt_cap_all, dt_cap)
+}
+saveRDS(dt_cap_all, "Data/Out/capacity_2013_2015.rds")
+
+# ---- Extract basic output ---- #
+cols_out <- c("AN", "FI", "FI_EJ", "SEJHC_MCO", "SEJHP_MCO", "SEA_MCO", "PCON")
+dt_out_all <- data.table()
+for (i in seq(2013, 2015)) {
+    dt_out <- readRDS(paste0("Data/In/MCO/MCO_", i, ".rds"))
+    dt_out <- dt_out[, ..cols_out]
+    setnames(dt_out, c("SEA_MCO", "PCON"), c("SEANCES_MED", "CONSULT_EXT"))
+    dt_out_all <- rbind(dt_out_all, dt_out)
+}
+saveRDS(dt_out_all, "Data/Out/output_2013_2015.rds")
+
+# ---- Extract PASSU,  PSY, SSR, USLD, HAD,---- #
+start <- 2013
+end <- 2015
+
+table_name <- "URGENCES2"
+cols <- c("AN", "FI", "FI_EJ", "URG", "PASSU")
+dt_all <- data.table()
+for (i in start:end) {
+    dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", i, ".rds"))
+    colnames(dt)
+    dt <- dt[, ..cols]
+    dt <- dcast(dt, AN + FI + FI_EJ ~ URG, value.var = "PASSU")
+    dt[is.na(dt)] <- 0
+    dt_all <- rbind(dt_all, dt)
+}
+setnames(dt_all, c("GEN", "PED"), c("PASSU_GEN", "PASSU_PED"))
+saveRDS(dt_all, "Data/Out/PASSU_2013_2015.rds")
+
+table_name <- "PSY"
+cols <- c("AN", "FI", "FI_EJ", "VEN_HDJ", "VEN_HDN", "SEJ_HTP")
+dt_all <- data.table()
+for (i in start:end) {
+    dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", i, ".rds"))
+    stat <- readRDS(paste0("Data/In/ID/ID_", i, ".rds"))
+    dt <- dt[DIS == "TOT", ..cols]
+
+    # correct the missing FI_EJ
+    dt <- merge(dt, stat[, .(FI, FI_EJ, RS)], by = "FI", all.x = TRUE)
+    setnames(dt, "FI_EJ.y", "FI_EJ")
+
+    dt[is.na(dt)] <- 0
+    setnames(dt, c("VEN_HDJ", "VEN_HDN", "SEJ_HTP"), c("VEN_HDJ_TOT", "VEN_HDN_TOT", "SEJ_HTP_TOT"))
+    dt_all <- rbind(dt_all, dt)
+}
+saveRDS(dt, "Data/Out/PSY_2013_2015.rds")
+
+
+table_name <- "SSR"
+dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", 2013, ".rds"))
+cols <- c("AN", "FI", "FI_EJ", "SEJHC", "JOUHP")
+dt_all <- data.table()
+for (i in start:end) {
+    dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", i, ".rds"))
+    dt <- dt[GDE == "SSR_TOT", ..cols]
+    dt[is.na(dt)] <- 0
+    setnames(dt, c("SEJHC", "JOUHP"), c("SEJHC_SSR", "JOUHP_SSR"))
+    dt_all <- rbind(dt_all, dt)
+}
+dt_all <- unique(dt_all, by = c("AN", "FI", "FI_EJ"))
+saveRDS(dt_all, "Data/Out/SSR_2013_2015.rds")
+
+table_name <- "USLD"
+cols <- c("AN", "FI", "FI_EJ", "ENT")
+dt_all <- data.table()
+for (i in start:end) {
+    dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", i, ".rds"))
+    dt <- dt[, ..cols]
+    dt[is.na(dt)] <- 0
+    dt_all <- rbind(dt_all, dt)
+}
+saveRDS(dt_all, "Data/Out/USLD_2013_2015.rds")
+
+table_name <- "HAD"
+cols <- c("AN", "FI", "FI_EJ", "SEJ_HAD")
+dt_all <- data.table()
+for (i in start:end) {
+    dt <- readRDS(paste0("Data/In/", table_name, "/", table_name, "_", i, ".rds"))
+    dt <- dt[, ..cols]
+    dt[is.na(dt)] <- 0
+    dt_all <- rbind(dt_all, dt)
+}
+saveRDS(dt_all, "Data/Out/HAD_2013_2015.rds")
+
+
+# psy <- c("SEJ_HTP_TOT", "VEN_HDJ_TOT", "VEN_HDN_TOT")
+# cols_out <- c(
+#     "AN", "FI", "FI_EJ", "SEJHC_MCO", "JOU_MCO", "SEJHP_MCO", "PASSU_GEN", "PASSU_PED", "SEANCES_MED",
+#     psy, "SEJHC_SSR", "JOUHP_SSR", "ENT", "SEJ_HAD", "CONSULT_EXT"
+# )
+
 
 # ---- Extract control ---- #
 cols <- c("AN", "finess", "rs", "A7", "A9", "A10", "A11")
@@ -199,12 +316,14 @@ setnames(control, cols, cols_new)
 saveRDS(control, "Data/Out/control_2013_2015.rds")
 
 # ---- Extract legal status ---- #
-a <- readRDS(paste0("Data/In/ID/ID_", 2013, ".rds"))
+a <- readRDS(paste0("Data/In/ID/ID_", 2016, ".rds"))
 colnames(a) <- toupper(colnames(a))
 cols_id <- c("AN", "FI", "FI_EJ", "RS", "GRP", "STJ", "STJR", "CAT", "CATR", "NAT", "SIR", "REG", "DEP")
 a <- a[, ..cols_id]
 CHU <- a[CATR == "PUB1" & CAT == "101"]
 CHU_FI_EJ <- unique(CHU$FI_EJ)
+# Centre hospitalier universitaire (CHU)
+# 32 résultat(s) sur tout le territoire
 
 lookup <- data.table(STJR = c(0, 1, 2, 3), STJR_LABEL = c("CHU", "PUB", "PLU", "PNL"))
 
@@ -220,15 +339,15 @@ for (i in 2013:2015) {
 }
 saveRDS(status, "Data/Out/status_2013_2015.rds")
 
-# ---- Combine control and status
+# ---- Combine control and status ---- #
 control <- readRDS("Data/Out/control_2013_2015.rds")
 status <- readRDS("Data/Out/status_2013_2015.rds")
 cols <- colnames(control)[!colnames(control) %in% c("FI", "RS")]
 for (i in cols) {
     control[, (i) := as.numeric(gsub(",", ".", get(i)))]
 }
-control_stat_23 <- status[STJR == 2 | STJR == 3][control, on = .(AN, FI), nomatch = 0]
-control_stat_01 <- status[STJR == 0 | STJR == 1][control, on = .(AN, FI_EJ = FI), nomatch = 0]
+control_stat_23 <- merge(status[STJR == 2 | STJR == 3], control, by = c("AN", "FI"), all.x = TRUE)
+control_stat_01 <- merge(status[STJR == 0 | STJR == 1], control, by.x = c("AN", "FI_EJ"), by.y = c("AN", "FI"), all.x = TRUE)
 control_stat <- rbind(control_stat_01, control_stat_23)
 colnames(control_stat)
 control_stat <- unique(control_stat, by = c("AN", "FI", "FI_EJ"))
@@ -238,11 +357,10 @@ saveRDS(control_stat, "Data/Out/control_stat_2013_2015.rds")
 status1 <- readRDS("Data/Out/status_2013_2015.rds")
 status2 <- readRDS("Data/Out/status_2016_2022.rds")
 status <- rbind(status1, status2)
-stat_unique <- unique(status[, .(FI, FI_EJ, STJR)])
+# FI_EJ may change while FI stays the same, we don't care about them:)
+stat_unique <- unique(status[, .(FI, STJR)])
 stat_unique <- stat_unique[, .N, by = .(FI)]
 stat_unique <- stat_unique[N == 1]
 fi <- stat_unique$FI
 status <- unique(status[FI %in% fi, .(FI, FI_EJ, STJR, STJR_LABEL)])
 saveRDS(status, "Data/Out/status_stable_2013_2022.rds")
-
-str(reg_inf_ols_FI)

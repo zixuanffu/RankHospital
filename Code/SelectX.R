@@ -23,6 +23,7 @@ fit1d <- function(pdt, bwt = 2, rtol = 1e-20, ...) {
     # this is actually already done in the preparation step in RegResults.R script
     pdt[, Nobs := .N, by = .(FI)]
     pdt <- pdt[Nobs >= 6]
+    pdt <- pdt[Var_res1 > 0.001]
     pdt[, id := as.numeric(as.factor(FI))]
     dt2 <- pdt[, .(id = first(id), hat_mu = first(hat_mu), Var_res1 = first(Var_res1), Var_res2 = first(Var_res2), Nobs = first(Nobs)), by = .(FI)]
     # ---- Hetereogeneous Known Variance ---- #
@@ -31,6 +32,7 @@ fit1d <- function(pdt, bwt = 2, rtol = 1e-20, ...) {
 
     list(f = f, fs = fs, S = dt2$hat_mu, s = dt2$Var_res1, id = dt2$id)
 }
+
 
 Lfdr.GLmix_temp <- function(x, G, s, cnull, tail = "R") {
     # Modified for outliers??
@@ -230,8 +232,7 @@ selectR1d <- function(Z, alpha = 0.20, gamma = 0.20) {
     list(A = A, B = B, stat = stat, thresh_0 = thresh_0, thresh_1 = thresh_1, thresh = thresh)
 }
 
-
-selectL1d <- function(Z, alpha = 0.20, gamma = 0.20) {
+select1d <- function(Z, alpha = 0.20, gamma = 0.20, tail = "R") {
     Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
     # ---- store the ranking statistics, threshold_1, threshold_2 for teach rule ---- #
     stat <- matrix(NA, length(Z$S), length(Rules))
@@ -245,9 +246,9 @@ selectL1d <- function(Z, alpha = 0.20, gamma = 0.20) {
     dimnames(B)[[2]] <- Rules
 
     # ---- for each rule, calculate the ranking statistics---- #
-    tpr <- Lfdr.GLmix_temp(Z$S, Z$f, sqrt(Z$s), cnull = qKW(Z$f, alpha), tail = "L")
-
-    tp <- Lfdr.GLmix_temp(Z$S, Z$fs, sqrt(Z$s), cnull = qKW(Z$fs, alpha), tail = "L")
+    cnull <- ifelse(tail == "R", qKW(Z$f, 1 - alpha), qKW(Z$f, alpha))
+    tpr <- Lfdr.GLmix_temp(Z$S, Z$f, sqrt(Z$s), cnull = cnull, tail = tail)
+    tp <- Lfdr.GLmix_temp(Z$S, Z$fs, sqrt(Z$s), cnull = cnull, tail = tail)
 
     pmr <- predict(Z$f, Z$S, newsigma = sqrt(Z$s))
 
@@ -269,19 +270,33 @@ selectL1d <- function(Z, alpha = 0.20, gamma = 0.20) {
     ttp1 <- try(Finv(gamma, ThreshFDR, interval = c(0.1, 0.9), stat = tp, v = tp), silent = TRUE)
     ttp1 <- error_avoid(ttp1)
 
-    tpmr0 <- quantile(pmr, alpha)
-    tpmr1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pmr, v = tpr), silent = TRUE)
-    tpmr1 <- error_avoid(tpmr1, FALSE)
-    tpm0 <- quantile(pm, alpha)
-    tpm1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pm, v = tp), silent = TRUE)
-    tpm1 <- error_avoid(tpm1, FALSE)
-    tMLE0 <- quantile(R, alpha)
-    tMLE1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.45, -0.75), stat = -R, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
-    tMLE1 <- error_avoid(tMLE1, FALSE)
+    if (tail == "R") {
+        tpmr0 <- quantile(pmr, 1 - alpha)
+        tpmr1 <- try(Finv(gamma, ThreshFDR, stat = pmr, v = tpr), silent = TRUE)
+        tpmr1 <- error_avoid(tpmr1)
+        tpm0 <- quantile(pm, 1 - alpha)
+        tpm1 <- try(Finv(gamma, ThreshFDR, stat = pm, v = tp), silent = TRUE)
+        tpm1 <- error_avoid(tpm1)
+        tMLE0 <- quantile(R, 1 - alpha)
+        tMLE1 <- try(Finv(gamma, ThreshFDR, stat = R, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
+        tMLE1 <- error_avoid(tMLE1)
+        tlm0 <- quantile(linear, 1 - alpha)
+        tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = "R"), silent = TRUE)
+        tlm1 <- error_avoid(tlm1)
+    } else {
+        tpmr0 <- quantile(pmr, alpha)
+        tpmr1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pmr, v = tpr), silent = TRUE)
+        tpmr1 <- error_avoid(tpmr1, FALSE)
+        tpm0 <- quantile(pm, alpha)
+        tpm1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.6, -0.8), stat = -pm, v = tp), silent = TRUE)
+        tpm1 <- error_avoid(tpm1, FALSE)
+        tMLE0 <- quantile(R, alpha)
+        tMLE1 <- try(Finv(gamma, ThreshFDR, interval = c(-1.45, -0.75), stat = -R, v = tp), silent = TRUE) # control FDR by plugging smoothed KW estimates
+        tMLE1 <- error_avoid(tMLE1, FALSE)
 
-    tlm0 <- quantile(linear, alpha)
-    tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = "L"), silent = TRUE)
-
+        tlm0 <- quantile(linear, alpha)
+        tlm1 <- try(Finv(gamma, ThreshFDREM, mean = estmean, estvar = estvar, Bhat = Z$s / (estvar + (Z$s)), s = sqrt(Z$s), alpha = alpha, tail = "L"), silent = TRUE)
+    }
     for (i in 1:length(Rules)) {
         statistics <- switch(i,
             {
@@ -347,16 +362,22 @@ selectL1d <- function(Z, alpha = 0.20, gamma = 0.20) {
         thresh_0[i] <- threshold_0
         thresh_1[i] <- threshold_1
 
-        if (i == 1 | i == 2) {
+        if (tail == "R") {
             A[which(statistics > max(threshold_0, threshold_1)), i] <- 1
             B[which(statistics > threshold_0), i] <- 1
-            thresh[i, 1] <- threshold_0
-            thresh[i, 2] <- max(threshold_0, threshold_1)
+            thresh <- cbind(thresh_0, pmax(thresh_0, thresh_1))
         } else {
-            A[which(statistics < min(threshold_0, threshold_1)), i] <- 1
-            B[which(statistics < threshold_0), i] <- 1
-            thresh[i, 1] <- threshold_0
-            thresh[i, 2] <- min(threshold_0, threshold_1)
+            if (i == 1 | i == 2) {
+                A[which(statistics > max(threshold_0, threshold_1)), i] <- 1
+                B[which(statistics > threshold_0), i] <- 1
+                thresh[i, 1] <- threshold_0
+                thresh[i, 2] <- max(threshold_0, threshold_1)
+            } else {
+                A[which(statistics < min(threshold_0, threshold_1)), i] <- 1
+                B[which(statistics < threshold_0), i] <- 1
+                thresh[i, 1] <- threshold_0
+                thresh[i, 2] <- min(threshold_0, threshold_1)
+            }
         }
     }
     list(A = A, B = B, stat = stat, thresh_0 = thresh_0, thresh_1 = thresh_1, thresh = thresh)
@@ -430,7 +451,7 @@ level_plot <- function(Z, Selection, cls, alpha = 0.04, gamma = 0.2, tail = "R",
         if (Rules[[cindex[1]]] != "MLE") {
             contour(xgrid, log(ygrid), cls[, , cindex[[1]]],
                 lwd = 2, col = 4,
-                levels = round(thresh[cindex[1], 1], digits = 3),
+                levels = round(thresh[cindex[1], 1], digits = 6),
                 xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), drawlabels = FALSE
             )
         } else {
@@ -439,7 +460,7 @@ level_plot <- function(Z, Selection, cls, alpha = 0.04, gamma = 0.2, tail = "R",
         if (Rules[[cindex[2]]] != "MLE") {
             contour(xgrid, log(ygrid), cls[, , cindex[[2]]],
                 lwd = 2,
-                levels = round(thresh[cindex[2], 1], digits = 3),
+                levels = round(thresh[cindex[2], 1], digits = 6),
                 xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), add = TRUE, col = 2, drawlabels = FALSE
             )
         } else {
@@ -464,7 +485,7 @@ level_plot <- function(Z, Selection, cls, alpha = 0.04, gamma = 0.2, tail = "R",
         if (Rules[[cindex[1]]] != "MLE") {
             contour(xgrid, log(ygrid), cls[, , cindex[[1]]],
                 lwd = 2, col = 4,
-                levels = round(thresh[cindex[1], 2], digits = 3),
+                levels = round(thresh[cindex[1], 2], digits = 6),
                 xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), drawlabels = FALSE
             )
         } else {
@@ -473,7 +494,7 @@ level_plot <- function(Z, Selection, cls, alpha = 0.04, gamma = 0.2, tail = "R",
         if (Rules[[cindex[2]]] != "MLE") {
             contour(xgrid, log(ygrid), cls[, , cindex[[2]]],
                 lwd = 2,
-                levels = round(thresh[cindex[2], 2], digits = 3),
+                levels = round(thresh[cindex[2], 2], digits = 6),
                 xlab = expression(theta[i]), ylab = expression(log(sigma[i]^2)), add = TRUE, col = 2, drawlabels = FALSE
             )
         } else {
