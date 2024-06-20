@@ -37,7 +37,7 @@ formula_pool <- as.formula(paste0(var_y, "~", var_x))
 #     log(SEJ_PSY)
 
 reg_pool <- feols(formula_pool, data = dt_inf)
-summary(reg_pool)
+# summary(reg_pool)
 
 # ---- 2.1b Pooling IV ---- #
 var_z <- paste(c(add_log(add_l(var_output, 1))), collapse = "+")
@@ -48,7 +48,7 @@ formula_pool_iv <- as.formula(paste0(var_y, "~", 1, "|", var_x, "~", var_z))
 
 reg_pool_iv <- feols(formula_pool_iv, data = pd_inf)
 # reg_pool_iv <- plm(formula_pool_iv, data = dt_inf, index = c("FI", "AN"), model = "pooling")
-summary(reg_pool_iv)
+# summary(reg_pool_iv)
 
 # ---- 2.2a Dummy variable regression ---- #
 var_y <- add_log(var_input)
@@ -59,7 +59,7 @@ print(formula_dum)
 #     log(CONSULT_EXT) + log(PASSU) + log(ENTSSR) + log(SEJ_HAD) +
 #     log(SEJ_PSY) + STJR
 reg_dum <- feols(formula_dum, data = pd_inf)
-summary(reg_dum)
+# summary(reg_dum)
 
 # ---- 2.2b Dummy variable IV regression ---- #
 var_x <- paste(c(add_log(var_output)), collapse = "+")
@@ -68,11 +68,20 @@ formula_dum_iv <- as.formula(paste0(var_y, "~", var_control, "|", var_x, "~", va
 print(formula_dum_iv)
 # log(ETP_INF) ~ STJR | log(SEJHC_MCO) ... ~ log(l(SEJHC_MCO, 1)) ...
 reg_dum_iv <- feols(formula_dum_iv, data = pd_inf)
-summary(reg_dum_iv)
+# summary(reg_dum_iv)
 
 header <- c("Pool", "Pool IV", "Dummy", "Dummy IV")
 etable(reg_pool, reg_pool_iv, reg_dum, reg_dum_iv, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_pool_dummy.tex", replace = TRUE)
 
+x <- c("STAC inpatient", "STAC outpatient", "Medical sessions", "External consultations", "Emergency", "Long-term & follow-up", "Home care", "Psychiatric care")
+names(x) <- add_log(var_output)
+
+y <- "Nurses"
+names(y) <- add_log(var_input)
+var_dict <- c(x, y, STJR2 = "Private Forprofit", STJR3 = "Private Nonprofit", STJR0 = "Teaching")
+var_dict
+setFixest_dict(var_dict)
+etable(reg_dum, reg_dum_iv, dict = var_dict, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_dummy_iv.tex", replace = TRUE)
 # ---- 2.3 Separate regression by legal status ---- #
 reg_0 <- feols(formula_pool_iv, data = pd_inf[STJR == 0])
 summary(reg_0)

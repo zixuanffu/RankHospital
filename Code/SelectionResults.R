@@ -8,7 +8,7 @@ source("Code/SelectX.R")
 
 
 library(data.table)
-load()
+pdt <- readRDS("Results/2013-2022/pdt_used_gmm_sys.rds")
 Z <- fit1d(pdt)
 
 sL <- selectL1d(Z, alpha = 0.22, gamma = 0.05)
@@ -25,8 +25,8 @@ png("Figures/2013-2022/GLmix.png", height = 500, width = 800)
 plot(Z$f, xlab = expression(mu), main = "Estimated Location Mixing Density with Heterogeneous Known Variance")
 dev.off()
 
-png("Figures/2013-2022/GLmix_s.png", height = 500, width = 800)
-plot(Z$fs, xlab = expression(mu), main = "Estimated Location smoothed G with Heterogenous Known Variance")
+pdf("Figures/2013-2022/GMM/GLmix_s.pdf", height = 5, width = 8)
+plot(Z$fs, xlab = expression(theta), main = "Estimated Location smoothed G with Heterogenous Known Variance")
 dev.off()
 
 apply(sL$A, 2, sum)
