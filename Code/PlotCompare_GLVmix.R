@@ -3,7 +3,7 @@ pacman::p_load(REBayes)
 source("Code/SelectX_GLVmix.R")
 
 pdt <- readRDS("Results/2013-2022/pdt_used_gmm_sys.rds")
-Z <- fit2d(pdt)
+Z2 <- fit2d(pdt)
 alpha <- 0.2
 gamma <- 0.2
 Z <- append(Z, list(W = Z$s))
@@ -33,3 +33,18 @@ for (i in c(4, 5, 6)) {
     level_plot_2d(Z, sL, alpha = alpha, gamma = gamma, tail = "L", cindex = c(2, i), constraint = c("cap", "fdr"), seq(u_min, u_max, length = 600), seq(v_min, v_max, length = 200), xlim = c(u_min, u_max), ylim = c(v_min, v_max))
 }
 dev.off()
+
+
+# ---- Focus on left tail probability ---- #
+
+Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
+alpha <- 0.20
+gamma <- 0.20
+tail <- "L"
+Z <- fit2d(pdt)
+sL <- select2d(Z, alpha = alpha, gamma = gamma, tail = tail)
+for (rule_index in c(2, 4, 5)) {
+    filepath <- paste0("Figures/2013-2022/GMM/GLVmix/Left_", alpha, "_", gamma, "_", Rules[rule_index], ".pdf")
+    print(filepath)
+    select_plot_2d(Z, sL, alpha = alpha, gamma = gamma, tail = tail, rule_index, sub = FALSE, filepath, format = "pdf")
+}

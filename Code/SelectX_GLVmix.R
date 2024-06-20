@@ -20,13 +20,14 @@ fit2d <- function(pdt, bwt = 2, rtol = 1e-20, ...) {
     # this is actually already done in the preparation step in RegResults.R script
     pdt[, Nobs := .N, by = .(FI)]
     pdt <- pdt[Nobs >= 6]
+    pdt <- pdt[Var_res1 > 0.001]
     pdt[, id := as.numeric(as.factor(FI))]
     dt2 <- pdt[, .(id = first(id), hat_mu = first(hat_mu), Var_res1 = first(Var_res1), Var_res2 = first(Var_res2), Nobs = first(Nobs)), by = .(FI)]
     # ---- Hetereogeneous unknown Variance ---- #
     f <- GLVmix(t = dt2$hat_mu, s = dt2$Var_res1, m = dt2$Nobs)
     fs <- KW2smooth(f, bw = bwKW2(f, bwt))
     # 感恩Gu&Koenker, 感恩Koenker&Mizera!
-    list(f = f, fs = fs, S = dt2$hat_mu, s = dt2$Var_res1, m = dt2$Nobs, id = dt2$id)
+    list(f = f, fs = fs, S = dt2$hat_mu, s = dt2$Var_res1, m = dt2$Nobs, id = dt2$id, pdt = pdt, dt2 = dt2)
 }
 
 # for linear shrinkage rule
@@ -434,4 +435,47 @@ level_plot_2d <- function(Z, Selection, alpha = 0.04, gamma = 0.2, tail = "R", c
         mtext(paste("Capacity and FDR ", Rules[cindex[1]], " vs ", Rules[cindex[2]], sep = ""))
         title("(b)")
     }
+}
+
+
+select_plot_2d <- function(Z, s, alpha, gamma, tail, rule_index, sub = FALSE, filename, format = "pdf") {
+    Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
+    dt2 <- Z$pdt[, .(hat_mu = first(hat_mu), Var_res1 = first(Var_res1), Var_res2 = first(Var_res2), Nobs = first(Nobs)), by = .(FI, STJR)]
+    A <- s$A[, rule_index]
+    B <- s$B[, rule_index]
+    selection <- cbind(dt2, A, B)
+    if (format == "pdf") {
+        pdf(filename, height = 4.5, width = 8)
+    } else {
+        png(filename, height = 450, width = 800)
+    }
+    par(mfrow = c(1, 2))
+    if (sub) {
+        pub <- selection[STJR == 1]
+        pri <- selection[STJR == 2]
+    } else {
+        pub <- selection[STJR == 1 | STJR == 0]
+        pri <- selection[STJR == 2 | STJR == 3]
+    }
+    n_pub <- nrow(pub)
+    n_pri <- nrow(pri)
+    B_pub <- pub[B == 1]
+    B_pri <- pri[B == 1]
+    plot(NULL, xlim = c(u_min, u_max), ylim = c(log(v_min), log(v_max)), xlab = expression(theta), ylab = expression(sigma^2))
+    points(B_pub$hat_mu, log(B_pub$Var_res1), col = 4, cex = 0.5)
+    points(B_pri$hat_mu, log(B_pri$Var_res1), col = 2, cex = 0.5)
+    text <- c(paste0("Public: ", nrow(B_pub), "/", n_pub), paste0("Private: ", nrow(B_pri), "/", n_pri))
+    legend("topright", text, col = c(4, 2), pch = 1, cex = 0.95, bty = "n")
+    mtext(paste("alpha = ", alpha, "selected: ", nrow(B_pub) + nrow(B_pri)))
+    title(paste("Rule: ", Rules[rule_index]))
+    A_pub <- pub[A == 1]
+    A_pri <- pri[A == 1]
+    plot(NULL, xlim = c(u_min, u_max), ylim = c(log(v_min), log(v_max)), xlab = expression(theta), ylab = expression(sigma^2))
+    points(A_pub$hat_mu, log(A_pub$Var_res1), col = 4, cex = 0.5)
+    points(A_pri$hat_mu, log(A_pri$Var_res1), col = 2, cex = 0.5)
+    text <- c(paste0("Public: ", nrow(A_pub), "/", n_pub), paste0("Private: ", nrow(A_pri), "/", n_pri))
+    legend("topright", text, col = c(4, 2), pch = 1, cex = 0.95, bty = "n")
+    mtext(paste("alpha = ", alpha, "gamma = ", gamma, "selected: ", nrow(A_pub) + nrow(A_pri)))
+    title(paste("Rule: ", Rules[rule_index]))
+    dev.off()
 }
