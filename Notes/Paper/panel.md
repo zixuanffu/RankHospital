@@ -15,6 +15,7 @@ $$
 \Delta y_{it} = x_{it} \beta + (\alpha-1)y_{i,t-1} + \theta_i + \epsilon_{it}
 $$
 A common feature of the estimators of interests are the following: 
+
 1. A linear model
 2. Small $T$ and large $N$
 3. (One left hand side variable $y_{it}$ that is dynamic, depending on its own lagged value)
@@ -31,7 +32,7 @@ A common feature of the estimators of interests are the following:
 |                            |                                                    | $E[\Delta x_{i,t-1}(y_{it}-\alpha y_{i,t-1}-\beta x_{it})]$              |
 
 
-# 
+assumption: $E{\Delta x_{i,t-1}\varepsilon_{i,t}}=0$
 
 
 ## Example

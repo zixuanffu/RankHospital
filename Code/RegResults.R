@@ -153,7 +153,7 @@ summary(reg_fd_iv)
 
 # very weak instruments I have to say
 
-# ---- 4.2 Sys GMM (stationarity assumption) ---- #
+# ---- 4.2 Sys GMM (orthogonal) ---- #
 for (i in c(var_input, var_output)) {
     pd_inf[, paste0("d_", i) := d(log(get(i)), 1)]
 }
