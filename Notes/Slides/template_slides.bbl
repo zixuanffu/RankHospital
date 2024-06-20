@@ -1,0 +1,57 @@
+\begin{thebibliography}{}
+
+\bibitem[Aigner et~al., 1977]{aigner1977formulation}
+Aigner, D., Lovell, C.~K., and Schmidt, P. (1977).
+\newblock Formulation and estimation of stochastic frontier production function models.
+\newblock {\em Journal of econometrics}, 6(1):21--37.
+
+\bibitem[Arellano and Bond, 1991]{arellano1991some}
+Arellano, M. and Bond, S. (1991).
+\newblock Some tests of specification for panel data: Monte carlo evidence and an application to employment equations.
+\newblock {\em The review of economic studies}, 58(2):277--297.
+
+\bibitem[Arellano and Bover, 1995]{arellano1995another}
+Arellano, M. and Bover, O. (1995).
+\newblock Another look at the instrumental variable estimation of error-components models.
+\newblock {\em Journal of econometrics}, 68(1):29--51.
+
+\bibitem[Basu et~al., 2018]{basu2018weighted}
+Basu, P., Cai, T.~T., Das, K., and Sun, W. (2018).
+\newblock Weighted false discovery rate control in large-scale multiple testing.
+\newblock {\em Journal of the American Statistical Association}, 113(523):1172--1183.
+
+\bibitem[Blundell and Bond, 1998a]{blundell1998initial}
+Blundell, R. and Bond, S. (1998a).
+\newblock Initial conditions and moment restrictions in dynamic panel data models.
+\newblock {\em Journal of econometrics}, 87(1):115--143.
+
+\bibitem[Blundell and Bond, 1998b]{blundell_bond_1998}
+Blundell, R. and Bond, S. (1998b).
+\newblock Initial conditions and moment restrictions in dynamic panel data models.
+\newblock {\em Journal of Econometrics}, page 115–143.
+
+\bibitem[Charnes et~al., 1978]{charnes1978measuring}
+Charnes, A., Cooper, W.~W., and Rhodes, E. (1978).
+\newblock Measuring the efficiency of decision making units.
+\newblock {\em European journal of operational research}, 2(6):429--444.
+
+\bibitem[Croiset and Gary-Bobo, 2024]{croiset2024hospitals}
+Croiset, S. and Gary-Bobo, R. (2024).
+\newblock Are public hospitals inefficient? an empirical study on french data.
+
+\bibitem[Koenker and Mizera, 2014]{koenker2014convex}
+Koenker, R. and Mizera, I. (2014).
+\newblock Convex optimization, shape constraints, compound decisions, and empirical bayes rules.
+\newblock {\em Journal of the American Statistical Association}, 109(506):674--685.
+
+\bibitem[Meeusen and van Den~Broeck, 1977]{meeusen1977efficiency}
+Meeusen, W. and van Den~Broeck, J. (1977).
+\newblock Efficiency estimation from cobb-douglas production functions with composed error.
+\newblock {\em International economic review}, pages 435--444.
+
+\bibitem[Roodman, 2007]{roodman2007short}
+Roodman, D. (2007).
+\newblock A short note on the theme of too many instruments.
+\newblock {\em Center for Global Development Working Paper}, 125(10.2139).
+
+\end{thebibliography}

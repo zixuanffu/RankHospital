@@ -7,9 +7,9 @@
 
 require(REBayes)
 source("Code/SelectX_GLVmix.R")
-load("Results/2013-2022/pdt_dt1_dt2.Rda")
 
 # ---- NPMLE estimate the prior distritbuion of (theta, sigma^2) ---- #
+pdt <- readRDS("Results/2013-2022/pdt_used_gmm_sys_m.rds")
 Z <- fit2d(pdt)
 # ---- Perform the selection ---- #
 sL <- select2d(Z, alpha = 0.20, gamma = 0.10, tail = "L")
@@ -24,7 +24,7 @@ fg <- Z$fs
 g <- expand.grid(theta = fg$u, sigma = fg$v)
 g$fuv <- fg$fuv
 require(lattice)
-pdf("Figures/2013-2022/Spec3/GLVmix_s.pdf", width = 8, height = 5)
+pdf("Figures/2013-2022/GMM_m/GLVmix_s.pdf", width = 8, height = 5)
 pl <- cloud(fuv ~ theta * sigma,
     data = g, type = "h", lwd = 2,
     zlim = c(0, max(g$fuv)), scales = list(

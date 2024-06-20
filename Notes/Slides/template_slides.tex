@@ -1,4 +1,4 @@
-\documentclass[10pt,mathserif]{beamer}
+\documentclass[10pt,mathserif,aspectratio=169]{beamer}
 
 \usepackage{graphicx,amsmath,amssymb,tikz,psfrag,booktabs}
 
@@ -41,10 +41,12 @@
 
 %% begin presentation
 
-\title{\large \bfseries L'hôpital}
+\title{\large \bfseries L'Hôpital's (Selection) Rule\\
+An Empirical Bayes Application to French Hospitals}
 
 \author{Fu Zixuan\\[3ex]
-  Supervised by Prof.Thierry Magnac}
+  % Supervised by Prof.Thierry Magnac}
+}
 
 \date{\today}
 
@@ -71,9 +73,9 @@
   \begin{itemize}\itemsep=12pt
     \item \textit{Productivity/Efficiency}: Factories, Schools, Hospitals etc.
     \item \textit{Methodology}:
-          \begin{enumerate} \vspace*{0.5em}
-            \item (Parametric) Stochastic Frontier $\to$ How far it is to the frontier.
-            \item (Non-Parametric): Data Envelopment $\to$ Compare with other units.
+          \begin{enumerate} \vspace*{0.5em} \itemsep=8pt
+            \item (Parametric) Stochastic Frontier \cite{aigner1977formulation,meeusen1977efficiency}$\to$ How far it is to the frontier.
+            \item (Non-Parametric): Data Envelopment \cite{charnes1978measuring}$\to$ Compare with other units.
             \item Input demand function: \cite{croiset2024hospitals}.
           \end{enumerate}
     \item \textit{Ownership}: Public (Teaching, Ordinary) vs. Private (For profit, Non-profit).
@@ -96,7 +98,7 @@
 \begin{frame}
   \frametitle{Roadmap}
   \begin{enumerate}\itemsep=12pt
-    \item Data: The Annual Statistics of Health Establishments (SAE)
+    \item Data: The Annual Statistics of Health Establishments (SAE), from 2013 to 2022.
     \item Estimation of efficiency
           \begin{itemize} \itemsep=6pt
             \item $Y$: Labor input (number of full time equivalent nurses).
@@ -111,7 +113,7 @@
 \section{Data and Estimation}
 
 \begin{frame}
-  \frametitle{Data}
+  \frametitle{Hospital Types}
   \begin{table}
     \fontsize{10pt}{10pt}\selectfont
     \begin{tabular}{rrrrrr}
@@ -130,6 +132,27 @@
       \bottomrule
     \end{tabular}
   \end{table}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Output}
+  \begin{table} \fontsize{8pt}{10pt}\selectfont
+    \begin{tabular}{lllll}
+      \toprule
+      Output                                         & Normal Public & Private Non Profit & Private For Profit & Teaching \\
+      \midrule
+      STAC\footnote{Short term acute care} inpatient & 8.08\%        & 5.66\%             & 16.3\%             & 7.9\%    \\
+      STAC oupatient                                 & 2.26\%        & 4.02\%             & 22.61\%            & 3.59\%   \\
+      Sessions                                       & 4.34\%        & 23.31\%            & 27.17\%            & 4.8\%    \\
+      Outpatient Consultations                       & 58.23\%       & 43.55\%            & 0.8\%              & 69.18\%  \\
+      Emergency                                      & 21.14\%       & 6.78\%             & 17.3\%             & 12.64\%  \\
+      Follow-up care and Long-term care              & 1.67\%        & 11.26\%            & 12.16\%            & 1.09\%   \\
+      Home hospitalization                           & 0.06\%        & 0.76\%             & 0.17\%             & 0.08\%   \\
+      Psychiatry stays                               & 4.22\%        & 4.66\%             & 3.49\%             & 0.72\%   \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+
 \end{frame}
 
 \begin{frame}
@@ -167,10 +190,10 @@
   \end{table}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Naive counterfactual}
+% \begin{frame}
+%   \frametitle{Naive counterfactual}
 
-\end{frame}
+% \end{frame}
 
 \begin{frame}
   \frametitle{Panel data Estimator}
@@ -182,13 +205,14 @@
     \item Relaxed: First Difference GMM \cite{arellano1991some}, System GMM
           \cite{arellano1995another,blundell1998initial}.
           \begin{equation*}
-            E[\epsilon_{it}|x_{i1},\ldots, x_{it-p},z_{i1},\dots,z_{it-p},\theta_i]=0
+            E[\epsilon_{it}|x_{i1},\ldots, x_{it-p},\theta_i]=0
           \end{equation*}
   \end{itemize}
 
-  I choose \textbf{System GMM}, using lagged difference as instruments for level.
+  Issues: Weak instruments \cite{blundell_bond_1998} and the proliferation of
+  instruments \cite{roodman2007short}.
   \begin{equation*}
-    \E[\Delta x_{i,t-1}(y_{it}-\alpha y_{i,t-1}-\beta x_{it})] \quad \text{if}\quad \E{\Delta x_{i,t-1}\varepsilon_{i,t}}=0
+    \E[\Delta x_{i,t-1}(y_{it}-\beta x_{it})] \quad \text{if}\quad \E\bra{\Delta x_{i,t-1}(\theta_i+\varepsilon_{i,t})}=0
   \end{equation*}
 \end{frame}
 
@@ -200,21 +224,21 @@
     \begin{tabular}{lccc}
       \tabularnewline \midrule \midrule
       Dependent Variable: & \multicolumn{3}{c}{log(ETP\_INF)}                                          \\
-                          & Within Group                      & First Difference & \textbf{System GMM} \\
+                          & Within Group                      & First Difference & \textit{System GMM} \\
       Model:              & (1)                               & (2)              & (3)                 \\
       \midrule
       \emph{Variables}                                                                                 \\
-      log(SEJHC\_MCO)     & $0.10^{***}$                      & $0.07^{***}$     & $0.54^{***}$        \\
-                          & $(0.00)$                          & $(0.01)$         & $(0.02)$            \\
-      log(SEJHP\_MCO)     & $0.02^{***}$                      & $0.01^{***}$     & $0.02$              \\
-                          & $(0.00)$                          & $(0.00)$         & $(0.02)$            \\
+      log(SEJHC\_MCO)     & $0.10^{***}$                      & $0.07^{***}$     & $0.70^{***}$        \\
+                          & $(0.00)$                          & $(0.01)$         & $(0.05)$            \\
+      log(SEJHP\_MCO)     & $0.02^{***}$                      & $0.01^{***}$     & $-0.05$             \\
+                          & $(0.00)$                          & $(0.00)$         & $(0.04)$            \\
       $\cdots$            & $\cdots$                          & $\cdots$         & $\cdots$            \\
-      log(SEANCES\_MED)   & $0.02^{***}$                      & $0.02^{***}$     & $0.06^{***}$        \\
-                          & $(0.00)$                          & $(0.00)$         & $(0.01)$            \\
+      log(SEANCES\_MED)   & $0.02^{***}$                      & $0.02^{***}$     & $0.07^{***}$        \\
+                          & $(0.00)$                          & $(0.00)$         & $(0.03)$            \\
 
       log(SEJ\_PSY)       & $0.00$                            & $0.00$           & $0.07^{***}$        \\  & $(0.00)$ & $(0.00)$ &
       $(0.01)$                                                                                         \\ \midrule \emph{Fit statistics} \\ Observations & $15335$                     & $13502$
-                          & $15335$                                                                    \\
+                          & $11536$                                                                    \\
 
       n                   & 1833                              & 1833             & $1833$              \\ T & 9 & 9 & $9$ \\ \midrule \midrule
       \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}                            \\
@@ -234,7 +258,7 @@
   \end{align*}
   Decision:
   \begin{equation*}
-    \delta(Y) = (\delta_1(\boldsymbol{\hat{\theta}}), \ldots, \delta_n(\boldsymbol{\hat{\theta}}))
+    \delta(\boldsymbol{\hat{\theta}}) = (\delta_1(\boldsymbol{\hat{\theta}}), \ldots, \delta_n(\boldsymbol{\hat{\theta}}))
   \end{equation*}
 \end{frame}
 
@@ -257,7 +281,7 @@
   \frametitle{The Selection Task}
   \begin{itemize}\itemsep=12pt
     \item Select the bottom 20\% \footnote{The most efficient 20\%.} out of the
-          population of $\theta_i$, those $i$ whose $\alpha_i>G^{-1}(0.8)$
+          population of $\theta_i$, those $i$ whose $\alpha_i<G^{-1}(0.2)$
     \item Control the overall false discovery rate at 20\%, \begin{equation*}
             \frac{\E_G\bra{1\set{\theta_i>\theta_{\alpha},\delta_i=1}}}{\E_G\bra{\delta_i}} \le \gamma
           \end{equation*}
@@ -275,12 +299,12 @@
     \min_{\delta} \quad & \E_G\E_{\theta|\hat{\theta}}\bra{L(\delta,\theta)}                                                                                                       \\
     =                   & \E_G \ \sum \E(h_i)(1-\delta_i) +\tau_1\pa{\sum (1-\E(h_i))\delta_i -\gamma \delta_i}                                                                    \\
                         & + \tau_2 \pa{\sum \delta_i -\alpha n}                                                                                                                    \\
-    =                   & \E_G{\sum v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}} \\
+    =                   & \E_G{\sum v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}}
   \end{align*} where $v_\alpha(\hat{\theta})=\p(\theta<\theta_\alpha|\hat{\theta})$ is the \textbf{posterior tail probability}.
 \end{frame}
 
 \begin{frame}
-  \frametitle{Empirical Bayes $G$}
+  \frametitle{Prior Distribution $G$}
   Observe
   \begin{equation*}
     Y_{it} = \theta_i + \varepsilon_{it} \quad \varepsilon_{it} \sim \caln(0,\sigma_i^2) \quad (\theta_i,\sigma_i^2) \sim G
@@ -300,8 +324,7 @@
                       & = \frac{{\int_{-\infty}^{\theta_{\alpha}} \Gamma(s_i|r_i,\sigma_i^2) f(y_i|\theta_i, \sigma_i^2) dG(\theta_i,\sigma_i^2)}}
     {{\int_{-\infty}^{\infty} \Gamma(s_i|r_i,\sigma_i^2) f(y_i|\theta_i, \sigma_i^2) dG(\theta_i,\sigma_i^2)}}
   \end{align*}
-  We want to find a cutoff $\lambda$ such that both constraints are satisfied:
-
+  We want to find a cutoff $\lambda$ such that both constraints are satisfied \footnote{Relaxed discrete optimization problem, following \cite{basu2018weighted}}:\\
   \begin{itemize}\itemsep=8pt
     \item Capacity: $\int \int P(v_\alpha(Y_i, S_i) > \lambda) dG(\theta_i,\sigma_i^2)
             \leq \alpha$
@@ -313,6 +336,7 @@
 
 \begin{frame}
   \frametitle{Estimate $G$}
+  Following \cite{koenker2014convex}
   The primal problem:
   \begin{equation*}
     \min_{f=dG}\set{-\sum_i \log g(y_i)\bigg |g_i = T(f_i),\ K(f_i)=1,\ \forall i }
@@ -330,71 +354,81 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{ $\hat{G}$}
+  \frametitle{ The estimated $\hat{G}$}
   \begin{columns}[T,onlytextwidth]
     \column{0.5\textwidth}
+    Case 1: $\sigma_i$ unknown, only $S_i$ observed.
     \begin{figure}
       \centering
-      \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM/GLVmix_s.pdf}
+      \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix_s.pdf}
     \end{figure}
 
     \column{0.5\textwidth}
+    Case 2: $\sigma_i$ known.
     \begin{figure}
       \centering
-      \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM/GLmix_s.pdf}
+      \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix_s.pdf}
     \end{figure}
   \end{columns}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Posterior Tail probability}
+  \frametitle{Unknown $\sigma_i$: Posterior Tail probability}
   \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM/GLVmix/Left_0.2_0.2_TPKWs.pdf}
+    \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf}
   \end{figure}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Posterior Mean}
+  \frametitle{Unknown $\sigma_i$: Posterior Mean}
   \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM/GLVmix/Left_0.2_0.2_PMKWs.pdf}
+    \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf}
+  \end{figure}
+\end{frame}
+
+% \begin{frame}
+%   \frametitle{Unknown$\sigma_i$: "Face value"}
+%   \begin{figure}
+%     \centering
+%     \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_MLE.pdf}
+%   \end{figure}
+% \end{frame}
+
+\begin{frame}
+  \frametitle{Known $\sigma_i$: Posterior Tail probability}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf}
   \end{figure}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Linear shrinkage}
+  \frametitle{Known $\sigma_i$: Posterior Mean}
   \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM/GLVmix/Left_0.2_0.2_MLE.pdf}
+    \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf}
   \end{figure}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Posterior Tail probability}
+  \frametitle{"Face value"}
   \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM/GLmix/Left_0.2_0.2_TPKWs.pdf}
-  \end{figure}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Posterior Mean}
-  \begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM/GLmix/Left_0.2_0.2_PMKWs.pdf}
-  \end{figure}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Linear shrinkage}
-  \begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM/GLmix/Left_0.2_0.2_MLE.pdf}
+    \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_MLE.pdf}
   \end{figure}
 \end{frame}
 
 \section{Conclusion}
+
+\begin{frame}{Conclusion}
+  \begin{itemize}
+    \item Difference in whether to assume known $\sigma_i$.
+    \item Control for the False Discovery Rate.
+    \item Private (FP and NP) hospitals are indeed more "efficient".
+  \end{itemize}
+\end{frame}
 
 \begin{frame}{Limitation}
   \begin{itemize}\itemsep=12pt
@@ -408,7 +442,7 @@
 \begin{frame}[allowframebreaks]
   \frametitle{References}
   \bibliography{../Thesis/ref.bib}
-  \bibliography{apalike}
+  \bibliographystyle{apalike}
 \end{frame}
 
 \appendix
@@ -417,11 +451,32 @@
   Estimate the fixed effect $\theta_i$ by
   \begin{align*}
     \hat{\theta}_i =                       & \frac{1}{T}\sum(\theta_i+\varepsilon_{it}+x_{it}(\beta-\hat{\beta})) \\
-    \overset{N\to \infty}{\longrightarrow} & \theta_i+\frac{1}{T}\sum_t \varepsilon_{it}                          \\
+    \overset{N\to \infty}{\longrightarrow} & \theta_i+\frac{1}{T}\sum_t \varepsilon_{it}
   \end{align*}
   When $T$ is relatively small (or even fixed), can't use central limit theorem to claim that $\hat{\theta}_i \overset{d}{\to} \caln(\theta_i,\frac{\sigma_i^2}{T})$.
   $\longleftarrow$ Assume that $\varepsilon_{it} \sim \caln(0,\sigma_i^2)$ .
 
+\end{frame}
+
+\begin{frame}{TP vs PM}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{TP vs JS}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{TP vs MLE}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf}
+  \end{figure}
 \end{frame}
 
 \end{document}

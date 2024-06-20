@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2023)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: template_slides.aux
+The style file: apalike.bst
+Database file #1: ../Thesis/ref.bib
+Warning--empty journal in croiset2024hospitals
+You've used 11 entries,
+            1935 wiz_defined-function locations,
+            542 strings with 5458 characters,
+and the built_in function-call counts, 4532 in all, are:
+= -- 464
+> -- 157
+< -- 10
++ -- 53
+- -- 50
+* -- 378
+:= -- 758
+add.period$ -- 32
+call.type$ -- 11
+change.case$ -- 80
+chr.to.int$ -- 10
+cite$ -- 12
+duplicate$ -- 180
+empty$ -- 317
+format.name$ -- 75
+if$ -- 903
+int.to.chr$ -- 2
+int.to.str$ -- 0
+missing$ -- 11
+newline$ -- 57
+num.names$ -- 33
+pop$ -- 59
+preamble$ -- 1
+purify$ -- 80
+quote$ -- 0
+skip$ -- 157
+stack$ -- 0
+substring$ -- 353
+swap$ -- 38
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 66
+warning$ -- 1
+while$ -- 40
+width$ -- 0
+write$ -- 142
+(There was 1 warning)
