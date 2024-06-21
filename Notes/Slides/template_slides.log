@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.13)  21 JUN 2024 10:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.13)  21 JUN 2024 16:37
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -610,14 +610,20 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@thisruleclass=\count347
 \@lastruleclass=\count348
 \@thisrulewidth=\dimen317
+) (c:/texlive/2022/texmf-dist/tex/latex/natbib/natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip64
+\bibsep=\skip65
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count349
 ) (./newcommand.tex) (c:/texlive/2022/texmf-dist/tex/latex/beamer/beamercolorthemestructure.sty)
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\\' on input line 49.
+(hyperref)                removing `\\' on input line 48.
 
 (c:/texlive/2022/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2022-08-05 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count349
+\l__color_backend_stack_int=\count350
 \l__pdf_internal_box=\box81
 ) (./template_slides.aux)
 \openout1 = `template_slides.aux'.
@@ -677,16 +683,16 @@ LaTeX Font Info:    ... okay on input line 53.
 
 (c:/texlive/2022/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count350
+\scratchcounter=\count351
 \scratchdimen=\dimen318
 \scratchbox=\box82
-\nofMPsegments=\count351
-\nofMParguments=\count352
+\nofMPsegments=\count352
+\nofMParguments=\count353
 \everyMPshowfont=\toks47
-\MPscratchCnt=\count353
+\MPscratchCnt=\count354
 \MPscratchDim=\dimen319
-\MPnumerator=\count354
-\makeMPintoPDFobject=\count355
+\MPnumerator=\count355
+\makeMPintoPDFobject=\count356
 \everyMPtoPDFconversion=\toks48
 ) (c:/texlive/2022/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -715,41 +721,44 @@ Dictionary: translator-theorem-dictionary, Language: English
 Non-PDF special ignored!
 <special> header=psfrag.pro
 
-{c:/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./template_slides.toc) [2
-
-]
-LaTeX Font Info:    Trying to load font information for U+msa on input line 69.
+{c:/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Trying to load font information for U+msa on input line 72.
  (c:/texlive/2022/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 69.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 72.
  (c:/texlive/2022/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [3
+) [2
+
+] [3
 
 ] [4
 
-] [5
+]
+
+Package natbib Warning: Citation `kline2022systemic' on page 5 undefined on input line 108.
+
+
+Package natbib Warning: Citation `robbins1956empirical' on page 5 undefined on input line 108.
+
+[5
 
 ] [6
 
-] (./template_slides.toc) [7
+] [7
 
 ] [8
 
 ] [9
 
-]
-Overfull \vbox (6.64961pt too high) detected at line 192
- []
-
-[10
+] [10
 
 ] [11
 
 ] [12
 
-] (./template_slides.toc) [13
+] [13
 
 ] [14
 
@@ -759,144 +768,150 @@ Overfull \vbox (6.64961pt too high) detected at line 192
 
 ] [17
 
-] [18
-
-] [19
-
-] [20
-
 ]
-<../../Figures/2013-2022/GMM_m/GLVmix_s.pdf, id=233, 578.16pt x 361.35pt>
+<../../Figures/2013-2022/GMM_m/GLVmix_s.pdf, id=193, 578.16pt x 361.35pt>
 File: ../../Figures/2013-2022/GMM_m/GLVmix_s.pdf Graphic file (type pdf)
 <use ../../Figures/2013-2022/GMM_m/GLVmix_s.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix_s.pdf  used on input line 375.
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix_s.pdf  used on input line 326.
 (pdftex.def)             Requested size: 199.1693pt x 124.47841pt.
-<../../Figures/2013-2022/GMM_m/GLmix_s.pdf, id=234, 578.16pt x 361.35pt>
+<../../Figures/2013-2022/GMM_m/GLmix_s.pdf, id=194, 578.16pt x 361.35pt>
 File: ../../Figures/2013-2022/GMM_m/GLmix_s.pdf Graphic file (type pdf)
 <use ../../Figures/2013-2022/GMM_m/GLmix_s.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix_s.pdf  used on input line 375.
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix_s.pdf  used on input line 326.
 (pdftex.def)             Requested size: 179.25114pt x 112.02837pt.
- [21
+ [18
 
  <../../Figures/2013-2022/GMM_m/GLVmix_s.pdf> <../../Figures/2013-2022/GMM_m/GLmix_s.pdf>]
-<../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf, id=254, 578.16pt x 325.215pt>
+<../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf, id=214, 578.16pt x 325.215pt>
 File: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf Graphic file (type pdf)
 <use ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf  used on input line 383.
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf  used on input line 334.
 (pdftex.def)             Requested size: 358.50229pt x 201.65602pt.
 
-Overfull \vbox (10.27371pt too high) detected at line 383
+Overfull \vbox (10.27371pt too high) detected at line 334
+ []
+
+[19
+
+ <../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf>]
+<../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf, id=229, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf  used on input line 342.
+(pdftex.def)             Requested size: 358.50229pt x 201.65602pt.
+
+Overfull \vbox (9.74037pt too high) detected at line 342
+ []
+
+[20
+
+ <../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf>]
+<../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf, id=243, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf  used on input line 359.
+(pdftex.def)             Requested size: 358.50229pt x 201.65602pt.
+
+Overfull \vbox (22.27371pt too high) detected at line 359
+ []
+
+[21
+
+ <../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf>]
+<../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf, id=261, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf  used on input line 367.
+(pdftex.def)             Requested size: 358.50229pt x 201.65602pt.
+
+Overfull \vbox (9.74037pt too high) detected at line 367
  []
 
 [22
 
- <../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf>]
-<../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf, id=268, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf  used on input line 391.
+ <../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf>]
+<../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_MLE.pdf, id=275, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_MLE.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_MLE.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_MLE.pdf  used on input line 375.
 (pdftex.def)             Requested size: 358.50229pt x 201.65602pt.
 
-Overfull \vbox (9.74037pt too high) detected at line 391
+Overfull \vbox (7.94038pt too high) detected at line 375
  []
 
 [23
 
- <../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf>]
-<../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf, id=282, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf  used on input line 408.
-(pdftex.def)             Requested size: 358.50229pt x 201.65602pt.
+ <../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_MLE.pdf>] [24
 
-Overfull \vbox (22.27371pt too high) detected at line 408
- []
+] [25
 
-[24
+] (./template_slides.bbl
 
- <../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf>]
-<../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf, id=300, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf  used on input line 416.
-(pdftex.def)             Requested size: 358.50229pt x 201.65602pt.
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\translate ' on input line 1.
 
-Overfull \vbox (9.74037pt too high) detected at line 416
- []
+) [26
 
-[25
+] [27
 
- <../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf>]
-<../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_MLE.pdf, id=316, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_MLE.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_MLE.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_MLE.pdf  used on input line 424.
-(pdftex.def)             Requested size: 358.50229pt x 201.65602pt.
-
-Overfull \vbox (7.94038pt too high) detected at line 424
- []
-
-[26
-
- <../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_MLE.pdf>] (./template_slides.toc) [27
 
 ] [28
-
-] [29
-
-] (./template_slides.bbl) [30
-
- <c:/texlive/2022/texmf-dist/tex/latex/beamer/beamericonarticle.pdf>] [31
-
-
-] [32
-
-
-] [33
 
 
 ]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\translate ' on input line 452.
+(hyperref)                removing `\translate ' on input line 403.
+
+[29
+
+] [30
+
+]
+Overfull \vbox (6.64961pt too high) detected at line 473
+ []
+
+[31
+
+] [32
+
+] [33
+
+]
+<../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf, id=370, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf  used on input line 513.
+(pdftex.def)             Requested size: 358.50229pt x 201.65602pt.
+
+Overfull \vbox (19.94038pt too high) detected at line 513
+ []
 
 [34
 
-]
-<../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf, id=394, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf  used on input line 470.
+ <../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf>]
+<../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf, id=385, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf  used on input line 520.
 (pdftex.def)             Requested size: 358.50229pt x 201.65602pt.
 
-Overfull \vbox (19.94038pt too high) detected at line 470
+Overfull \vbox (7.94038pt too high) detected at line 520
  []
 
 [35
 
- <../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf>]
-<../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf, id=410, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf  used on input line 477.
+ <../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf>]
+<../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf, id=398, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf  used on input line 527.
 (pdftex.def)             Requested size: 358.50229pt x 201.65602pt.
 
-Overfull \vbox (7.94038pt too high) detected at line 477
+Overfull \vbox (7.94038pt too high) detected at line 527
  []
 
 [36
-
- <../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf>]
-<../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf, id=423, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf  used on input line 484.
-(pdftex.def)             Requested size: 358.50229pt x 201.65602pt.
-
-Overfull \vbox (7.94038pt too high) detected at line 484
- []
-
-[37
 
  <../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf>]
 \tf@nav=\write7
@@ -908,23 +923,27 @@ Overfull \vbox (7.94038pt too high) detected at line 484
 \tf@snm=\write9
 \openout9 = `template_slides.snm'.
 
- (./template_slides.aux)
+
+
+Package natbib Warning: There were undefined citations.
+
+(./template_slides.aux)
 Package rerunfilecheck Info: File `template_slides.out' has not changed.
-(rerunfilecheck)             Checksum: 2FCD030105B93428DD42D1647F862426;762.
+(rerunfilecheck)             Checksum: B6C73A4E576553CE89728CB47D83F81C;754.
  ) 
 Here is how much of TeX's memory you used:
- 25190 strings out of 479560
- 501782 string characters out of 5876399
- 753591 words of memory out of 5000000
- 43122 multiletter control sequences out of 15000+600000
+ 25502 strings out of 479560
+ 504565 string characters out of 5876399
+ 759536 words of memory out of 5000000
+ 43435 multiletter control sequences out of 15000+600000
  484276 words of font info for 83 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 99i,16n,104p,481b,516s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss9.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on template_slides.pdf (37 pages, 735786 bytes).
+ 99i,16n,104p,481b,530s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss9.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on template_slides.pdf (36 pages, 726782 bytes).
 PDF statistics:
- 587 PDF objects out of 1000 (max. 8388607)
- 454 compressed objects within 5 object streams
- 105 named destinations out of 1000 (max. 500000)
- 133 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 556 PDF objects out of 1000 (max. 8388607)
+ 429 compressed objects within 5 object streams
+ 108 named destinations out of 1000 (max. 500000)
+ 141 words of extra memory for PDF output out of 10000 (max. 10000000)
 

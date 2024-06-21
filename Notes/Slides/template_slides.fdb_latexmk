@@ -1,12 +1,12 @@
 # Fdb version 3
-["bibtex template_slides"] 1718958352 "template_slides.aux" "template_slides.bbl" "template_slides" 1718959089
+["bibtex template_slides"] 1718980632 "template_slides.aux" "template_slides.bbl" "template_slides" 1718980642
   "../Thesis/ref.bib" 1718914513 11530 cedd09b19edea5f4270d0b14ed583732 ""
   "c:/texlive/2022/texmf-dist/bibtex/bst/base/apalike.bst" 1660315953 24635 604dafcc79f521a11ea73e506e1fbd98 ""
-  "template_slides.aux" 1718959089 10489 f5902d745bee51830649a0c1c15a2227 "pdflatex"
+  "template_slides.aux" 1718980641 10315 784aeb9d18f5c7373042a6bb15b5e23a "pdflatex"
   (generated)
   "template_slides.bbl"
   "template_slides.blg"
-["pdflatex"] 1718959085 "c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Slides/template_slides.tex" "template_slides.pdf" "template_slides" 1718959089
+["pdflatex"] 1718980637 "c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Slides/template_slides.tex" "template_slides.pdf" "template_slides" 1718980642
   "../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf" 1718912629 40474 8d15ab07824608cb16c450dae7774077 ""
   "../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf" 1718912629 40473 6f2dbb3a9a0993a92fd80c1aa1d966a6 ""
   "../../Figures/2013-2022/GMM_m/GLVmix_s.pdf" 1718913189 12924 4324be750a175d5084ce2aae72e4cab7 ""
@@ -17,7 +17,7 @@
   "../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf" 1718912403 46061 a026d1002f25577e0353a1cabd760458 ""
   "../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf" 1718912403 46082 a2c90533f943d16082164412c9b243ab ""
   "../../Figures/2013-2022/GMM_m/GLmix_s.pdf" 1718913081 6605 7df88f46b112b8a663f943f46ca8ef0b ""
-  "c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Slides/template_slides.tex" 1718959080 20550 132fbdc5959d0d8dbd43dc13550518c8 ""
+  "c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Slides/template_slides.tex" 1718980618 23279 01c5bd5a2baf822eb993046cf530d7ae ""
   "c:/texlive/2022/texmf-dist/fonts/map/fontname/texfonts.map" 1660317858 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2022/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy5.tfm" 1660315392 1120 1e8878807317373affa7f7bba4cf2f6a ""
   "c:/texlive/2022/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy7.tfm" 1660315392 1120 7f9f170e8aa57527ad6c49feafd45d54 ""
@@ -84,7 +84,6 @@
   "c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb" 1660315392 32587 65067f817f408bc71a7312f3d9828a9b ""
   "c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1660315392 32716 08e384dc442464e7285e891af9f45947 ""
   "c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb" 1660315392 32626 5abc8bb2f28aa647d4c70f8ea38cc0d3 ""
-  "c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb" 1660315392 32442 c975af247b6702f7ca0c299af3616b80 ""
   "c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb" 1660315393 31764 459c573c03a4949a528c2cc7f557e217 ""
   "c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1660315393 34694 870c211f62cb72718a00e353f14f254d ""
   "c:/texlive/2022/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1660319810 71627 94eb9990bed73c364d7f53f960cc8c5b ""
@@ -232,6 +231,7 @@
   "c:/texlive/2022/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def" 1660318834 31050 e4358cca33d04613ad0709cc9084f95a ""
   "c:/texlive/2022/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg" 1660318980 678 4792914a8f45be57bb98413425e4c7af ""
   "c:/texlive/2022/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty" 1660319054 5766 13a9e8766c47f30327caf893ece86ac8 ""
+  "c:/texlive/2022/texmf-dist/tex/latex/natbib/natbib.sty" 1660319916 45456 1c8843383c0bd05870c45fa0ebea6cc2 ""
   "c:/texlive/2022/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty" 1660320463 1090 bae35ef70b3168089ef166db3e66f5b2 ""
   "c:/texlive/2022/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty" 1660320463 410 615550c46f918fcbee37641b02a862d9 ""
   "c:/texlive/2022/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty" 1660320463 21013 f4ff83d25bb56552493b030f27c075ae ""
@@ -261,12 +261,11 @@
   "c:/texlive/2022/texmf-var/web2c/pdftex/pdflatex.fmt" 1660323515 1512323 21a09fd4583b222baca0cb428f6b3e78 ""
   "c:/texlive/2022/texmf.cnf" 1660323382 713 e69b156964470283e0530f5060668171 ""
   "newcommand.tex" 1718872105 4438 67de95f0fef1ff55453c4449ce759475 ""
-  "template_slides.aux" 1718959089 10489 f5902d745bee51830649a0c1c15a2227 "pdflatex"
+  "template_slides.aux" 1718980641 10315 784aeb9d18f5c7373042a6bb15b5e23a "pdflatex"
   "template_slides.bbl" 1718958352 3568 0eefd77c347010c6da161755a89c0893 "bibtex template_slides"
-  "template_slides.nav" 1718959089 4608 c887e4811685286115d6188a2a5ba0ab "pdflatex"
-  "template_slides.out" 1718959089 762 2fcd030105b93428dd42d1647f862426 "pdflatex"
-  "template_slides.tex" 1718959080 20550 132fbdc5959d0d8dbd43dc13550518c8 ""
-  "template_slides.toc" 1718959089 243 a378aaaa6636b34bc64ba79f8563dacd "pdflatex"
+  "template_slides.nav" 1718980641 4659 393e345c6fdff582633171907a554715 "pdflatex"
+  "template_slides.out" 1718980641 754 b6c73a4e576553ce89728cb47d83f81c "pdflatex"
+  "template_slides.tex" 1718980618 23279 01c5bd5a2baf822eb993046cf530d7ae ""
   (generated)
   "template_slides.aux"
   "template_slides.log"
