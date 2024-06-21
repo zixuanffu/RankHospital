@@ -42,7 +42,7 @@
 %% begin presentation
 
 \title{\large \bfseries L'Hôpital's (Selection) Rule\\
-An Empirical Bayes Application to French Hospitals}
+  An Empirical Bayes Application to French Hospitals}
 
 \author{Fu Zixuan\\[3ex]
   % Supervised by Prof.Thierry Magnac}
@@ -62,9 +62,9 @@ An Empirical Bayes Application to French Hospitals}
 \begin{frame}
   \frametitle{Motivation: Invidious decision}
   \begin{itemize}\itemsep=12pt
-    \item \textit{League table mentality}: Ranking \& Selection.
-    \item \textit{Noisy estimates}: Unobserved heterogeneity.
-    \item \textit{Bayesian view}: Prior distribution.
+    \item \textit{League table mentality}: Ranking \& Selection.\cite{gu2023invidious}
+    \item \textit{Noisy estimates}: Unobserved heterogeneity. \cite{chetty2014measuring}
+    \item \textit{Bayesian view}: Prior distribution.\cite{gu2017empirical}
   \end{itemize}
 \end{frame}
 
@@ -164,6 +164,7 @@ An Empirical Bayes Application to French Hospitals}
     \begin{tabular}{lcc}
       \tabularnewline \midrule \midrule
       Dependent Variable: & \multicolumn{2}{c}{Nurses}                         \\
+                          & OLS                        & Lagged IV             \\
       Model:              & (1)                        & (2)                   \\
       \midrule
       \emph{Variables}                                                         \\
@@ -268,7 +269,7 @@ An Empirical Bayes Application to French Hospitals}
   \begin{equation*}
     L_n(\theta, \delta(\boldsymbol{\hat{\theta}})) = \sum_{i=1}^n L(\theta_i, \delta_i(\hat{\theta})).
   \end{equation*}
-  Risk (Expectation of risk):
+  Risk (Expectation of loss):
   \begin{align*}
     R_n(\theta, \delta(\boldsymbol{\hat{\theta}})) & = \E[L_n(\theta, \delta(\boldsymbol{\hat{\theta}}))]                                                                                                                       \\
                                                    & = \frac{1}{n}\sum_{i=1}^n \E[L(\theta_i, \delta_i(\boldsymbol{\hat{\theta}}))]                                                                                             \\
@@ -281,7 +282,7 @@ An Empirical Bayes Application to French Hospitals}
   \frametitle{The Selection Task}
   \begin{itemize}\itemsep=12pt
     \item Select the bottom 20\% \footnote{The most efficient 20\%.} out of the
-          population of $\theta_i$, those $i$ whose $\alpha_i<G^{-1}(0.2)$
+          population of $\theta_i$, those $i$ whose $\theta_i<G^{-1}(0.2)$
     \item Control the overall false discovery rate at 20\%, \begin{equation*}
             \frac{\E_G\bra{1\set{\theta_i>\theta_{\alpha},\delta_i=1}}}{\E_G\bra{\delta_i}} \le \gamma
           \end{equation*}
@@ -290,7 +291,7 @@ An Empirical Bayes Application to French Hospitals}
 
 \begin{frame}
   \frametitle{Problem Formulation}
-  The \textbf{loss} function is
+  The \textbf{loss} function is ($h_i=1\set{\theta_i<\theta_{\alpha}=G^-1(\alpha)}$)
   \begin{equation*}
     L(\delta,\theta)=\sum h_i(1-\delta_i) +\tau_1\pa{\sum (1-h_i)\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}
   \end{equation*}
@@ -303,24 +304,25 @@ An Empirical Bayes Application to French Hospitals}
   \end{align*} where $v_\alpha(\hat{\theta})=\p(\theta<\theta_\alpha|\hat{\theta})$ is the \textbf{posterior tail probability}.
 \end{frame}
 
-\begin{frame}
+\begin{frame}[label=observation]
   \frametitle{Prior Distribution $G$}
-  Observe
+  Observe\footnote{$Y_{it}=\theta_i+\varepsilon_{it}+x_{it}(\beta-\hat{\beta})$}
   \begin{equation*}
     Y_{it} = \theta_i + \varepsilon_{it} \quad \varepsilon_{it} \sim \caln(0,\sigma_i^2) \quad (\theta_i,\sigma_i^2) \sim G
   \end{equation*}
   Neither $\theta_i$ nor $\sigma_i^2$ is known. But the sufficient statistics are
   \begin{align*}
     Y_i=\frac{1}{T_i}\sum_{t=1}^{T_i}Y_{it}           & \quad \text{where}\quad Y_i|\theta_i,\sigma_i^2 \sim \caln(\theta_i,\sigma_i^2/T_i)     \\
-    S_i=\frac{1}{T_i-1}\sum_{t=1}^{T_i}(Y_{it}-Y_i)^2 & \quad \text{where} \quad S_i|\sigma_i^2 \sim \Gamma(r_i= (T_i-1)/2,2\sigma_i^2/(T_i-1)) \\
+    S_i=\frac{1}{T_i-1}\sum_{t=1}^{T_i}(Y_{it}-Y_i)^2 & \quad \text{where} \quad S_i|\sigma_i^2 \sim \Gamma(r_i= (T_i-1)/2,2\sigma_i^2/(T_i-1))
   \end{align*}
+  \hyperlink{normality}{\beamergotobutton{Appendix}}
 \end{frame}
 
 \begin{frame}
   \frametitle{Tail probability}
   Given the two sufficient statistics, the posterior tail probability is
   \begin{align*}
-    v_\alpha(Y_i,S_i) & = P( \theta_i > \theta_{\alpha} | Y_i,S_i)                                                                                 \\
+    v_\alpha(Y_i,S_i) & = P( \theta_i < \theta_{\alpha} | Y_i,S_i)                                                                                 \\
                       & = \frac{{\int_{-\infty}^{\theta_{\alpha}} \Gamma(s_i|r_i,\sigma_i^2) f(y_i|\theta_i, \sigma_i^2) dG(\theta_i,\sigma_i^2)}}
     {{\int_{-\infty}^{\infty} \Gamma(s_i|r_i,\sigma_i^2) f(y_i|\theta_i, \sigma_i^2) dG(\theta_i,\sigma_i^2)}}
   \end{align*}
@@ -336,7 +338,7 @@ An Empirical Bayes Application to French Hospitals}
 
 \begin{frame}
   \frametitle{Estimate $G$}
-  Following \cite{koenker2014convex}
+  Following \cite{koenker2014convex,andersen2010mosek}
   The primal problem:
   \begin{equation*}
     \min_{f=dG}\set{-\sum_i \log g(y_i)\bigg |g_i = T(f_i),\ K(f_i)=1,\ \forall i }
@@ -396,12 +398,13 @@ An Empirical Bayes Application to French Hospitals}
 %   \end{figure}
 % \end{frame}
 
-\begin{frame}
+\begin{frame}[label=tpselect]
   \frametitle{Known $\sigma_i$: Posterior Tail probability}
   \begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf}
   \end{figure}
+  \hyperlink{tpcontour}{\beamergotobutton{Next}}
 \end{frame}
 
 \begin{frame}
@@ -430,12 +433,12 @@ An Empirical Bayes Application to French Hospitals}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Limitation}
+\begin{frame}[label=limitation]{Limitation}
   \begin{itemize}\itemsep=12pt
-    \item Specification
-    \item Endogeneity issue
-    \item Normality assumption on $\varepsilon_{it}$
     \item Interpretation of the $\theta_i$.
+    \item Specification, endogeneity \textit{etc.}
+    \item Normality assumption on $\varepsilon_{it}$.
+          \hyperlink{normality}{\beamergotobutton{Next}}
   \end{itemize}
 \end{frame}
 
@@ -447,22 +450,23 @@ An Empirical Bayes Application to French Hospitals}
 
 \appendix
 
-\begin{frame}{Normality assumption on $\varepsilon_{it}$}
+\begin{frame}[label=normality]{Normality assumption on $\varepsilon_{it}$}
   Estimate the fixed effect $\theta_i$ by
   \begin{align*}
     \hat{\theta}_i =                       & \frac{1}{T}\sum(\theta_i+\varepsilon_{it}+x_{it}(\beta-\hat{\beta})) \\
     \overset{N\to \infty}{\longrightarrow} & \theta_i+\frac{1}{T}\sum_t \varepsilon_{it}
   \end{align*}
   When $T$ is relatively small (or even fixed), can't use central limit theorem to claim that $\hat{\theta}_i \overset{d}{\to} \caln(\theta_i,\frac{\sigma_i^2}{T})$.
-  $\longleftarrow$ Assume that $\varepsilon_{it} \sim \caln(0,\sigma_i^2)$ .
-
+  $\longrightarrow$ Assume that $\varepsilon_{it} \sim \caln(0,\sigma_i^2)$ .
+  \hyperlink{observation}{\beamergotobutton{Back (main)}}   \hyperlink{limitation}{\beamergotobutton{Back (end)}}
 \end{frame}
 
-\begin{frame}{TP vs PM}
+\begin{frame}[label=tpcontour]{TP vs PM}
   \begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf}
   \end{figure}
+  \hyperlink{tpselect}{\beamergotobutton{Back}}
 \end{frame}
 
 \begin{frame}{TP vs JS}

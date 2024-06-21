@@ -474,7 +474,7 @@ level_plot <- function(Z, Selection, cls, alpha = 0.04, gamma = 0.2, tail = "R",
             "Agree", paste(Rules[cindex[1]], " extra", sep = ""),
             paste(Rules[cindex[2]], " extra", sep = "")
         )
-        legend("topleft", text,
+        legend("topright", text,
             col = cols, pch = 1, cex = 0.95, bty = "n"
         )
         mtext(paste("Capacity ", Rules[cindex[1]], " vs ", Rules[cindex[2]], sep = ""))
@@ -508,7 +508,7 @@ level_plot <- function(Z, Selection, cls, alpha = 0.04, gamma = 0.2, tail = "R",
             "Agree", paste(Rules[cindex[1]], " extra", sep = ""),
             paste(Rules[cindex[2]], " extra", sep = "")
         )
-        legend("topleft", text, col = cols, pch = 1, cex = 0.95, bty = "n")
+        legend("topright", text, col = cols, pch = 1, cex = 0.95, bty = "n")
         mtext(paste("Capacity and FDR ", Rules[cindex[1]], " vs ", Rules[cindex[2]], sep = ""))
         title("(b)")
     }
