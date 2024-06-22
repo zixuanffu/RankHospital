@@ -19,9 +19,11 @@ count_hpt_share <- count_hpt[, Share := N / sum(N), by = AN]
 count_hpt_wide <- dcast(count_hpt, AN ~ STJR, value.var = "N")
 
 count_hpt_wide[, Total := rowSums(.SD), .SDcols = legal]
-print(xtable(count_hpt_wide), type = "latex", file = "Tables/Descriptive/hospital_count.tex", floating = FALSE, latex.environments = NULL, booktabs = TRUE)
-mean_count_hpt <- count_hpt[, round(mean(N)), by = STJR]
+count_hpt_wide <- count_hpt_wide[, lapply(.SD, function(x) as.integer(x))]
 
+setnames(count_hpt_wide, c("AN"), c("Year"))
+print(xtable(count_hpt_wide), include.rownames = FALSE, type = "latex", file = "Tables/Descriptive/hospital_count.tex", floating = FALSE, latex.environments = NULL, booktabs = TRUE)
+mean_count_hpt <- count_hpt[, round(mean(N)), by = STJR]
 
 count_hpt_share_wide <- count_hpt_wide[, lapply(.SD, function(x) x / rowSums(.SD)), .SDcols = legal, by = AN]
 
@@ -55,18 +57,42 @@ length(unique(dt_all$FI))
 
 dt_sum <- dt_all[, lapply(.SD, function(x) sum(x)), by = .(AN, STJR), .SDcols = output]
 dt_sum <- merge(dt_sum, count_hpt_share)
-dt_sum[, (output) := lapply(.SD, function(x) x * Share), .SDcols = output]
-dt_share_output <- dt_sum[, lapply(.SD, function(x) x / sum(x, by = AN)), .SDcols = output, by = c("AN", "STJR")]
-
-dt_share <- dt_sum[, lapply(.SD, function(x) x / rowSums(.SD)), by = STJR, .SDcols = output]
-
+dt_sum[, (output) := lapply(.SD, function(x) x / Share), .SDcols = output]
+dt_sum[, (output) := lapply(.SD, function(x) x / sum(x)), by = AN, .SDcols = output]
+dt_share <- dt_sum[, lapply(.SD, function(x) sum(x) / 9), by = STJR, .SDcols = output]
 new_names <- c("Legal Status", "STAC inpatient", "STAC oupatient", "Sessions", "Outpatient Consultations", "Emergency", "Follow-up care and Long-term care", "Home hospitalization", "Psychiatry stays")
 setnames(dt_share, colnames(dt_share), new_names)
 dt_share <- transpose(dt_share, keep.names = "Output", make.names = "Legal Status")
 dt_share[, (legal) := lapply(.SD, function(x) paste0(round(x * 100, 2), "%")), .SDcols = legal]
 
+# dt_sum[,  (output):=lapply(.SD, function(x) x / sum(x)), .SDcols = output]
+# dt_share<-dt_sum[,lapply(.SD,function(x) sum(x)),by=STJR,.SDcols=output]
+
 dir.create("Tables/Descriptive/")
-print(xtable(dt_share), type = "latex", file = "Tables/Descriptive/output_share.tex", floating = FALSE, latex.environments = NULL, booktabs = TRUE)
+print(xtable(dt_share), include.rownames = FALSE, type = "latex", file = "Tables/Descriptive/output_share.tex", floating = FALSE, latex.environments = NULL, booktabs = TRUE)
+help(xtable)
+
+
+# ---- Without the Teaching Hospitals ---- #
+dt_all <- dt_all[STJR != "Teaching"]
+count_hpt <- dt_all[, .N, by = .(AN, STJR)]
+count_hpt_share <- count_hpt[, Share := N / sum(N), by = AN]
+
+dt_sum <- dt_all[, lapply(.SD, function(x) sum(x)), by = .(AN, STJR), .SDcols = output]
+dt_sum <- merge(dt_sum, count_hpt_share)
+dt_sum[, (output) := lapply(.SD, function(x) x / Share), .SDcols = output]
+dt_sum[, (output) := lapply(.SD, function(x) x / sum(x)), by = AN, .SDcols = output]
+dt_share <- dt_sum[, lapply(.SD, function(x) sum(x) / 9), by = STJR, .SDcols = output]
+new_names <- c("Legal Status", "STAC inpatient", "STAC oupatient", "Sessions", "Outpatient Consultations", "Emergency", "Follow-up care and Long-term care", "Home hospitalization", "Psychiatry stays")
+setnames(dt_share, colnames(dt_share), new_names)
+dt_share <- transpose(dt_share, keep.names = "Output", make.names = "Legal Status")
+legal <- c("Normal Public", "Private For Profit", "Private Non Profit")
+dt_share[, (legal) := lapply(.SD, function(x) paste0(round(x * 100, 2), "%")), .SDcols = legal]
+
+# dir.create("Tables/Descriptive/")
+print(xtable(dt_share), include.rownames = FALSE, type = "latex", file = "Tables/Descriptive/output_share_ex.tex", floating = FALSE, latex.environments = NULL, booktabs = TRUE)
+
+
 
 # ---- 3. The 3 quantiles of the number of stays/personnel (2013-2022) ---- #
 

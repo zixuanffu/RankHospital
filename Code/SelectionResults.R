@@ -11,11 +11,13 @@ library(data.table)
 pdt <- readRDS("Results/2013-2022/pdt_used_gmm_sys_m.rds")
 Z <- fit1d(pdt)
 
-sL <- selectL1d(Z, alpha = 0.22, gamma = 0.05)
-sL <- select1d(Z, alpha = 0.22, gamma = 0.05, "L")
-sR <- selectR1d(Z, alpha = 0.22, gamma = 0.05)
-sR <- select1d(Z, alpha = 0.22, gamma = 0.05, "R")
-save(Z, sL, sR, file = "Results/2013-2022/ZsLsR.Rda")
+alpha <- 0.2
+gamma <- 0.1
+# sL <- selectL1d(Z, alpha = alpha, gamma = gamma)
+sL <- select1d(Z, alpha = alpha, gamma = gamma, "L")
+# sR <- selectR1d(Z, alpha = alpha, gamma = gamma)
+sR <- select1d(Z, alpha = alpha, gamma = gamma, "R")
+# save(Z, sL, sR, file = "Results/2013-2022/ZsLsR.Rda")
 
 
 
@@ -31,6 +33,3 @@ dev.off()
 
 apply(sL$A, 2, sum)
 apply(sL$B, 2, sum)
-
-apply(sR$A, 2, sum)
-apply(sR$B, 2, sum)

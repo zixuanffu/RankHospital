@@ -69,7 +69,7 @@ gamma <- 0.20
 tail <- "L"
 Z <- fit1d(pdt)
 sL <- select1d(Z, alpha = alpha, gamma = gamma, tail = tail)
-for (rule_index in c(2, 4, 5)) {
+for (rule_index in c(2, 4, 5, 6)) {
     filepath <- paste0("Figures/2013-2022/GMM_m/GLmix/Left_", alpha, "_", gamma, "_", Rules[rule_index], ".pdf")
     print(filepath)
     select_plot_1d(Z, sL, alpha = alpha, gamma = gamma, tail = tail, rule_index, sub = FALSE, filepath, format = "pdf")

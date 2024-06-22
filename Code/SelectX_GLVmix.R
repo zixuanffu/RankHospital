@@ -462,19 +462,20 @@ select_plot_2d <- function(Z, s, alpha, gamma, tail, rule_index, sub = FALSE, fi
     B_pub <- pub[B == 1]
     B_pri <- pri[B == 1]
     plot(NULL, xlim = c(u_min, u_max), ylim = c(log(v_min), log(v_max)), xlab = expression(theta), ylab = expression(sigma^2))
-    points(B_pub$hat_mu, log(B_pub$Var_res1), col = 4, cex = 0.5)
-    points(B_pri$hat_mu, log(B_pri$Var_res1), col = 2, cex = 0.5)
-    text <- c(paste0("Public: ", nrow(B_pub), "/", n_pub), paste0("Private: ", nrow(B_pri), "/", n_pri))
-    legend("topright", text, col = c(4, 2), pch = 1, cex = 0.95, bty = "n")
+    points(B_pri$hat_mu, log(B_pri$Var_res1), col = 4, cex = 0.5)
+    points(B_pub$hat_mu, log(B_pub$Var_res1), col = 2, cex = 0.5)
+    text <- c(paste0("Public: ", nrow(B_pub), "/", n_pub, "=", round(nrow(B_pub) / n_pub), 2), paste0("Private: ", nrow(B_pri), "/", n_pri, "=", round(nrow(B_pub) / n_pub), 2))
+    legend("topright", text, col = c(2, 4), pch = 1, cex = 0.95, bty = "n")
     mtext(paste("alpha = ", alpha, "selected: ", nrow(B_pub) + nrow(B_pri)))
     title(paste("Rule: ", Rules[rule_index]))
     A_pub <- pub[A == 1]
     A_pri <- pri[A == 1]
     plot(NULL, xlim = c(u_min, u_max), ylim = c(log(v_min), log(v_max)), xlab = expression(theta), ylab = expression(sigma^2))
-    points(A_pub$hat_mu, log(A_pub$Var_res1), col = 4, cex = 0.5)
-    points(A_pri$hat_mu, log(A_pri$Var_res1), col = 2, cex = 0.5)
-    text <- c(paste0("Public: ", nrow(A_pub), "/", n_pub), paste0("Private: ", nrow(A_pri), "/", n_pri))
-    legend("topright", text, col = c(4, 2), pch = 1, cex = 0.95, bty = "n")
+    points(A_pri$hat_mu, log(A_pri$Var_res1), col = 4, cex = 0.5)
+    points(A_pub$hat_mu, log(A_pub$Var_res1), col = 2, cex = 0.5)
+
+    text <- c(paste0("Public: ", nrow(A_pub), "/", n_pub, "=", round(nrow(A_pub) / n_pub, 2)), paste0("Private: ", nrow(A_pri), "/", n_pri, "=", round(nrow(A_pri) / n_pri, 2)))
+    legend("topright", text, col = c(2, 4), pch = 1, cex = 0.95, bty = "n")
     mtext(paste("alpha = ", alpha, "gamma = ", gamma, "selected: ", nrow(A_pub) + nrow(A_pri)))
     title(paste("Rule: ", Rules[rule_index]))
     dev.off()

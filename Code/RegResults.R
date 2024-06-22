@@ -1,5 +1,6 @@
 rm(list = ls())
 pacman::p_load(data.table, plm, texreg, fixest)
+help(texreg)
 source("Code/RegX_fixest.R")
 source("Code/RegX_plm.R")
 
@@ -13,7 +14,7 @@ dt_inf[, PSY := (SEJ_PSY > 2)]
 level_order <- c(1, 2, 3, 0) # use public as base level
 dt_inf$STJR <- factor(dt_inf$STJR, levels = level_order)
 colnames(dt_inf)
-
+dt_inf <- dt_inf[STJR != 0] # remove teaching hospitals
 # ---- 1. Input and output variables ---- #
 var_input <- c("ETP_INF")
 # we distinguish 8 types of output (combine psychiatric inpatient and outpatient)
@@ -73,12 +74,12 @@ reg_dum_iv <- feols(formula_dum_iv, data = pd_inf)
 header <- c("Pool", "Pool IV", "Dummy", "Dummy IV")
 etable(reg_pool, reg_pool_iv, reg_dum, reg_dum_iv, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_pool_dummy.tex", replace = TRUE)
 
-x <- c("STAC inpatient", "STAC outpatient", "Medical sessions", "External consultations", "Emergency", "Long-term & follow-up", "Home care", "Psychiatric care")
+x <- c("STAC inpatient", "STAC outpatient", "Medical sessions", "External consultations", "Emergency", "Long-term \\& follow-up", "Home care", "Psychiatric care")
 names(x) <- add_log(var_output)
 
 y <- "Nurses"
 names(y) <- add_log(var_input)
-var_dict <- c(x, y, STJR2 = "Private Forprofit", STJR3 = "Private Nonprofit", STJR0 = "Teaching")
+var_dict <- c(x, y, STJR2 = "Private Forprofit", STJR3 = "Private Nonprofit")
 var_dict
 setFixest_dict(var_dict)
 etable(reg_dum, reg_dum_iv, dict = var_dict, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_dummy_iv.tex", replace = TRUE)
@@ -92,12 +93,12 @@ summary(reg_2)
 reg_3 <- feols(formula_pool_iv, data = pd_inf[STJR == 3])
 summary(reg_3)
 
-header <- c("Teaching", "Public", "Forprofit", "Nonprofit")
-etable(reg_0, reg_1, reg_2, reg_3, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_sep_iv.tex", signif.code = "letters", replace = TRUE)
+header <- c("Public", "Forprofit", "Nonprofit")
+etable(reg_1, reg_2, reg_3, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_sep_iv.tex", signif.code = "letters", replace = TRUE)
 
 # to generate a table with 2 columns...
 header <- c("Within Group", "First Differece")
-etable(reg_0, reg_1, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_plm_fe.tex", replace = TRUE)
+etable(reg_2, reg_3, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_plm_fe.tex", replace = TRUE)
 
 
 # ---- 3. Regression with individual fixed effects ---- #
@@ -202,13 +203,14 @@ summary(reg_gmm_sys, robust = TRUE)
 W <- reg_gmm_sys$W
 
 str(W[1]) # 15 x 16
-
+var_list <- as.list(var_dict)
 texreg(list(reg_gmm_fd, reg_gmm_sys), file = "Tables/2013-2022/reg_gmm.tex", booktabs = TRUE, table = FALSE)
 
-texreg(list(reg_wg_plm, reg_fd_plm, reg_gmm_sys), file = "Tables/2013-2022/reg_wg_fd_gmm_b.tex", booktabs = TRUE, table = FALSE)
+texreg(list(reg_wg_plm, reg_fd_plm, reg_gmm_sys), custom.coef.map = var_list, file = "Tables/2013-2022/reg_wg_fd_gmm_b.tex", booktabs = TRUE, table = FALSE)
+texreg(list(reg_wg_plm, reg_fd_plm, reg_iv), custom.coef.map = var_list, file = "Tables/2013-2022/reg_wg_fd_iv_b.tex", booktabs = TRUE, table = FALSE)
 # to generate a table with 3 columns
 header <- c("Within Group", "First Difference", "System GMM")
-etable(reg_0, reg_1, reg_2, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_wg_fd_gmm.tex", replace = TRUE)
+etable(reg_1, reg_2, reg_3, headers = header, se.below = TRUE, digits = 3, fitstat = ~ n + r2 + war2, digits.stats = 3, tex = TRUE, file = "Tables/2013-2022/reg_wg_fd_gmm.tex", replace = TRUE)
 
 # manually calculate the residuals for system gmm
 coef <- reg_gmm_sys$coefficients
