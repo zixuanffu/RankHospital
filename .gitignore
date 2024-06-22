@@ -3,3 +3,16 @@ Reference/
 Notes/*.md
 Notes/*.txt
 Notes/*.docx
+History/
+Notes/Slides/*.aux
+Notes/Slides/*.log
+Notes/Slides/*.nav
+Notes/Slides/*.out
+Notes/Slides/*.snm
+Notes/Slides/*.toc
+Notes/Slides/*.vrb
+Notes/Slides/*.bbl
+Notes/Slides/*.blg
+Notes/Slides/*.fdb_latexmk
+Notes/Slides/*.fls
+Notes/Slides/*.synctex.gz

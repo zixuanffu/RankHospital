@@ -1,4 +1,0 @@
-\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
-\beamer@sectionintoc {2}{Data and Estimation}{6}{0}{2}
-\beamer@sectionintoc {3}{Compound decision and Empirical Bayes}{10}{0}{3}
-\beamer@sectionintoc {4}{Conclusion}{24}{0}{4}
