@@ -31,6 +31,27 @@
 }
 \footlineon
 
+% backup slides
+\usepackage{appendixnumberbeamer}
+\newcommand{\beginbackup}{
+  \newcounter{framenumbervorappendix}
+  \setcounter{framenumbervorappendix}{\value{framenumber}}
+  \setbeamertemplate{footline}
+  {
+    \leavevmode%
+    \hline
+    box{%
+        \begin{beamercolorbox}[wd=\paperwidth,ht=2.25ex,dp=1ex,right]{footlinecolor}%
+          %         \insertframenumber  \hspace*{2ex} 
+        \end{beamercolorbox}}%
+    \vskip0pt%
+  }
+}
+\newcommand{\backupend}{
+  \addtocounter{framenumbervorappendix}{-\value{framenumber}}
+  \addtocounter{framenumber}{\value{framenumbervorappendix}}
+}
+
 % \AtBeginSection[]
 % {
 %   \begin{frame}<beamer>
@@ -62,9 +83,8 @@
 \begin{frame}
   \frametitle{Questions}
   \begin{itemize}\itemsep=12pt
-    \item Out of the top 20\% hospitals in France\footnote{in terms of labor (nurses)
-            employment efficiency}, how many of them are public hospitals/private
-          hospitals?
+    \item Out of the top 20\% hospitals in France in terms of labor employment
+          efficiency, how many of them are public hospitals/private hospitals?
     \item What would be the selection outcome if I want to control the number of mistakes
           that I make?
     \item Does different selection rule produce different results? And to what degree?
@@ -74,11 +94,14 @@
 \begin{frame}
   \frametitle{Roadmap}
   \begin{enumerate}\itemsep=12pt
-    \item Estimate the efficiency.
+    \item \textbf{Estimate the efficiency} with input demand function.
           \begin{itemize} \itemsep=8pt
-            \item $Y$: Labor input (number of full time equivalent nurses).
-            \item $X$: Hospital output (e.g., inpatient/outpatient stays, medical sessions).
+            \item LHS $X$: Labor input (number of full time equivalent nurses).
+            \item RHS $Y$: Hospital output (e.g., inpatient/outpatient stays, medical sessions).
           \end{itemize}
+          \begin{equation*}
+            \log(x_{it,\text{nurses}}) = \log(y_{it,\text{output}})\beta +\theta_i +\varepsilon_{it} \quad \text{where}\quad \varepsilon_{it} \sim \caln(0,\sigma_i^2)
+          \end{equation*}
     \item \textbf{Select the 20\% most efficient hospitals.}
 
   \end{enumerate}
@@ -90,11 +113,9 @@
 
     \item \textit{Productivity/Efficiency}: Factories, Schools, Hospitals etc.
     \item \textit{Ownership}: Public (Teaching, Ordinary) vs. Private (For profit, Non-profit).
-    \item \textit{Methodology}: Following \citep{croiset2024hospitals}, we use the \textit{conditional input demand function} \hyperlink[inputdemand]{\beamergotobutton{Reasons}}
-          \begin{equation*}
-            \log(y_{it,\text{nurses}}) = x_{it,\text{output}}\beta +\theta_i +\varepsilon_{it} \quad \text{where}\quad \varepsilon_{it} \sim \caln(0,\sigma_i^2)
-          \end{equation*}
-          The smaller the $\theta_i$, the less input is needed to produce the same amount of output, the more efficient the hospital is.
+    \item \textit{Methodology}: Following \citet{croiset2024hospitals}, we use the \textit{conditional input demand function}.
+          The smaller the $\theta_i$, the less input is needed to produce the same amount
+          of output, the more efficient the hospital is.\hyperlink{inputdemand}{\beamergotobutton{Reasons}}
   \end{itemize}
 \end{frame}
 
@@ -102,91 +123,38 @@
   \frametitle{Literature: Invidious decision}
   \begin{itemize}\itemsep=12pt
     \item \textit{League table mentality}: Ranking \& Selection.\citep{gu2023invidious}
-    \item \textit{Noisy estimates}: Unobserved heterogeneity. \citep{chetty2014measuring,kline2022systemic}
-    \item \textit{Compound Decision/ Empirical Bayesian}: Compound decision framework \citep{robbins1956empirical}, (Non-parametric) Estimation of a prior distribution. \citep{koenker2014convex, gu2017empirical}
+    \item \textit{Noisy estimates}: Unobserved heterogeneity, fixed effect $\theta_i$. \citep{chetty2014measuring,kline2022systemic}
+    \item \textit{Compound Decision/ Empirical Bayesian}: Compound decision framework \citep{robbins1956empirical}, (Non-parametric) Estimation of the prior distribution of $\theta_i$. \citep{koenker2014convex, gu2017empirical}
   \end{itemize}
 \end{frame}
 
-\section{Data and Estimation}
+\section{Data}
 
 \begin{frame}
   \frametitle{Hospital Types}
+  The Annual Statistics of Health
+  Establishments
+  (SAE)\footnote{\href{https://data.drees.solidarites-sante.gouv.fr/explore/dataset/708_bases-statistiques-sae/information/}{La
+      Statistique annuelle des établissements (SAE)}}, 2013-2022 \footnote{2020 missing due to Covid-19}.
   \begin{table}
     \fontsize{10pt}{10pt}\selectfont
-    \begin{tabular}{rrrrrr}
-      \toprule
-      Year & Teaching & Normal Public & Private FP & Private NP & Total \\
-      \midrule
-      2013 & 198      & 1312          & 1305       & 1382       & 4197  \\
-      2014 & 201      & 1274          & 1293       & 1349       & 4117  \\
-      2015 & 211      & 1275          & 1297       & 1349       & 4132  \\
-      2016 & 212      & 1266          & 1297       & 1313       & 4088  \\
-      2017 & 211      & 1249          & 1297       & 1306       & 4063  \\
-      2018 & 214      & 1247          & 1296       & 1288       & 4045  \\
-      2019 & 214      & 1236          & 1287       & 1281       & 4018  \\
-      2021 & 219      & 1222          & 1293       & 1264       & 3998  \\
-      2022 & 220      & 1220          & 1296       & 1259       & 3995  \\
-      \bottomrule
-    \end{tabular}
+    \input{../../Tables/Descriptive/hospital_count.tex}
   \end{table}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[label=output]
   \frametitle{Output}
   \begin{table} \fontsize{8pt}{10pt}\selectfont
-    \begin{tabular}{lllll}
-      \toprule
-      Output                                         & Normal Public & Private Non Profit & Private For Profit & Teaching \\
-      \midrule
-      STAC\footnote{Short term acute care} inpatient & 8.08\%        & 5.66\%             & 16.3\%             & 7.9\%    \\
-      STAC oupatient                                 & 2.26\%        & 4.02\%             & 22.61\%            & 3.59\%   \\
-      Sessions                                       & 4.34\%        & 23.31\%            & 27.17\%            & 4.8\%    \\
-      Outpatient Consultations                       & 58.23\%       & 43.55\%            & 0.8\%              & 69.18\%  \\
-      Emergency                                      & 21.14\%       & 6.78\%             & 17.3\%             & 12.64\%  \\
-      Follow-up care and Long-term care              & 1.67\%        & 11.26\%            & 12.16\%            & 1.09\%   \\
-      Home hospitalization                           & 0.06\%        & 0.76\%             & 0.17\%             & 0.08\%   \\
-      Psychiatry stays                               & 4.22\%        & 4.66\%             & 3.49\%             & 0.72\%   \\
-      \bottomrule
-    \end{tabular}
+    \input{../../Tables/Descriptive/output_share.tex}
   \end{table}
-  The hospitals differ not only in efficiency but also in the mix of services they provide.
-\end{frame}
-\begin{frame}{Fixed effect estimation}
-  System GMM: use lagged difference as instruments for current levels
-  \begin{equation*}
-    \E[\Delta x_{i,t-1}(y_{it}-\beta x_{it})] \quad \text{if}\quad \E\bra{\Delta x_{i,t-1}(\theta_i+\varepsilon_{i,t})}=0
-  \end{equation*}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Results}
-  \begin{table}\fontsize{6pt}{8pt}\selectfont
-    \begingroup
-    \centering
-    \begin{tabular}{lccc}
-      \tabularnewline \midrule \midrule
-      Dependent Variable: & \multicolumn{3}{c}{log(ETP\_INF)}                                          \\
-                          & Within Group                      & First Difference & \textit{System GMM} \\
-      Model:              & (1)                               & (2)              & (3)                 \\
-      \midrule
-      \emph{Variables}                                                                                 \\
-      log(SEJHC\_MCO)     & $0.10^{***}$                      & $0.07^{***}$     & $0.70^{***}$        \\
-                          & $(0.00)$                          & $(0.01)$         & $(0.05)$            \\
-      log(SEJHP\_MCO)     & $0.02^{***}$                      & $0.01^{***}$     & $-0.05$             \\
-                          & $(0.00)$                          & $(0.00)$         & $(0.04)$            \\
-      $\cdots$            & $\cdots$                          & $\cdots$         & $\cdots$            \\
-      log(SEANCES\_MED)   & $0.02^{***}$                      & $0.02^{***}$     & $0.07^{***}$        \\
-                          & $(0.00)$                          & $(0.00)$         & $(0.03)$            \\
-
-      log(SEJ\_PSY)       & $0.00$                            & $0.00$           & $0.07^{***}$        \\  & $(0.00)$ & $(0.00)$ &
-      $(0.01)$                                                                                         \\ \midrule \emph{Fit statistics} \\ Observations & $15335$                     & $13502$
-                          & $11536$                                                                    \\
-
-      n                   & 1833                              & 1833             & $1833$              \\ T & 9 & 9 & $9$ \\ \midrule \midrule
-      \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}                            \\
-    \end{tabular}
-    \par\endgroup
-  \end{table}
+  \note{Each value $a_{ij}$ is calculated by $a_{ij} = \frac{\text{Output i only in hospital type j}}{\text{Share of hospital type j}}/\text{Sum of output i}$}
+  \begin{itemize}\itemsep = 8pt
+    \item Hospitals differ not only in efficiency but also in the mix of services they
+          provide.
+    \item Teaching hospitals may be innately very different from others (training,
+          research).
+  \end{itemize}
+  \hyperlink{reg_sep}{\beamergotobutton{Appendix}}
 \end{frame}
 
 \section{Compound decision and Empirical Bayes}
@@ -212,56 +180,72 @@
   \end{equation*}
   Risk (Expectation of loss):
   \begin{align*}
-    R_n(\theta, \delta(\boldsymbol{\hat{\theta}})) & = \E[L_n(\theta, \delta(\boldsymbol{\hat{\theta}}))]                                                                                 \\
-                                                   & = \frac{1}{n}\sum_{i=1}^n \E[L(\theta_i, \delta_i(\boldsymbol{\hat{\theta}}))]         \quad \text{Separable decision rule} $\delta$ \\
-                                                   & = \frac{1}{n}\sum_{i=1}^n \int L(\theta_i, \delta_i(\hat{\theta}_i))dP_{\theta_i}(\hat{\theta}_i)                                    \\
+    R_n(\theta, \delta(\boldsymbol{\hat{\theta}})) & = \E[L_n(\theta, \delta(\boldsymbol{\hat{\theta}}))]                                                                                \\
+                                                   & = \frac{1}{n}\sum_{i=1}^n \E[L(\theta_i, \delta_i(\boldsymbol{\hat{\theta}}))]         \quad \text{Separable decision rule } \delta \\
+                                                   & = \frac{1}{n}\sum_{i=1}^n \int L(\theta_i, \delta_i(\hat{\theta}_i))dP_{\theta_i}(\hat{\theta}_i)                                   \\
                                                    & = \int \int L(\theta_i, \delta(\hat{\theta}_i))dP_{\theta_i}(\hat{\theta}_i)dG_n(\theta)
   \end{align*}
-  where $G_n(\alpha)$ is the empirical distribution\footnote{$E_{G_n}(f(x)) = 1/n \sum_i f(x_i)$} of $\theta_i$. (Frequentist View)
-  $\longrightarrow$ Bayesian view: replace $G_n$ by a distribution $G$\footnote{$\theta_i \sim G$}. $\longrightarrow$ Empirical Bayes: Estimate the $G$.
+  where $G_n(\theta)$ is the empirical distribution (Frequentist View)\note{$E_{G_n}(f(x)) = 1/n \sum_i f(x_i)$} of $\theta_i \sim G$.
+  \\$\rightarrow$ Bayesian view: replace $G_n$ by a distribution $G$. $\rightarrow$ Empirical Bayes: Estimate the $G$.
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Estimate $G$}
+  \citet{kiefer1956consistency} established the nonparametric maximum likelihood estimator (NPMLE)
+  \begin{equation*}
+    \hat{G}=\argmin_{G\in \mathcal{G}} \set{-\sum_{i=1}^{n}\log g(y_i)|g(y_i)=\int  \p(y_i |\theta)dG(\theta) }
+  \end{equation*}
+  where $\p(y_i |\theta)$ is the probability density function of $y_i$ conditional on the true parameter $\theta$ $\longrightarrow$ $g(y_i)$ is the marginal pdf of $y_i$.
+\end{frame}
+
+\begin{frame}{Estimate $G$}
+  This is an \textbf{infinite-dimensional} convex optimization problem with a strictly convex objective subject to linear constraints.
+  \begin{equation*}
+    \min_{f=dG}\set{-\sum_i \log g(y_i)\bigg |g(y_i) = T(f),\ K(f)=1,\ \forall i }
+  \end{equation*}
+  where $ T(f)=\int \p(y_i |\theta)f d\theta $ and  $K(f)= \int f d\theta$.\\
+
+  Consistency is proven by \citet{kiefer1956consistency}. Efficient computation
+  method introduced by \citet{koenker2014convex}. Implemented with \textit{Mosek}
+  created by \citet{andersen2010mosek}.
 \end{frame}
 
 \begin{frame}
   \frametitle{The Selection Task}
   \begin{itemize}\itemsep=12pt
-    \item Select the bottom 20\% \footnote{The most efficient 20\%.} of the true
-          $\theta_i$. Since we assume that $\theta_i \sim G$, those $i$ whose
+    \item Select the bottom 20\% (the smaller the $\theta_i$, the more efficient) of the
+          true $\theta_i$. Since we assume that $\theta_i \sim G$, those $i$ whose
           $\theta_i<G^{-1}(0.2)$
-    \item Control the overall false discovery rate at 20\%, \begin{equation*}
+    \item Control the overall false discovery rate at 20\%,
+          \begin{equation*}
             \frac{\E_G\bra{1\set{\theta_i>\theta_{\alpha},\delta_i=1}}}{\E_G\bra{\delta_i}} \le \gamma
           \end{equation*}
+          \begin{enumerate}
+            \item Nominator: Selected but whose true value $>G^{-1}(0.2)$.
+            \item Denominator: Selected.
+          \end{enumerate}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Problem Formulation}
-  The \textbf{loss} function \footnote{$h_i$ is an indicator of whether the true value belong to the set. $\delta_i$ is an indicator of whether $i$ is being selected.} is
+  The \textbf{loss} function is
   \begin{equation*}
     L(\delta,\theta)=\sum h_i(1-\delta_i) +\tau_1\pa{\sum (1-h_i)\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}
-  \end{equation*} where $h_i=1\set{\theta_i<\theta_{\alpha}=G^-1(\alpha)}$.
-  Therefore, the problem is to find $\delta$ such that
+  \end{equation*} where $h_i=1\set{\theta_i<\theta_{\alpha}=G^-1(\alpha)}$. $h_i$ is an indicator of whether the true value belong to the set. $\delta_i$ is an indicator of whether $i$ is being selected.
+  Therefore, the \textbf{problem} is to find $\delta$ such that
   \begin{align*}
     \min_{\delta} \quad & \E_G\E_{\theta|\hat{\theta}}\bra{L(\delta,\theta)}                                                                                                       \\
     =                   & \E_G \ \sum \E(h_i)(1-\delta_i) +\tau_1\pa{\sum (1-\E(h_i))\delta_i -\gamma \delta_i}                                                                    \\
                         & + \tau_2 \pa{\sum \delta_i -\alpha n}                                                                                                                    \\
     =                   & \E_G{\sum v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}}
-  \end{align*} where $v_\alpha(\hat{\theta})=\p(\theta<\theta_\alpha|\hat{\theta})$ is the \textbf{posterior tail probability} $\to$ Need the prior $G$ to derive $v$!
-\end{frame}
-
-\begin{frame}{Normality assumption on $\varepsilon_{it}$}
-  Estimate the fixed effect $\theta_i$ by
-  \begin{align*}
-    \hat{\theta}_i =                       & \frac{1}{T}\sum(\theta_i+\varepsilon_{it}+x_{it}(\beta-\hat{\beta})) \\
-    \overset{N\to \infty}{\longrightarrow} & \theta_i+\frac{1}{T}\sum_t \varepsilon_{it}
   \end{align*}
-  When $T$ is relatively small (or even fixed), can't use central limit theorem to claim that $\hat{\theta}_i \overset{d}{\to} \caln(\theta_i,\frac{\sigma_i^2}{T})$.
-  $\longrightarrow$ Assume that $\varepsilon_{it} \sim \caln(0,\sigma_i^2)$ .
-  \hyperlink{observation}{\beamergotobutton{Back (main)}}   \hyperlink{limitation}{\beamergotobutton{Back (end)}}
+  where $v_\alpha(\hat{\theta})=\p(\theta<\theta_\alpha|\hat{\theta})$ is the \textbf{posterior tail probability}.
 \end{frame}
 
 \begin{frame}[label=observation]
-  \frametitle{Prior Distribution $G$}
-  Observe\footnote{$Y_{it}=\theta_i+\varepsilon_{it}+x_{it}(\beta-\hat{\beta})$}
+  \frametitle{Derive tail probability $v_\alpha$}
+  Pick hospital $i$ whose true efficiency value is $\theta_i$, which we don't observe. We only observe a sequence of $Y_{it}$ where
   \begin{equation*}
     Y_{it} = \theta_i + \varepsilon_{it} \quad \varepsilon_{it} \sim \caln(0,\sigma_i^2) \quad (\theta_i,\sigma_i^2) \sim G
   \end{equation*}
@@ -270,15 +254,16 @@
     Y_i=\frac{1}{T_i}\sum_{t=1}^{T_i}Y_{it}           & \quad \text{where}\quad Y_i|\theta_i,\sigma_i^2 \sim \caln(\theta_i,\sigma_i^2/T_i)     \\
     S_i=\frac{1}{T_i-1}\sum_{t=1}^{T_i}(Y_{it}-Y_i)^2 & \quad \text{where} \quad S_i|\sigma_i^2 \sim \Gamma(r_i= (T_i-1)/2,2\sigma_i^2/(T_i-1))
   \end{align*}
-  \hyperlink{normality}{\beamergotobutton{Appendix}}
+  In our input demand function specification, we have $Y_{it}=\log(x_{it})-\beta\log(y_{it})$. \hyperlink{normality}{\beamergotobutton{Appendix}}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Tail probability}
+  \frametitle{TP and Constraints}
   Given the two sufficient statistics, the posterior tail probability is
   \begin{align*}
-    v_\alpha(Y_i,S_i) & = P( \theta_i < \theta_{\alpha} | Y_i,S_i)                                                                                 \\
-                      & = \frac{{\int_{-\infty}^{\theta_{\alpha}} \Gamma(s_i|r_i,\sigma_i^2) f(y_i|\theta_i, \sigma_i^2) dG(\theta_i,\sigma_i^2)}}
+    v_\alpha(\hat{\theta}_i) & =v_\alpha(Y_i,S_i)                                                                                                         \\
+                             & = P( \theta_i < \theta_{\alpha} | Y_i,S_i)                                                                                 \\
+                             & = \frac{{\int_{-\infty}^{\theta_{\alpha}} \Gamma(s_i|r_i,\sigma_i^2) f(y_i|\theta_i, \sigma_i^2) dG(\theta_i,\sigma_i^2)}}
     {{\int_{-\infty}^{\infty} \Gamma(s_i|r_i,\sigma_i^2) f(y_i|\theta_i, \sigma_i^2) dG(\theta_i,\sigma_i^2)}}
   \end{align*}
   We want to find a cutoff $\lambda$ such that both constraints are satisfied \footnote{Relaxed discrete optimization problem, following \citep{basu2018weighted}}:\\
@@ -291,37 +276,56 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Estimate $G$}
-  Following \citep{koenker2014convex,andersen2010mosek}
-  The primal problem:
-  \begin{equation*}
-    \min_{f=dG}\set{-\sum_i \log g(y_i)\bigg |g_i = T(f_i),\ K(f_i)=1,\ \forall i }
-  \end{equation*}
-  where $ T(f_i)=\int p(y |\alpha)f_id\alpha $ and  $K(f_i)= \int f_i d\alpha$.\\
-  Discretize the support:
-  \begin{equation*}
-    \min_{f=dG}\left\{-\sum_i \log g(y_i)\bigg |g=Af,\ {1^T}f=1\right\}
-  \end{equation*}
-  where $A_{ij}= p(y_i|\alpha_j) $ and $ f = (f(\alpha_1),f(\alpha_2),\ldots,f(\alpha_m))$.\\
-  The dual problem:
-  \begin{equation*}
-    \max_{\lambda,\mu} \left\{ \sum_i \log \lambda_1(i) \bigg| A^T\lambda_1 < \lambda_2 1,\ (\lambda_1>0) \right\}
-  \end{equation*}
+\begin{frame}{Recap}
+
+  \begin{enumerate}
+    \item We have a $N\times T$ panel. $Y_{it}$ is an observation of hospital $i$'s
+          efficiency term $\theta_i$ at time $t$. Say $Y_{it}|\theta_i,\sigma_i \sim
+            \caln(\theta_i,\sigma_i^2)$.
+    \item Given a panel of $Y_{it}$, perform NPMLE to get an estimate of $G(\theta)$ or
+          $G(\theta,\sigma)$.
+    \item Given the estimated prior $G$, derive the explicit form of posterior tail
+          probability $v_\alpha(Y_i,S_i)$ and the two constraints.
+    \item Solve the selection problem and find the optimal $\delta^*$
+          \begin{equation*}
+            \min_{\delta}\E_G{\sum v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}}
+          \end{equation*}
+    \item The decision rule is defined by the cutoff $\lambda$
+          \[\delta^*(y_i,s_i)=1\set{v_\alpha(y_i,s_i)>\lambda^*}\]
+  \end{enumerate}
 \end{frame}
 
 \begin{frame}
-  \frametitle{ The estimated $\hat{G}$}
+  \frametitle{The estimated $\hat{G}$}
   \begin{columns}[T,onlytextwidth]
     \column{0.5\textwidth}
-    Case 1: $\sigma_i$ unknown, only $S_i$ observed.
+    Case 1: $G(\theta,\sigma)$ for $v_\alpha(Y_i,S_i)$
+    \begin{figure}
+      \centering
+      \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix.pdf}
+    \end{figure}
+
+    \column{0.5\textwidth}
+    Case 2: $G(\theta)$ for $v_\alpha(Y_i)$
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix.pdf}
+    \end{figure}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The estimated $\hat{G}$}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    Case 1: $G(\theta,\sigma)$ for $v_\alpha(Y_i,S_i)$
     \begin{figure}
       \centering
       \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix_s.pdf}
     \end{figure}
 
     \column{0.5\textwidth}
-    Case 2: $\sigma_i$ known.
+    Case 2: $G(\theta)$ for $v_\alpha(Y_i)$
     \begin{figure}
       \centering
       \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix_s.pdf}
@@ -330,7 +334,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Unknown $\sigma_i$: Posterior Tail probability}
+  \frametitle{$G(\theta,\sigma)$: Posterior Tail probability}
   \begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf}
@@ -338,10 +342,18 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Unknown $\sigma_i$: Posterior Mean}
+  \frametitle{$G(\theta,\sigma)$: Posterior Mean}
   \begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{$G(\theta,\sigma)$: James-Stein Shrinkage}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_JS.pdf}
   \end{figure}
 \end{frame}
 
@@ -354,7 +366,7 @@
 % \end{frame}
 
 \begin{frame}[label=tpselect]
-  \frametitle{Known $\sigma_i$: Posterior Tail probability}
+  \frametitle{$G(\theta)$: Posterior Tail probability}
   \begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf}
@@ -363,10 +375,18 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Known $\sigma_i$: Posterior Mean}
+  \frametitle{$G(\theta)$: Posterior Mean}
   \begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_PMKWs.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{$G(\theta)$: James-Stein Shrinkage }
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_JS.pdf}
   \end{figure}
 \end{frame}
 
@@ -378,23 +398,41 @@
   \end{figure}
 \end{frame}
 
+\section{Estimation}
+\begin{frame}{Fixed effect estimation}
+  System GMM: use lagged difference as instruments for current levels
+  \begin{equation*}
+    \E[\Delta x_{i,t-1}(y_{it}-\beta x_{it})] \quad \text{if}\quad \E\bra{\Delta x_{i,t-1}(\theta_i+\varepsilon_{i,t})}=0
+  \end{equation*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Results}
+  \begin{table}\fontsize{6pt}{6pt}\selectfont
+    \input{../../Tables/2013-2022/reg_wg_fd_iv.tex}
+  \end{table}
+\end{frame}
+
 \section{Conclusion}
 
 \begin{frame}{Conclusion}
   \begin{itemize}
-    \item Difference in whether to assume known $\sigma_i$.
-    \item Control for the False Discovery Rate.
-    \item Private (FP and NP) hospitals are indeed more "efficient".
+    \item Whether to control for \textbf{False discovery rate}$\to$Control for FDR
+          shrinks the selection set.
+    \item Whether to assume known $\sigma_i$ makes a difference$\to$ Assume unknown
+          $\sigma_i$ makes the FDR constraints bind, thus less selected than assuming
+          $\sigma_i$ known.
+    \item Private (FP and NP) hospitals are indeed more "efficient"$\to$ Caution.
   \end{itemize}
 \end{frame}
 
 \begin{frame}[label=limitation]{Limitation}
   \begin{itemize}\itemsep=12pt
-    \item Interpretation of the $\theta_i$.
-    \item Specification, endogeneity \textit{etc.}
-    \item Normality assumption on $\varepsilon_{it}$.
-          \hyperlink{normality}{\beamergotobutton{Next}}
-  \end{itemize}
+    \item Interpretation of the $\theta_i$: The Schmidt and Sickles/Pitt and Lee models
+          treat all time invariant effects as inefficiency. \citet{greene2005fixed}
+          treats time invariant components as only unobserved heterogeneity.
+    \item Specification, endogeneity, normality assumption on
+          $\varepsilon_{it}$.\textit{etc.} \hyperlink{normality}{\beamergotobutton{Next}} \end{itemize}
 \end{frame}
 
 \begin{frame}[allowframebreaks]
@@ -420,7 +458,7 @@
   \begin{equation*}
     x_i = x_i(p_1, p_2, \ldots, p_n, y_1, y_2, \ldots, y_m)
   \end{equation*}
-
+  \hyperlink{literature}{\beamergotobutton{Back}}
 \end{frame}
 
 \begin{frame}[label=production]{Input demand function vs Production function}
@@ -435,45 +473,33 @@
           to observe a complete list of inputs. But we do need to observe all input
           prices (can be ignored if almost no variability) and all outputs. While in the
           production function, it is the other way around (need to observe all inputs).
-          Since, in our case, output is more *observable* than input (because capital is
-          not easily observed), this approach is preferred.
+          Since, in our case, output is more \textit{observable} than input (because
+          capital is not easily observed), this approach is preferred.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{First glance}
+  \begin{columns}[T,T]
+    \column{0.5\textwidth}
+    \makebox[\textwidth][c]{
+      \fontsize{5pt}{5pt} \selectfont
+      \input{../../Tables/2013-2022/reg_dummy_iv_all.tex}}
+
+    \column{0.5\textwidth}
+    \makebox[\textwidth][c]{
+      \fontsize{5pt}{5pt} \selectfont
+      \input{../../Tables/2013-2022/reg_dummy_iv_all.tex}}
+
+  \end{columns}
+\end{frame}
+
+\begin{frame}[label=reg_sep]{Second glance}
   \begin{table}
-    \fontsize{8pt}{8pt}\selectfont
-    \begingroup
-    \centering
-    \begin{tabular}{lcc}
-      \tabularnewline \midrule \midrule
-      Dependent Variable: & \multicolumn{2}{c}{Nurses}                         \\
-                          & OLS                        & Lagged IV             \\
-      Model:              & (1)                        & (2)                   \\
-      \midrule
-      \emph{Variables}                                                         \\
-      Constant            & 1.59$^{***}$               & 1.58$^{***}$          \\
-                          & (0.067)                    & (0.069)               \\
-      STAC inpatient      & 0.278$^{***}$              & 0.277$^{***}$         \\
-                          & (0.012)                    & (0.013)               \\
-      $\cdots$            & $\cdots$                   & $\cdots$              \\
-      Private Forprofit   & -0.303$^{***}$             & -0.280$^{***}$        \\
-                          & (0.061)                    & (0.065)               \\
-      Private Nonprofit   & -0.215$^{***}$             & -0.188$^{***}$        \\
-                          & (0.056)                    & (0.055)               \\
-      Teaching            & 0.717$^{***}$              & 0.709$^{***}$         \\
-                          & (0.056)                    & (0.056)               \\
-      \midrule
-      \emph{Fit statistics}                                                    \\
-      Observations        & 15,335                     & 13,402                \\
-      R$^2$               & 0.835                      & 0.837                 \\
-      \midrule \midrule
-      \multicolumn{3}{l}{\emph{Clustered (FI) standard-errors in parentheses}} \\
-      \multicolumn{3}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}    \\
-    \end{tabular}
-    \par\endgroup
+    \fontsize{6pt}{6pt}\selectfont
+    \input{../../Tables/2013-2022/reg_sep_iv.tex}
   \end{table}
+  \hyperlink{output}{\beamergotobutton{Back}}
 \end{frame}
 
 \begin{frame}
@@ -494,6 +520,25 @@
   instruments \citep{roodman2007short}.
   \begin{equation*}
     \E[\Delta x_{i,t-1}(y_{it}-\beta x_{it})] \quad \text{if}\quad \E\bra{\Delta x_{i,t-1}(\theta_i+\varepsilon_{i,t})}=0
+  \end{equation*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{NPMLE Computation Methods}
+
+  The primal problem:
+  \begin{equation*}
+    \min_{f=dG}\set{-\sum_i \log g(y_i)\bigg |g(y_i) = T(f),\ K(f)=1,\ \forall i }
+  \end{equation*}
+  where $ T(f)=\int p(y_i |\theta)fd\theta $ and  $K(f)= \int f d\theta$.\\
+  Discretize the support:
+  \begin{equation*}
+    \min_{f=dG}\left\{-\sum_i \log g(y_i)\bigg |g=Af,\ {1^T}f=1\right\}
+  \end{equation*}
+  where $A_{ij}= p(y_i|\theta_j) $ and $ f = (f(\theta_1),f(\theta_2),\ldots,f(\theta_m))$.\\
+  The dual problem:
+  \begin{equation*}
+    \max_{\lambda,\mu} \left\{ \sum_i \log \lambda_1(i) \bigg| A^T\lambda_1 < \lambda_2 1,\ (\lambda_1>0) \right\}
   \end{equation*}
 \end{frame}
 
