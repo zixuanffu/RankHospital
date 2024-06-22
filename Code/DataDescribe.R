@@ -15,11 +15,15 @@ dt_all$STJR <- factor(dt_all$STJR,
 )
 
 count_hpt <- dt_all[, .N, by = .(AN, STJR)]
+count_hpt_share <- count_hpt[, Share := N / sum(N), by = AN]
 count_hpt_wide <- dcast(count_hpt, AN ~ STJR, value.var = "N")
+
 count_hpt_wide[, Total := rowSums(.SD), .SDcols = legal]
 print(xtable(count_hpt_wide), type = "latex", file = "Tables/Descriptive/hospital_count.tex", floating = FALSE, latex.environments = NULL, booktabs = TRUE)
 mean_count_hpt <- count_hpt[, round(mean(N)), by = STJR]
 
+
+count_hpt_share_wide <- count_hpt_wide[, lapply(.SD, function(x) x / rowSums(.SD)), .SDcols = legal, by = AN]
 
 p <- ggplot(mean_count_hpt, aes(x = STJR, y = round(V1, digits = 0))) +
     geom_col() +
@@ -41,14 +45,19 @@ print(p)
 ggsave("Figures/Descriptive/hospital_count_trend.pdf", p, width = 8, height = 4.5)
 
 # ---- 2. The share of each output, by legal status---- #
-dt_all <- readRDS("Data/Out/dt_all.rds")
 dt_all[, SEJ_MCO := SEJHC_MCO + SEJHP_MCO]
 dt_all[, SEJ_PSY := VEN_TOT + SEJ_HTP_TOT]
 output <- c(
     "SEJHC_MCO", "SEJHP_MCO", "SEANCES_MED", "CONSULT_EXT", "PASSU", "ENTSSR", "SEJ_HAD",
     "SEJ_PSY"
 )
-dt_sum <- dt_all[, lapply(.SD, function(x) sum(x)), by = STJR, .SDcols = output]
+length(unique(dt_all$FI))
+
+dt_sum <- dt_all[, lapply(.SD, function(x) sum(x)), by = .(AN, STJR), .SDcols = output]
+dt_sum <- merge(dt_sum, count_hpt_share)
+dt_sum[, (output) := lapply(.SD, function(x) x * Share), .SDcols = output]
+dt_share_output <- dt_sum[, lapply(.SD, function(x) x / sum(x, by = AN)), .SDcols = output, by = c("AN", "STJR")]
+
 dt_share <- dt_sum[, lapply(.SD, function(x) x / rowSums(.SD)), by = STJR, .SDcols = output]
 
 new_names <- c("Legal Status", "STAC inpatient", "STAC oupatient", "Sessions", "Outpatient Consultations", "Emergency", "Follow-up care and Long-term care", "Home hospitalization", "Psychiatry stays")

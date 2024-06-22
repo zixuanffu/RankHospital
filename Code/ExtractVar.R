@@ -255,7 +255,7 @@ for (i in start:end) {
     setnames(dt, c("VEN_HDJ", "VEN_HDN", "SEJ_HTP"), c("VEN_HDJ_TOT", "VEN_HDN_TOT", "SEJ_HTP_TOT"))
     dt_all <- rbind(dt_all, dt)
 }
-saveRDS(dt, "Data/Out/PSY_2013_2015.rds")
+saveRDS(dt_all, "Data/Out/PSY_2013_2015.rds")
 
 
 table_name <- "SSR"
