@@ -2,7 +2,8 @@
 rm(list = ls())
 pacman::p_load(data.table, ggplot2, xtable)
 
-
+(296 / 1003) / (36 / 658)
+(176 / 1003) / (15 / 658)
 # ---- Set the color for each legal status ---- #
 color_value <- c("red", "orange", "blue", "darkgreen")
 legal <- c("Teaching", "Normal Public", "Private For Profit", "Private Non Profit")
@@ -63,12 +64,14 @@ dt_share <- dt_sum[, lapply(.SD, function(x) sum(x) / 9), by = STJR, .SDcols = o
 new_names <- c("Legal Status", "STAC inpatient", "STAC oupatient", "Sessions", "Outpatient Consultations", "Emergency", "Follow-up care and Long-term care", "Home hospitalization", "Psychiatry stays")
 setnames(dt_share, colnames(dt_share), new_names)
 dt_share <- transpose(dt_share, keep.names = "Output", make.names = "Legal Status")
+dt_share[, Total := rowSums(.SD), .SDcols = legal]
 dt_share[, (legal) := lapply(.SD, function(x) paste0(round(x * 100, 2), "%")), .SDcols = legal]
-
+dt_share[, Total := paste0(round(Total * 100, 2), "%")]
 # dt_sum[,  (output):=lapply(.SD, function(x) x / sum(x)), .SDcols = output]
 # dt_share<-dt_sum[,lapply(.SD,function(x) sum(x)),by=STJR,.SDcols=output]
 
 dir.create("Tables/Descriptive/")
+# print(xtable(dt_share), include.rownames = FALSE, type = "latex", file = "Tables/Descriptive/output_share_nonweighted.tex", floating = FALSE, latex.environments = NULL, booktabs = TRUE)
 print(xtable(dt_share), include.rownames = FALSE, type = "latex", file = "Tables/Descriptive/output_share.tex", floating = FALSE, latex.environments = NULL, booktabs = TRUE)
 help(xtable)
 

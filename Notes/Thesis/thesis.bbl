@@ -10,29 +10,6 @@ Aigner, D., Lovell, C.~K., and Schmidt, P. (1977).
 Andersen, E.~D. and Andersen, K.~D. (2010).
 \newblock The mosek optimization tools manual, version 6.0.
 
-\bibitem[Anderson and Hsiao, 1982]{anderson1982formulation}
-Anderson, T.~W. and Hsiao, C. (1982).
-\newblock Formulation and estimation of dynamic models using panel data.
-\newblock {\em Journal of econometrics}, 18(1):47--82.
-
-\bibitem[Arellano and Bond, 1991]{arellano1991some}
-Arellano, M. and Bond, S. (1991).
-\newblock Some tests of specification for panel data: Monte carlo evidence and
-  an application to employment equations.
-\newblock {\em The review of economic studies}, 58(2):277--297.
-
-\bibitem[Arellano and Bover, 1995]{arellano1995another}
-Arellano, M. and Bover, O. (1995).
-\newblock Another look at the instrumental variable estimation of
-  error-components models.
-\newblock {\em Journal of econometrics}, 68(1):29--51.
-
-\bibitem[Blundell and Bond, 1998]{blundell1998initial}
-Blundell, R. and Bond, S. (1998).
-\newblock Initial conditions and moment restrictions in dynamic panel data
-  models.
-\newblock {\em Journal of econometrics}, 87(1):115--143.
-
 \bibitem[Charnes et~al., 1978]{charnes1978measuring}
 Charnes, A., Cooper, W.~W., and Rhodes, E. (1978).
 \newblock Measuring the efficiency of decision making units.
@@ -54,6 +31,12 @@ Chetty, R. and Hendren, N. (2018).
 Croiset, S. and Gary-Bobo, R. (2024).
 \newblock Are public hospitals inefficient? an empirical study on french data.
 
+\bibitem[Gu and Koenker, 2017]{gu2017empirical}
+Gu, J. and Koenker, R. (2017).
+\newblock Empirical bayesball remixed: Empirical bayes methods for longitudinal
+  data.
+\newblock {\em Journal of Applied Econometrics}, 32(3):575--599.
+
 \bibitem[Gu and Koenker, 2023]{gu2023invidious}
 Gu, J. and Koenker, R. (2023).
 \newblock Invidious comparisons: Ranking and selection as compound decisions.
@@ -65,11 +48,10 @@ Kiefer, J. and Wolfowitz, J. (1956).
   infinitely many incidental parameters.
 \newblock {\em The Annals of Mathematical Statistics}, pages 887--906.
 
-\bibitem[Kline and Walters, 2021]{kline2021reasonable}
-Kline, P. and Walters, C. (2021).
-\newblock Reasonable doubt: Experimental detection of job-level employment
-  discrimination.
-\newblock {\em Econometrica}, 89(2):765--792.
+\bibitem[Kline et~al., 2022]{kline2022systemic}
+Kline, P., Rose, E.~K., and Walters, C.~R. (2022).
+\newblock Systemic discrimination among large us employers.
+\newblock {\em The Quarterly Journal of Economics}, 137(4):1963--2036.
 
 \bibitem[Koenker and Gu, 2017]{koenker2017rebayes}
 Koenker, R. and Gu, J. (2017).
@@ -83,22 +65,15 @@ Koenker, R. and Mizera, I. (2014).
 \newblock {\em Journal of the American Statistical Association},
   109(506):674--685.
 
-\bibitem[Laird, 1978]{laird1978nonparametric}
-Laird, N. (1978).
-\newblock Nonparametric maximum likelihood estimation of a mixing distribution.
-\newblock {\em Journal of the American Statistical Association},
-  73(364):805--811.
+\bibitem[Lindsay, 1995]{lindsay1995mixture}
+Lindsay, B.~G. (1995).
+\newblock Mixture models: theory, geometry, and applications.
+\newblock Ims.
 
 \bibitem[Meeusen and van Den~Broeck, 1977]{meeusen1977efficiency}
 Meeusen, W. and van Den~Broeck, J. (1977).
 \newblock Efficiency estimation from cobb-douglas production functions with
   composed error.
 \newblock {\em International economic review}, pages 435--444.
-
-\bibitem[Robbins, 1956]{robbins1956empirical}
-Robbins, H.~E. (1956).
-\newblock An empirical bayes approach to statistics.
-\newblock In {\em Proceedings of the third berkeley symposium on mathematical
-  statistics and probability}, volume~1, pages 157--163.
 
 \end{thebibliography}
