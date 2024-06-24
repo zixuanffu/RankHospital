@@ -1,4 +1,18 @@
-\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
-\contentsline {section}{\numberline {2}Data and Estimation}{5}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Data}{5}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Estimation}{7}{subsection.2.2}%
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {section}{\numberline {2}Data and Estimation}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Data}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Estimation}{4}{subsection.2.2}%
+\contentsline {paragraph}{Regression without individual fixed effect}{4}{section*.7}%
+\contentsline {paragraph}{Regression with individual fixed effect}{5}{section*.10}%
+\contentsline {section}{\numberline {3}Empirical Bayes and Selection Problem}{8}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Compound decision framework}{8}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Estimate $G$}{11}{subsection.3.2}%
+\contentsline {paragraph}{Parametric $G$}{11}{section*.13}%
+\contentsline {paragraph}{NPMLE $G$}{12}{section*.14}%
+\contentsline {subsection}{\numberline {3.3}The selection problem}{12}{subsection.3.3}%
+\contentsline {paragraph}{$G(\theta )$}{13}{section*.15}%
+\contentsline {paragraph}{$G(\theta ,\sigma )$}{13}{section*.16}%
+\contentsline {section}{\numberline {A}Data}{15}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}Data selection}{15}{subsection.A.1}%
+\contentsline {section}{\numberline {B}Empirical Bayes}{15}{appendix.B}%
+\contentsline {subsection}{\numberline {B.1}NPMLE $G$}{15}{subsection.B.1}%

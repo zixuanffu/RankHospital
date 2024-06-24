@@ -6,45 +6,45 @@ Database file #1: ref.bib
 Warning--I didn't find a database entry for "herbert1956empirical"
 Warning--empty journal in croiset2024hospitals
 Warning--empty booktitle in lindsay1995mixture
-You've used 14 entries,
+You've used 21 entries,
             1935 wiz_defined-function locations,
-            563 strings with 6052 characters,
-and the built_in function-call counts, 5606 in all, are:
-= -- 571
-> -- 196
-< -- 12
-+ -- 66
-- -- 62
-* -- 475
-:= -- 950
-add.period$ -- 40
-call.type$ -- 14
-change.case$ -- 101
-chr.to.int$ -- 14
-cite$ -- 16
-duplicate$ -- 212
-empty$ -- 400
-format.name$ -- 94
-if$ -- 1102
+            607 strings with 7231 characters,
+and the built_in function-call counts, 8605 in all, are:
+= -- 885
+> -- 286
+< -- 21
++ -- 98
+- -- 90
+* -- 719
+:= -- 1437
+add.period$ -- 62
+call.type$ -- 21
+change.case$ -- 151
+chr.to.int$ -- 21
+cite$ -- 23
+duplicate$ -- 333
+empty$ -- 626
+format.name$ -- 139
+if$ -- 1715
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 13
-newline$ -- 71
-num.names$ -- 42
-pop$ -- 79
+missing$ -- 19
+newline$ -- 106
+num.names$ -- 63
+pop$ -- 119
 preamble$ -- 1
-purify$ -- 101
+purify$ -- 150
 quote$ -- 0
-skip$ -- 172
+skip$ -- 269
 stack$ -- 0
-substring$ -- 455
-swap$ -- 29
-text.length$ -- 2
+substring$ -- 713
+swap$ -- 54
+text.length$ -- 5
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 84
+type$ -- 126
 warning$ -- 2
-while$ -- 52
+while$ -- 80
 width$ -- 0
-write$ -- 177
+write$ -- 270
 (There were 3 warnings)

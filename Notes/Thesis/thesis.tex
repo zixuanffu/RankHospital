@@ -441,68 +441,47 @@ $\gamma$,
     \frac{\E_G\bra{h_i=0,\delta_i=1}}{\E_G\bra{\delta_i}} \le \gamma
 \end{equation*} where $h_i=1\set{\theta_i<\theta_\alpha}$ is the indicator function of whether the unit $i$ is truly below the threshold $\theta_\alpha$. And $\delta_i=1$ when unit $i$ is selected.
 
-All in all, we can formally define the selection problem as
+All in all, we can formally define the loss function of selection problem as
 \begin{equation*}
-    L(\delta,\theta)=\sum h_i(1-\delta_i) +\tau_1\pa{\sum (1-h_i)\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}
+    L(\delta,\theta)=\sum_i h_i(1-\delta_i) +\tau_1\pa{\sum_i (1-h_i)\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n}
 \end{equation*}
 and the optimal decision rule is given by
 \begin{equation*}
     \begin{split}
         \delta^*& =\argmin_\delta \E_G\E_{\theta|\hat{\theta}}\bra{L(\delta,\theta)}                                                                                                       \\
-        &= \E_G \ \sum \E_{\theta|\hat{\theta}}(h_i)(1-\delta_i) +\tau_1\pa{\sum (1-\E_{\theta|\hat{\theta}}(h_i))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}            \\
-        & =\E_G{\sum v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}}
+        &= \E_G \ \sum_i \E_{\theta|\hat{\theta}}(h_i)(1-\delta_i) +\tau_1\pa{\sum_i (1-\E_{\theta|\hat{\theta}}(h_i))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n}            \\
+        & =\E_G{\sum_i v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum_i (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n}}
     \end{split}
 \end{equation*}
 Here, the term $\E_{\theta|\hat{\theta}}(h_i)$ is called \textbf{posterior tail probability}. It is the probability of $i$ being truly in the bottom $\alpha\%$ given the estimated $\hat{\theta}$.
 This is a posterior statistics different from the posterior mean $\E_{\theta|\hat{\theta}}(\theta_i)$ because the variable inside the expectation $h_i=1\set{\theta_i<G^{-1}(\alpha)}$ is specific to the capacity constraint at $\alpha$ level.
+From the previous section, we have obtained an estimate of the prior distribution $G$ so that we can derive the posterior tail probability $v_\alpha(\hat{\theta}_i)$
+\begin{equation*}
+    v_\alpha=P( \theta_i < \theta_{\alpha} |\hat{\theta})
+\end{equation*}
+If we know that $\hat{\theta}|\theta \sim P_\theta$ with density function $p_\theta$, the posterior tail probability can be further written down
+\begin{equation*}
+    v_\alpha(y_i)=\frac{{\int_{-\infty}^{\theta_{\alpha}} p_{\theta_i}(y_i) dG(\theta_i)}}
+    {{\int_{-\infty}^{\infty} p_{\theta_i}(y_i) dG(\theta_i)}}
+\end{equation*}
 
-% Our task at hand is to select the top $\alpha\%$ (e.g. 20\%) of the hospitals
-% in terms of labor use efficiency. If $\theta_i$ represents a measure of
-% \emph{inefficiency} which is the fixed effect term in the linear input demand
-% function specified in Section 2. We want to select the top $\theta_i$s that is
-% below than the $\alpha$ quantile of the population $\theta_i<G_n^{-1}(\alpha)$.
-% Moreover, we want to subject the selection to another constraint which is the
-% False Discovery Rate constraint at level $\gamma$, that is
-% \begin{align*}
-%     \p\bra{\theta_i>\theta_{\alpha}|\delta_i=1} & =\frac{\p\bra{\theta_i>\theta_{\alpha},\delta_i=1}}{\p\bra{\delta_i=1}}           \\
-%                                                 & = \frac{\E_G\bra{1\set{\theta_i>\theta_{\alpha},\delta_i=1}}}{\E_G\bra{\delta_i}} \\
-%                                                 & \le \gamma                                                                        \\
-% \end{align*}
-% Now we are in the position to write down the selection problem subject to the
-% capacity constraint at $\alpha$ and FDR constraint at $\gamma$ level, with multiplier $\tau_1$ and $\tau_2$ respectively. We denote
-% $\delta_i=1$ when unit $i$ is selected and $h_i=1\{\theta_i<\theta_\alpha\}=1$ when unit $i$ is truly below
-% the threshold $\theta_\alpha =G^{-1}(\alpha)$. The compound loss
-% function is defined as
-% \begin{equation*}
-%     L(\delta,\theta)=\sum h_i(1-\delta_i) +\tau_1\pa{\sum (1-h_i)\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}
-% \end{equation*}
-% To minimize the compound risk is thus
-% \begin{align*}
-%     \min_{\delta} & \E_G\E_{\theta|\hat{\theta}}\bra{L(\delta,\theta)}                                                                                                        \\
-%                   & =\E_G{\sum \E(h_i)(1-\delta_i) +\tau_1\pa{\sum (1-\E(h_i))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}}                               \\
-%                   & =\E_G{\sum v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}} \\
-% \end{align*}
-% where $v_\alpha(\hat{\theta})=\p(\theta<\theta_\alpha|\hat{\theta})$, which we called \textbf{posterior tail probability}. This is in contrast to the posterior mean widely used to shrink the estimate $\hat{\theta}_i$.
-% For the moment, it may not immediately obvious how important the prior distribution $G$ is. I will further illustrate it in the next section.
-% \subsection{Posterior tail probability}
-% For each $\theta_i$, I observe a sequence of $Y_{it}$ coming from a
-% longitudinal model
-% \begin{equation*}
-%     Y_{it} = \theta_i + \varepsilon_{it} \quad \varepsilon_{it} \sim \caln(0,\sigma_i^2) \quad (\theta_i,\sigma_i^2) \sim G
-% \end{equation*}
-% Neither $\theta_i$ nor $\sigma_i^2$ is known to us. But there are two sufficient statistics for $(\theta_i,\sigma_i^2)$.
-% \begin{align*}
-%     Y_i=\frac{1}{T_i}\sum_{t=1}^{T_i}Y_{it}           & \quad \text{where}\quad Y_i|\theta_i,\sigma_i^2 \sim \caln(\theta_i,\sigma_i^2/T_i)     \\
-%     S_i=\frac{1}{T_i-1}\sum_{t=1}^{T_i}(Y_{it}-Y_i)^2 & \quad \text{where} \quad S_i|\sigma_i^2 \sim \Gamma(r_i= (T_i-1)/2,2\sigma_i^2/(T_i-1)) \\
-% \end{align*}
+From now on, the notation $\hat{\theta}_i$ is replaced by $y_i$. For example,
+if it follows a normal distribution $y_i|\theta_i \sim
+    \caln(\theta_i,\sigma_i)$ as is often the case in application, $v_\alpha$ takes
+the explicit form
+\begin{equation*}
+    = \frac{{\int_{-\infty}^{\theta_{\alpha}}\varphi(y_i|\theta_i, \sigma_i^2) dG(\theta_i)}}
+    {{\int_{-\infty}^{\infty} \varphi(y_i|\theta_i, \sigma_i^2) dG(\theta_i)}}
+\end{equation*} where $\varphi$ is the density function of $y_i$ conditional mean $\theta_i$ and variance $\sigma_i^2$.
 
-% The tail probability $v_\alpha(y_i,s_i)$ given the two sufficient statistics is
-% defined as
-% \begin{align*}
-%     v_\alpha(Y_i,S_i) & = P( \theta_i > \theta_{\alpha} | Y_i,S_i)                                                                                 \\
-%                       & = \frac{{\int_{-\infty}^{\theta_{\alpha}} \Gamma(s_i|r_i,\sigma_i^2) f(y_i|\theta_i, \sigma_i^2) dG(\theta_i,\sigma_i^2)}}
-%     {{\int_{-\infty}^{\infty} \Gamma(s_i|r_i,\sigma_i^2) f(y_i|\theta_i, \sigma_i^2) dG(\theta_i,\sigma_i^2)}}
-% \end{align*}
+Here, we have assumed that $\sigma_i$ is known meaning that $P_\theta$ only
+depends on $\theta_i$. But sometimes $\sigma_i$ is unknown meaning that
+$P_\theta$ depends on some other parameters. Now we will distinguish the
+definition of $v_\alpha$ between the two cases.
+
+\paragraph{$G(\theta)$}
+
+\paragraph{$G(\theta,\sigma)$}
 
 % \paragraph{Write out the capacity constraint}
 % \paragraph{Write out the FDR constraint}

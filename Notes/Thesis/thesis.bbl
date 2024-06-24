@@ -10,6 +10,24 @@ Aigner, D., Lovell, C.~K., and Schmidt, P. (1977).
 Andersen, E.~D. and Andersen, K.~D. (2010).
 \newblock The mosek optimization tools manual, version 6.0.
 
+\bibitem[Arellano and Bond, 1991]{arellano1991some}
+Arellano, M. and Bond, S. (1991).
+\newblock Some tests of specification for panel data: Monte carlo evidence and
+  an application to employment equations.
+\newblock {\em The review of economic studies}, 58(2):277--297.
+
+\bibitem[Arellano and Bover, 1995]{arellano1995another}
+Arellano, M. and Bover, O. (1995).
+\newblock Another look at the instrumental variable estimation of
+  error-components models.
+\newblock {\em Journal of econometrics}, 68(1):29--51.
+
+\bibitem[Blundell and Bond, 1998]{blundell1998initial}
+Blundell, R. and Bond, S. (1998).
+\newblock Initial conditions and moment restrictions in dynamic panel data
+  models.
+\newblock {\em Journal of econometrics}, 87(1):115--143.
+
 \bibitem[Charnes et~al., 1978]{charnes1978measuring}
 Charnes, A., Cooper, W.~W., and Rhodes, E. (1978).
 \newblock Measuring the efficiency of decision making units.
@@ -31,6 +49,11 @@ Chetty, R. and Hendren, N. (2018).
 Croiset, S. and Gary-Bobo, R. (2024).
 \newblock Are public hospitals inefficient? an empirical study on french data.
 
+\bibitem[Gilraine et~al., 2020]{gilraine2020new}
+Gilraine, M., Gu, J., and McMillan, R. (2020).
+\newblock A new method for estimating teacher value-added.
+\newblock Technical report, National Bureau of Economic Research.
+
 \bibitem[Gu and Koenker, 2017]{gu2017empirical}
 Gu, J. and Koenker, R. (2017).
 \newblock Empirical bayesball remixed: Empirical bayes methods for longitudinal
@@ -41,6 +64,18 @@ Gu, J. and Koenker, R. (2017).
 Gu, J. and Koenker, R. (2023).
 \newblock Invidious comparisons: Ranking and selection as compound decisions.
 \newblock {\em Econometrica}, 91(1):1--41.
+
+\bibitem[James and Stein, 1992]{james1992estimation}
+James, W. and Stein, C. (1992).
+\newblock Estimation with quadratic loss.
+\newblock In {\em Breakthroughs in statistics: Foundations and basic theory},
+  pages 443--460. Springer.
+
+\bibitem[Jiang and Zhang, 2009]{jiang2009general}
+Jiang, W. and Zhang, C.-H. (2009).
+\newblock {General maximum likelihood empirical Bayes estimation of normal
+  means}.
+\newblock {\em The Annals of Statistics}, 37(4):1647 -- 1684.
 
 \bibitem[Kiefer and Wolfowitz, 1956]{kiefer1956consistency}
 Kiefer, J. and Wolfowitz, J. (1956).
@@ -75,5 +110,11 @@ Meeusen, W. and van Den~Broeck, J. (1977).
 \newblock Efficiency estimation from cobb-douglas production functions with
   composed error.
 \newblock {\em International economic review}, pages 435--444.
+
+\bibitem[Robbins, 1956]{robbins1956empirical}
+Robbins, H.~E. (1956).
+\newblock An empirical bayes approach to statistics.
+\newblock In {\em Proceedings of the third berkeley symposium on mathematical
+  statistics and probability}, volume~1, pages 157--163.
 
 \end{thebibliography}

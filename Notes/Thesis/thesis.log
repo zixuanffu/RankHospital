@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.13)  23 JUN 2024 16:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.13)  24 JUN 2024 17:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -451,10 +451,6 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 24.
  (c:/texlive/2022/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for TS1+cmss on input line 24.
- (c:/texlive/2022/texmf-dist/tex/latex/base/ts1cmss.fd
-File: ts1cmss.fd 2019/12/16 v2.5j Standard LaTeX font definitions
-)
 Underfull \hbox (badness 10000) in paragraph at lines 26--27
 
  []
@@ -468,65 +464,83 @@ Non-PDF special ignored!
 \openout5 = `thesis.toc'.
 
  [2]
-LaTeX Font Info:    Font shape `OT1/cmss/m/it' in size <12> not available
-(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 51.
- [3]
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.95 
+      [1]
 
-Package natbib Warning: Citation `herbert1956empirical' on page 4 undefined on input line 111.
-
-[4]
-
-Package caption Warning: \label without proper reference on input line 193.
-See the caption package documentation for explanation.
+Package natbib Warning: Citation `herbert1956empirical' on page 2 undefined on input line 124.
 
 
-LaTeX Warning: Reference `tab:hospital_count' on page 5 undefined on input line 177.
-
-
-Package caption Warning: \label without proper reference on input line 207.
-See the caption package documentation for explanation.
-
-
-LaTeX Warning: Reference `tab:output' on page 5 undefined on input line 187.
-
-(../../Tables/Descriptive/hospital_count.tex) (../../Tables/Descriptive/output_share_nonweighted.tex)
-Overfull \hbox (19.5236pt too wide) in paragraph at lines 200--205
-[] 
+pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.158 
+       [2] [3] (../../Tables/Descriptive/hospital_count.tex) (../../Tables/Descriptive/output_share_nonweighted.tex)
+Overfull \hbox (41.10706pt too wide) in paragraph at lines 215--221
+ [] 
  []
 
 (../../Tables/Descriptive/output_share.tex)
-Overfull \hbox (19.5236pt too wide) in paragraph at lines 208--217
-[] 
+Overfull \hbox (41.10706pt too wide) in paragraph at lines 225--235
+ [] 
  []
 
-[5] [6]
+[4] (../../Tables/2013-2022/reg_sep_iv.tex)
 
-LaTeX Warning: Reference `reg_sep' on page 7 undefined on input line 229.
+Package caption Warning: \label without proper reference on input line 268.
+See the caption package documentation for explanation.
 
-(../../Tables/2013-2022/reg_sep.tex) [7] [8] (./thesis.bbl)
+
+LaTeX Warning: Reference `reg_dummy_iv_ex' on page 5 undefined on input line 264.
+
+(../../Tables/2013-2022/reg_dummy_iv_ex.tex) [5] [6] [7]
+
+LaTeX Warning: Reference `' on page 8 undefined on input line 317.
+
+(../../Tables/2013-2022/reg_wg_fd_gmm.tex) (../../Tables/2013-2022/reg_wg_fd_iv.tex) [8] [9] [10]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 382.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 382.
+
+[11] [12] [13] (./thesis.bbl [14])
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 526.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 526.
+
+[15]
 
 Package natbib Warning: There were undefined citations.
 
-[9] (./thesis.aux)
+[16] (./thesis.aux)
 
 LaTeX Warning: There were undefined references.
 
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: BE2DE278547720CB16E0C5FADC68AC50;431.
+(rerunfilecheck)             Checksum: 7D934349EE3F2BB9045029FF54390346;1563.
  ) 
 Here is how much of TeX's memory you used:
- 13294 strings out of 479560
- 217845 string characters out of 5876399
- 523696 words of memory out of 5000000
- 31588 multiletter control sequences out of 15000+600000
- 482274 words of font info for 77 fonts, out of 8000000 for 9000
+ 13362 strings out of 479560
+ 218974 string characters out of 5876399
+ 531337 words of memory out of 5000000
+ 31609 multiletter control sequences out of 15000+600000
+ 482253 words of font info for 77 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 72i,11n,77p,506b,543s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{c:/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfss0700.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfss1000.pfb>
-Output written on thesis.pdf (9 pages, 207817 bytes).
+ 72i,18n,77p,506b,580s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on thesis.pdf (18 pages, 288102 bytes).
 PDF statistics:
- 259 PDF objects out of 1000 (max. 8388607)
- 205 compressed objects within 3 object streams
- 42 named destinations out of 1000 (max. 500000)
- 33 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 404 PDF objects out of 1000 (max. 8388607)
+ 338 compressed objects within 4 object streams
+ 79 named destinations out of 1000 (max. 500000)
+ 97 words of extra memory for PDF output out of 10000 (max. 10000000)
 
