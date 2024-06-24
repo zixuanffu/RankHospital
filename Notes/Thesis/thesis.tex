@@ -166,7 +166,7 @@ method to non parametrically estimate $G$. In section 4, I specifically define
 the selection problem following the framework of \cite{gu2023invidious}.
 Section 5 follows with a comparison of the different selection outcome. I try
 to draw preliminary conclusion on the comparative performance of public and
-private hospitals. Section 6 discusses potential issues and concludes.
+private hospitals. Section 6 discusses potential issues and concludes. % need to reorganize the structure of the papaer, especially in the division of sections.
 
 \section{Data and Estimation}
 \subsection{Data}
@@ -448,9 +448,9 @@ All in all, we can formally define the loss function of selection problem as
 and the optimal decision rule is given by
 \begin{equation*}
     \begin{split}
-        \delta^*& =\argmin_\delta \E_G\E_{\theta|\hat{\theta}}\bra{L(\delta,\theta)}                                                                                                       \\
-        &= \E_G \ \sum_i \E_{\theta|\hat{\theta}}(h_i)(1-\delta_i) +\tau_1\pa{\sum_i (1-\E_{\theta|\hat{\theta}}(h_i))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n}            \\
-        & =\E_G{\sum_i v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum_i (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n}}
+        \delta^* & =\argmin_\delta \E_G\E_{\theta|\hat{\theta}}\bra{L(\delta,\theta)}                                                                                                              \\
+                 & = \E_G \ \sum_i \E_{\theta|\hat{\theta}}(h_i)(1-\delta_i) +\tau_1\pa{\sum_i (1-\E_{\theta|\hat{\theta}}(h_i))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n} \\
+                 & =\E_G{\sum_i v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum_i (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n}}
     \end{split}
 \end{equation*}
 Here, the term $\E_{\theta|\hat{\theta}}(h_i)$ is called \textbf{posterior tail probability}. It is the probability of $i$ being truly in the bottom $\alpha\%$ given the estimated $\hat{\theta}$.
@@ -476,15 +476,104 @@ the explicit form
 
 Here, we have assumed that $\sigma_i$ is known meaning that $P_\theta$ only
 depends on $\theta_i$. But sometimes $\sigma_i$ is unknown meaning that
-$P_\theta$ depends on some other parameters. Now we will distinguish the
-definition of $v_\alpha$ between the two cases.
+$P_\theta$ depends on some other parameters. The two cases are distinguished
+when defining posterior tail probability and constraints.
 
-\paragraph{$G(\theta)$}
+The two constraints can be preliminarily written out as
+\begin{itemize}
+    \item Capacity constraint: \[ \p(v_\alpha>\lambda_1^*) \le \alpha \Rightarrow \lambda_1^* = H^{-1}(1-\alpha). \] Empirically, $\lambda_1^*$ is found by the empirical cumulative distribution
+          $H$ of $v_\alpha$.
+    \item False Discovery constraint: \[ \p(\theta<\theta_\alpha|v_\alpha>\lambda_2^*) \le \gamma \Rightarrow  \frac{\sum_i \E[(1-v_{\alpha,i})\delta_i]}{\sum_i E[ \delta_i]}\le \gamma.\] We approximate $\p(\theta<\theta_\alpha|v_\alpha>\lambda_2^*)$ by $\frac{\sum_i
+                  E[ (1-h_i)\delta_i]}{\sum_i E[ \delta_i]}$. Then it needs to be shown that $\E[
+                  (1-h_i)\delta_i]$ is equivalent to $\E[(1-v_{\alpha,i})\delta_i]$. This is
+          straightforward by the law of iterated expectation. Let $D_i =
+              (Y_i,\sigma_i^2)$ when $\sigma_i^2$ is known and $D_i = (Y_i,S_i)$ when
+          $\sigma_i^2$ is unknown.
+          \[ \E[(1-h_i)\delta_i] = \E[\E[(1-h_i)\delta_i|D_i]] = \E[\delta_i(1-\E[h_i|D_i])] = \E[\delta_i(1-v_{\alpha,i})] \]
+\end{itemize}
 
-\paragraph{$G(\theta,\sigma)$}
+\paragraph{Known variance, $G(\theta)$}
+Hospital $i$ whose true efficiency value is $\theta_i$, which we don't observe.
+We only observe a sequence of $Y_{i}$ where
+\begin{equation*}
+    Y_{i} = \theta_i + \varepsilon_{it} \quad \varepsilon_{it} \sim \caln(0,\sigma_i^2) \quad (\theta_i) \sim G
+\end{equation*}
+The tail probability $v_\alpha$ is a function of $y_i$ only
+\begin{equation*}
+    v_\alpha(y_i) =\p(\theta_i<\theta_\alpha|y_i) =\frac{\int_{-\infty}^{\theta_\alpha} \varphi(y_i|\theta_i,\sigma_i^2)dG(\theta_i)}{\int \varphi(y_i|\theta_i,\sigma_i^2)dG(\theta_i)}
+\end{equation*}
+The cutoff $\lambda^*$ is determined such that the constraints are satisfied
+\begin{align*}
+    \p(v_\alpha>\lambda^*) \le \alpha \\
+    \p(\theta<\theta_\alpha|v_\alpha>\lambda^*) \le \gamma
+\end{align*}
 
-% \paragraph{Write out the capacity constraint}
-% \paragraph{Write out the FDR constraint}
+\paragraph{Unknown variance, $G(\theta,\sigma)$}
+We only a sequence of $Y_{it}$ where
+\begin{equation*}
+    Y_{it} = \theta_i + \varepsilon_{it} \quad \varepsilon_{it} \sim \caln(0,\sigma_i^2) \quad (\theta_i,\sigma_i^2) \sim G
+\end{equation*}
+Neither $\theta_i$ nor $\sigma_i^2$ is known. But there exists two sufficient statistics for $(\theta_i,\sigma_i)$ such that
+\begin{align*}
+    Y_i=\frac{1}{T_i}\sum_{t=1}^{T_i}Y_{it}           & \quad \text{where}\quad Y_i|\theta_i,\sigma_i^2 \sim \caln(\theta_i,\sigma_i^2/T_i)              \\
+    S_i=\frac{1}{T_i-1}\sum_{t=1}^{T_i}(Y_{it}-Y_i)^2 & \quad \text{where} \quad S_i|\sigma_i^2 \sim \Gamma(\frac{(T_i-1)}{2},\frac{2\sigma_i^2}{T_i-1})
+\end{align*}
+
+Now the posterior tail probability $v_\alpha$ is a function of both $y_i$ and
+$s_i$
+\begin{align*}
+    v_\alpha(y_i,s_i) & =\p(\theta_i<\theta_\alpha|y_i,s_i)                                                                                                                                                                                                                                                                \\
+                      & =\frac{\int\int_{-\infty}^{\theta_\alpha} \Gamma(s_i|\frac{(T_i-1)}{2},\frac{2\sigma_i^2}{T_i-1})\varphi(y_i|\theta_i,\frac{\sigma_i^2}{T_i})dG(\theta,\sigma^2)}{\int\int \Gamma(s_i|\frac{(T_i-1)}{2},\frac{2\sigma_i^2}{T_i-1})\varphi(y_i|\theta_i,\frac{\sigma_i^2}{T_i})dG(\theta,\sigma^2)} \\
+\end{align*}
+
+The cutoff $\lambda^*$ is found in the same way as before.
+
+\subsection{Selection results}
+I have selected hospitals with than 6 years of observations. In the end, the
+sample contains 1661 hospitals, out of which 658 are public hospitals and 1003
+are private ones. The $Y_{it}$ in the last section is calculated as $
+    \log(x_{it,\text{nurses}}) - \log(y_{it,\text{output}})\hat{\beta}$. Since the
+panel is too short to invoke central limit theorem, in order to apply the
+results above, I am obliged to impose normality assumption on the error term
+$\varepsilon \sim \caln(0,\sigma_i^2)$. Thus $Y_{it}$ follows a normal
+distribution $\caln(\theta_i,\sigma_i^2)$ as the number of hospitals $N$ tends
+to infinity.
+
+Instead of assuming that $\sigma_i^2$ (or the distribution of it) is known, in
+our setting it seems more reasonable to employ the estimates of it $S_i$ in
+defining $v_\alpha$. However, in baseball batting average
+\citep{gu2017empirical}, teacher added value \citep{gilraine2020new} and kidney
+dialysis center rating \citep{gu2023invidious}, an estimate of the variance is
+taken to be the true value. A comparison selection results under the two
+different assumptions will be presented in this section.
+\paragraph{Unknown variance, and 4 rules}
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix_s.pdf}
+    \end{minipage}
+\end{figure}
+
+\paragraph{Known variance, and 4 rules}
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_m/GLmix.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_m/GLmix_s.pdf}
+    \end{minipage}
+\end{figure}
+
+\section{Conclusion}
 
 % If our specification and assumptions on exogeneity are correct, the consistency
 % of $\hat{\beta}$ is guaranteed by $N$'s asymptotic. However, our estimate of

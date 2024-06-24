@@ -10,9 +10,12 @@
 \contentsline {paragraph}{Parametric $G$}{11}{section*.13}%
 \contentsline {paragraph}{NPMLE $G$}{12}{section*.14}%
 \contentsline {subsection}{\numberline {3.3}The selection problem}{12}{subsection.3.3}%
-\contentsline {paragraph}{$G(\theta )$}{13}{section*.15}%
-\contentsline {paragraph}{$G(\theta ,\sigma )$}{13}{section*.16}%
-\contentsline {section}{\numberline {A}Data}{15}{appendix.A}%
-\contentsline {subsection}{\numberline {A.1}Data selection}{15}{subsection.A.1}%
-\contentsline {section}{\numberline {B}Empirical Bayes}{15}{appendix.B}%
-\contentsline {subsection}{\numberline {B.1}NPMLE $G$}{15}{subsection.B.1}%
+\contentsline {paragraph}{Known variance, $G(\theta )$}{14}{section*.15}%
+\contentsline {paragraph}{Unknown variance, $G(\theta ,\sigma )$}{14}{section*.16}%
+\contentsline {subsection}{\numberline {3.4}Selection results}{14}{subsection.3.4}%
+\contentsline {paragraph}{Unknown variance, and 4 rules}{15}{figure.caption.18}%
+\contentsline {paragraph}{Known variance, and 4 rules}{15}{figure.caption.20}%
+\contentsline {section}{\numberline {A}Data}{17}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}Data selection}{17}{subsection.A.1}%
+\contentsline {section}{\numberline {B}Empirical Bayes}{17}{appendix.B}%
+\contentsline {subsection}{\numberline {B.1}NPMLE $G$}{17}{subsection.B.1}%
