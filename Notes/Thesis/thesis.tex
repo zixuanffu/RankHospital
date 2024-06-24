@@ -15,13 +15,13 @@
 \bibliographystyle{apalike}
 % \setlength{\parindent}{0pt} % remove the automatic indentation
 
-\title{L'Hopital's (Selection) Rule:\\ A Bayesian Application to French Hospitals}
-\author{Fu Zixuan \\
-    Supervised by Thierry Magnac \thanks{Last compiled on \today}}
+\title{L'Hopital's (Selection) Rule:\\{\large {An Empirical Bayes Application to French Hospital Efficiency}}}
+\author{Fu Zixuan \\{\small {Supervised by Thierry Magnac}}}
 \date{July 4, 2024}
+
 \begin{document}
 \maketitle
-
+\thispagestyle{empty}
 \begin{abstract}
     \noindent  Something interesting\\
 
@@ -31,9 +31,11 @@
 \end{abstract}
 
 \newpage
+\thispagestyle{empty}
 \tableofcontents
 \newpage
 
+\setcounter{page}{1}
 \section{Introduction}
 
 It is almost of human nature to compare, rank and select. And competition, be
@@ -92,9 +94,20 @@ size of personnel if it were to use the input demand function of the private
 hospital, which is the main result of their counterfactuals.
 
 Having roughly replicated the results after doubling the length of the panel,
-the paper differentiates itself by including/adding the standard/classical
-panel data methods in input demand function estimation, specifically the
-standard fixed-effect estimation and GMM.
+the paper differentiates itself by utilizing classical panel data methods in
+input demand function estimation, specifically the standard fixed-effect
+estimation and GMM. Though it is straightforward to include individual fixed
+effect in specification, estimation is not without challenge. For example, as
+\citet{croiset2024hospitals} has correctly pointed out, within hospital
+variation is much smaller than between group variation. The former may be
+insufficient to obtain credible estimates. I extended the panel length in an
+attempt to mitigate the problem. Secondly, the strict exogeneity assumption
+required by the standard within group estimation is questionable. A natural way
+to relax it is to use the first difference GMM estimator proposed by
+\citet{arellano1991some}. The high persistency in the regressors poses another
+challenge of weak instruments. In response,
+\citet{arellano1995another,blundell1998initial}'s system GMM is modified and
+implemented, and the estimation results are used for the rest of the section.
 
 The benefit of the panel data estimator is that it gives us an estimate of the
 underlying heterogeneity, which opens door to individual comparisons. However,
@@ -190,33 +203,40 @@ Moreover, we see that each type of hospital differs in terms of the mix of
 services they provide. For example, emergency care is mostly taken care of by
 public hospitals and private hospitals are strong in medical sessions.
 
-\begin{table}\label{tab:hospital_count}
+\begin{table}
     \centering
     \input{../../Tables/Descriptive/hospital_count.tex}
     \caption{Number of hospitals in each category, 2013-2022}
+    \label{tab:hospital_count}
 \end{table}
 
-\begin{table}\label{tab:nonadjusted}\fontsize{10pt}{12pt}\selectfont
+\begin{table}\fontsize{10pt}{12pt}\selectfont
+    \centering
     \begin{threeparttable}[b]
-        \centering
+
         \input{../../Tables/Descriptive/output_share_nonweighted.tex}
         \caption{Hospital share of output, 2013-2022}
+        \label{tab:nonadjusted}
     \end{threeparttable}
 \end{table}
 
-\begin{table}\label{tab:output}\fontsize{10pt}{12pt}\selectfont
+\begin{table}\fontsize{10pt}{12pt}\selectfont
+    \centering
     \begin{threeparttable}[b]
-        \centering
         \input{../../Tables/Descriptive/output_share.tex}
         \caption{Hospital share of output weighted by the number of hospitals, 2013-2022}
+        \label{tab:output}
         \begin{tablenotes}[para,flushleft]
             \footnotesize
             For example, the value $a_{ij}$ where $i$ is STAC inpatient and $j$ is teaching hospitals, is calculated by $a_{ij}= \frac{\text{Number of STAC inpatient  in teaching hospitals}}{\text{Share of teaching hospitals}\times \text{Total number of STAC inpatient}}$.
         \end{tablenotes}
+
     \end{threeparttable}
 \end{table}
 
 \subsection{Estimation}
+
+\paragraph{Regression without individual fixed effect}
 
 Let $\log(x_{it})$ be the number of nurses in hospital $i$ at time $t$, and
 $\log(y_{it})$ denote a vector of output levels. I estimate
@@ -232,129 +252,210 @@ functions or equivalently in production function is another sign that teaching
 hospitals may not be directly comparable to other types of hospitals. For this
 reason, I will exclude teaching hospitals from the subsequent analysis.
 
-\begin{table}\label{tab:reg_sep}
+\begin{table}
     \centering
-    \input{../../Tables/2013-2022/reg_sep.tex}
-    \caption{Separate estimation of input demand function, 2013-2022}
+    \input{../../Tables/2013-2022/reg_sep_iv.tex}
+    \caption{Separate estimation of input demand function, lagged value as IV, 2013-2022}
+    \label{reg_sep}
 \end{table}
 
-% \textbf{Summarize the input}: explain the reason why we use nurses instead of medical doctors.
+By excluding the teaching hospitals from estimation, it becomes more reasonable
+to assume that all hospitals share the same set of coefficients, giving rise to
+the pooled regression results shown in Table \ref{reg_dummy_iv_ex}.
+\begin{table}
+    \centering
+    \input{../../Tables/2013-2022/reg_dummy_iv_ex.tex}
+    \label{reg_dummy_iv_ex}
+\end{table}
 
-% \subsection{Estimation (Pooling)}
+\paragraph{Regression with individual fixed effect}
 
-% \footnote{On a side note, we filtered the panel such that
-%     \begin{enumerate}
-%         \item the number of nurses is positive,
-%         \item at least one of STAC inpatient, STAC outpatient, Sessions is positive,
-%         \item the number of observations is larger than 6
-%     \end{enumerate}}
+Let $\log(x_{it})$ and $\log(y_{it})$ the same as before. In addition, let
+$\theta_i$ be the fixed effect of hospital $i$. One interpretation of
+$\theta_i$ is the measure of labor \emph{inefficiency}. The smaller the
+$\theta_i$, the more efficient the hospital is in labor use. The estimate of
+$\theta_i$ will be used to rank and select the hospitals in the next section.
+The specification now is
+\begin{equation}
+    \log(x_{it}) = \beta_0 + \beta_1 \log(y_{it}) + \theta_i+ \varepsilon_{it}
+\end{equation}
 
-% \begin{table}
-%     \input{../../Tables/2013-2022/reg_pool_dummy.tex}
-% \end{table}
+I considered 5 types of estimator, within-group, first difference, fist
+difference GMM, system GMM and just identified system GMM. For the sake of
+exposition, the linear specification takes the general form \[
+    y_{it} = x_{it} \beta +\theta_i + \epsilon_{it}\quad \text{where} \quad E[\epsilon_{it}|x_{i1},\ldots, x_{it-1},\theta_i]=0.
+\]
+The system GMM makes use of two types of moment conditions. The first one is
+that from the first difference GMM estimator,
+\[E[x_{i,t-2}(\Delta y_{it}-\beta\Delta x_{it})]\]
+where lagged $x_{i,t-2}$ serves as instrument for $\Delta x_{it}$. If the
+persistency in $x_{it}$ is high, that is to say $x_{it}=\alpha
+    x_{i,t-1}+\eta_{it}$ with $\alpha$ close to 1. Then the reduced form
+relationship between $\Delta x_{it}$ and $x_{i,t-2}$ is
+\[\Delta x_{it} = (\alpha-1)\alpha x_{i,t-2}+\alpha \eta_{i,t-1}+\eta_{i,t}\]
+posing the problem of weak instrument.
 
-% \begin{table}
-%     \input{../../Tables/2013-2022/reg_sep_iv.tex}
-% \end{table}
+The second moment condition makes another assumption, requiring that the
+correlation between $x_{it}$ and $\theta_i$ is the same as that between
+$x_{i,t-1}$ and $\theta_i$,
+\begin{equation*}
+    \E[\Delta x_{i,t-1}(y_{it}-\beta x_{it})] \quad \text{if}\quad \E\bra{\Delta x_{i,t-1}(\theta_i+\varepsilon_{i,t})}=0
+\end{equation*} where the current level $x_{it}$ is instrumented by lagged first difference $\Delta x_{i,t-1}$.
 
-% A simple counterfactual to perform:
-% % insert a table where we compare the number of nurses needed in public hospitals if they were to use the input demand function of private hospitals.
+It is obvious that there's a large difference between the first two estimators
+and the GMM ones, a sign that the exogeneity assumption may not be valid.
+Second, the first difference GMM estimates gives mull results, possibly due to
+weak instruments. Though the estimate from system GMM looks more hopeful, the
+sargan-hansen test almost rejects over-identification null hypothesis for sure,
+indicating that some moment conditions are not in accordance with each other.
+The fifth just identified GMM only makes use of the second type of moment
+conditions from system GMM, abstracting from over-identification issue. Though
+the issues of weak instrument, rejection of over-identification are intriguing
+problems, I will set them aside for future investigation since the focus of the
+paper is more empirical bayes application. Believing in the validity of the
+assumption $\E\bra{\Delta x_{i,t-1}(\theta_i+\varepsilon_{i,t})}=0$, I will
+take as given the estimation results from the last column of Table \ref{} and
+proceed to the next section.
 
-% \subsection{Estimation (Fixed effect)}
-% Though \cite{croiset2024hospitals} has mentioned that identification (and
-% significance level) is mainly attributed to \textit{between-group} variation,
-% there's still some level of \textit{within-group} variation that guarantee the
-% estimation of parameters.
+\begin{table}
+    \label{tab:reg_wg_fd_gmm}
+    \input{../../Tables/2013-2022/reg_wg_fd_gmm.tex}
+\end{table}
 
-% The strict exogeneity assumption is not always realistic, especially in the
-% case of production or factor demand function estimation. Therefore, we resort
-% to a series of seminal work in panel data estimation
-% \cite{anderson1982formulation,arellano1991some,arellano1995another,blundell1998initial}.
+\begin{table}
+    \label{tab:reg_wg_fd_iv}
+    \input{../../Tables/2013-2022/reg_wg_fd_iv.tex}
+\end{table}
 
-% \begin{table}
-%     \label{tab:reg_wg_fd_gmm}
-%     \input{../../Tables/2013-2022/reg_wg_fd_gmm.tex}
-% \end{table}
+\section{Empirical Bayes and Selection Problem}
 
-% It is worth mentioning that the standard first difference GMM where lagged
-% level $x_{i,t-2}$ is used as instruments for the first difference equation
-% $\Delta \varepsilon = \Delta y_{i,t}-\Delta x_{i,t} \beta$ does not produce
-% results of pure noise. This weak instrument issue was pointed out by
-% \cite{blundell1998initial}.
+\subsection{Compound decision framework}
 
-% In the rest of the article, I proceed with the estimation results of system GMM
-% as in col 3 of Table \ref{tab:reg_wg_fd_gmm}.
+The idea of compound decision is pioneered by \citet{robbins1956empirical},
+which takes into account the consequences of all individual decisions. Consider
+the case where each individual unit has an unobserved parameter $\theta_i$. We
+are given a list of estimates $\hat{\theta}_i$ for each $\theta_i$.
+\begin{equation*}
+    \boldsymbol{\hat{\theta}}  =  (\hat{\theta}_1,\ldots, \hat{\theta}_n)\quad
+    \text{where} \quad        \hat{\theta}_i | \theta_i \sim P_{\theta_i}
+\end{equation*}
+For the moment, I will be agnostic to the specific decision to make and denote the decision rule by $\delta$.
+\begin{equation*}
+    \delta(\boldsymbol{\hat{\theta}}) = (\delta_1(\boldsymbol{\hat{\theta}}), \ldots, \delta_n(\boldsymbol{\hat{\theta}}))
+\end{equation*}
 
-% \section{Compound Decision: The Selection Problem}
-% % this is where it finally gets interesting
-% % from James Stein to Parametric to Non-parametric. Gives an overview of the history of Empirical Bayes Compound Decision
+The next step is to define the loss function as the objective function to
+minimize. Since I care about the \textbf{collective performance} of my
+decision, I will define the loss function such that the attention to the
+compound decision is reflected. A natural choice would be to aggregate the
+individual losses. Therefore, the compound loss function is defined as
+\begin{equation*}
+    L_n(\theta, \delta(\boldsymbol{\hat{\theta}})) = \sum_{i=1}^n L(\theta_i, \delta_i(\hat{\theta})).
+\end{equation*}
+Correspondingly, the compound risk is defined as the expectation of compound loss
+\begin{equation*}
+    R_n(\theta, \delta(\boldsymbol{\hat{\theta}})) = \E_{\theta|\hat{\theta}}[L_n(\theta, \delta(\boldsymbol{\hat{\theta}}))]
+\end{equation*}
+We further restrict our attention to the separable decision rule $\delta(\boldsymbol{\hat{\theta}})=\{t(\hat{\theta}_1), \ldots, t(\hat{\theta}_n)\}$. In order to make the connection with the Bayesian view under which we assume
+that $\theta\sim G$, we can rewrite the compound risk as
+\begin{equation*}
+    R_n(\theta, \delta(\boldsymbol{\hat{\theta}})) = \int \int L(\theta_i, t(\hat{\theta}_i))dP_{\theta_i}(\hat{\theta}_i)dG_n(\theta)
+\end{equation*}
+where $G_n(\theta)$ is the empirical distribution of $\theta$. \footnote{$E_{G_n}(f(x)) = 1/n \sum_i f(x_i)$}
 
-% \subsection{Compound Decision}
-% Leaving the estimation above aside, I will first introduce the idea of compound
-% decision pioneered by \cite{robbins1956empirical} before entering into the
-% ranking and selection problem.
+The Frequentist and Bayesian views differ slightly here in the definition of
+risk. The original compound decision formulation keeps the empirical
+distribution $G_n$ in compound risk while the Bayesian risk replaces it with
+the prior distribution $G$. On a side note, the two views are somewhat related
+to the two assumptions in the fixed/random effect terminology, in the sense
+that the fixed effect view treats $\theta_i$ as fixed unknown parameters while
+the random effect view treats $\boldsymbol{\theta}$ as a random draw from a
+distribution $G$. However, in our context, it has nothing to do with whether
+$\theta_i$ is correlated with $x_{it}$.
 
-% Now there are $N$ units, each has an unobserved parameter labelled as
-% $(\theta_1,\ldots, \theta_n)$. We are given $N$ estimates
-% $(\hat{\theta}_1,\ldots, \hat{\theta}_n) $ of the underlying heterogeneous
-% parameters. And each estimate $\hat{\theta}_i$ conditioned on $\theta_i$
-% follows a distribution $\hat{\theta}_i | \theta_i \sim P_{\theta_i}$. No matter
-% what the specific task is, I care about the collective performance of my
-% decision. That being said, I will explicitly define the loss function to
-% reflect my attention to the so-called collective performance.
+The last step is to find the decision rule $\delta^*$ that minimizes the risk
+\begin{equation}
+    \delta^*=\argmin_\delta R_n(\theta, \delta(\boldsymbol{\hat{\theta}}))
+\end{equation}
+subject to any constraints that we may have. Since $G$ is unknown, whether we use $G_n$ or $G$ in risk does not matter much. In the rest of the section, I adopt the Bayesian risk as the objective of minimization and impose constraints relevant to the selection problem. Now I will turn to the non-parametric estimation of the prior distribution $G$.
 
-% First the decision rule is defined as a vector of individual decisions
-% \begin{equation*}
-%     \delta(Y) = (\delta_1(\hat{\theta}), \ldots, \delta_n(\hat{\theta}))
-% \end{equation*}
-% where each $\delta_i(\cdot)$ is a decision rule for the estimate of $\theta_i$ with the vector $\hat{\theta}$ as input.
-% The individual loss for a decision is $L(\theta_i, \delta_i(\hat{\theta}_i))$, giving rise to the aggregated \textbf{compound loss}
-% \begin{equation*}
-%     L_n(\theta, \delta(\hat{\theta})) = \sum_{i=1}^n L(\theta_i, \delta_i(\hat{\theta})).
-% \end{equation*}
-% While the compound risk, defined as the expectation of compound loss can be expressed as
+\subsection{Estimate $G$}
+
+\paragraph{Parametric $G$}
+Most literature has imposed a parametric form of $G$. In the case of a Gaussian
+$G$, recall the hierarchical model
+\begin{align*}
+    \hat{\theta}_i|\theta_i, \sigma_i \sim P_{\theta_i} \\
+    \theta\sim \caln(\mu_\theta,\sigma^2_\theta)
+\end{align*}
+There are two hyperparameters to be estimated $\mu_\theta$ and $\sigma_\theta$.
+% A common estimator would be 
 % \begin{align*}
-%     R_n(\theta, \delta(\hat{\theta})) & = \E[L_n(\theta, \delta(\hat{\theta}))]                                                                                                                                    \\
-%                                       & = \frac{1}{n}\sum_{i=1}^n \E[L(\theta_i, \delta_i(\hat{\theta}))]                                                                                                          \\
-%                                       & = \frac{1}{n}\sum_{i=1}^n \int \ldots \int L(\theta_i, \delta_i(\hat{\theta}_1, \ldots, \hat{\theta}_n))dP_{\theta_1}(\hat{\theta}_1)\ldots dP_{\theta_n}(\hat{\theta}_n). \\
+%     \hat{\mu}_\theta&=\frac{1}{N} \sum_{i}\hat{\theta}_i\\
+%     \hat{\sigma}_\theta^2&=\frac{1}{N} \sum_{i} \bra{(\hat{\beta}_i-\hat{\mu}_\theta)^2-\sigma_i^2}
 % \end{align*}
 
-% Given the objective function which is the compound risk, our goal is to find a
-% decision rule $\delta(\cdot)$ that minimizes it. This is the optimal compound
-% decision rule for a given vector $\hat{\theta}$.
-% \begin{equation*}
-%     {\delta}^*(\hat{\theta}) =
-%     \arg\min_{\delta} R_n(\theta, \delta(\hat{\theta}))
-% \end{equation*}
+If we compare the performance of posterior mean estimator
+$\theta^*=\E\bra{\theta|\hat{\theta}}$ with the original estimate
+$\hat{\theta}$, \citet{james1992estimation} has shown that there's always an
+improvement in the average performance if we assume $G$ is Gaussian and replace
+it with an estimate $\hat{G}$. If we relax the normality assumption on $G$ and
+adopt a NPMLE estimation as established by \citet{kiefer1956consistency}, there
+could be further improvements. For example, \citet{jiang2009general} has proven
+that a plugged in $\theta^*$ with a NPMLE $\hat{G}$ is asymptotically optimal
+among all separable estimators. A comparison between the parametric and non
+parametric $\hat{G}$ is demonstrated in \citet{gilraine2020new} on their
+teacher value added application.
 
-% If $\delta^*(\hat{\theta})$ is separable \footnote{The linear shrinkage class
-%     belongs to this class as well. See appendix.}, which means that
-% $\delta^*(\hat{\theta})=\{t(\hat{\theta}_1), \ldots, t(\hat{\theta}_n)\}$, the
-% compound risk can be written as
-% \begin{align*}
-%     R_n(\theta, \delta(\hat{\theta})) f & =  \frac{1}{n}\sum \int\ldots\int L(\theta_i, \delta(\hat{\theta}_1,\dots,\hat{\theta}_n))dP_{\theta_1}(\hat{\theta}_1)\ldots dP_{\theta_n}(\hat{\theta}_n) \\
-%                                         & = \int_{\theta} \int L(\theta_i, t(\hat{\theta}_i))dP_{\theta_i}(\hat{\theta}_i)dG_n(\theta)                                                                \\
-%                                         & =\E_{G_n}{\E_\theta\bra{L(\theta_i, \delta_i(\hat{\theta}))}}                                                                                               \\
-% \end{align*}
-% where $G_n(\theta)$ is the empirical distribution of $\theta$.\footnote{ $\E_{G_n}\bra{(f(x))} = 1/n \sum_i^n f(x_i)$}
+\paragraph{NPMLE $G$}
 
-% It is worth mentioning that up til now we treat each $\theta_i$ as fixed
-% unknown parameters \footnote{By abuse of terminology, we called this
-%     \textit{fixed effect view} while the other assumption \textit{random effect
-%         view}. Yet the two terms have nothing to do with whether $\theta_i$ is
-%     correlated with $x_{it}$}. However, if we take a Bayesian view on the vector
-% $\boldsymbol{\theta}$ by assuming that each $\theta_i$ is an $i.i.d.$ draw from
-% an underlying common distribution $G$. The Bayesian risk is
-% \begin{equation*}
-%     \E_{G}{\E_\theta\bra{L(\theta_i, \delta_i(\hat{\theta}))}}
-% \end{equation*}
-% The two views are closely linked via the $G_n$ and $G$.
+The initial NPMLE estimator defined in \citet{kiefer1956consistency} takes the
+following form
+\begin{equation*}
+    \hat{G}=\argmin_{G\in \mathcal{G}} \set{-\sum_{i=1}^{n}\log g(y_i)|g(y_i)=\int  \p(y_i |\theta)dG(\theta) }
+\end{equation*}
+where $\p(y_i |\theta)$ is the probability density function of $y_i$ conditional on the true parameter $\theta$ $\longrightarrow$ $g(y_i)$ is the marginal pdf of $y_i$.
 
-% \begin{quotation}
-%     Compound Risk is equivalent to the Bayes risk with prior $G_n$.
-% \end{quotation}
+Though this is a convex optimization problem with strictly convex objective and
+a convex constraint set, it is of infinite dimension. In order to solve the
+primal problem, it is necessary to discretize. The algorithm proposed by
+\citet{koenker2014convex} has taken advantage of the fixed point iteration
+method in convex optimization \citep{andersen2010mosek}, thus greatly improved
+the computation efficiency over the fixed point EM iteration method by
+\citet{jiang2009general}.
 
-% \subsection{Selection Problem}
+\subsection{The selection problem}
+The definition of the selection problem is taken from the work of
+\citet{gu2023invidious}. Instead of focusing on the right tail of the
+distribution, the top performers in my context corresponds to the left tail.
+The task at hand is to select the bottom 20\% of the $\theta_i$ and compare the
+share of public and private in the meritorious group. This is another
+perspective/exercises on the public and private sectors different from that of
+\citet{croiset2024hospitals}.
+
+On top of the constraint on the size of the selected group (20\%), I further
+impose a constraint on the number of false positive mistakes made in the
+selection process. This leads to the false discovery constraint at level
+$\gamma$,
+\begin{equation*}
+    \frac{\E_G\bra{h_i=0,\delta_i=1}}{\E_G\bra{\delta_i}} \le \gamma
+\end{equation*} where $h_i=1\set{\theta_i<\theta_\alpha}$ is the indicator function of whether the unit $i$ is truly below the threshold $\theta_\alpha$. And $\delta_i=1$ when unit $i$ is selected.
+
+All in all, we can formally define the selection problem as
+\begin{equation*}
+    L(\delta,\theta)=\sum h_i(1-\delta_i) +\tau_1\pa{\sum (1-h_i)\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}
+\end{equation*}
+and the optimal decision rule is given by
+\begin{equation*}
+    \begin{split}
+        \delta^*& =\argmin_\delta \E_G\E_{\theta|\hat{\theta}}\bra{L(\delta,\theta)}                                                                                                       \\
+        &= \E_G \ \sum \E_{\theta|\hat{\theta}}(h_i)(1-\delta_i) +\tau_1\pa{\sum (1-\E_{\theta|\hat{\theta}}(h_i))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}            \\
+        & =\E_G{\sum v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}}
+    \end{split}
+\end{equation*}
+Here, the term $\E_{\theta|\hat{\theta}}(h_i)$ is called \textbf{posterior tail probability}. It is the probability of $i$ being truly in the bottom $\alpha\%$ given the estimated $\hat{\theta}$.
+This is a posterior statistics different from the posterior mean $\E_{\theta|\hat{\theta}}(\theta_i)$ because the variable inside the expectation $h_i=1\set{\theta_i<G^{-1}(\alpha)}$ is specific to the capacity constraint at $\alpha$ level.
+
 % Our task at hand is to select the top $\alpha\%$ (e.g. 20\%) of the hospitals
 % in terms of labor use efficiency. If $\theta_i$ represents a measure of
 % \emph{inefficiency} which is the fixed effect term in the linear input demand
@@ -430,4 +531,32 @@ reason, I will exclude teaching hospitals from the subsequent analysis.
 \newpage
 \bibliography{ref.bib}
 
+\appendix
+\section{Data}
+\subsection{Data selection}
+
+The panel is first filtered by the following criteria
+\begin{enumerate}
+    \item the number of nurses is positive,
+    \item at least one of STAC inpatient, STAC outpatient, Sessions is positive,
+    \item the number of observations is larger than 6
+\end{enumerate}
+Second, I add one to every variable to avoid null value when taking log.
+
+\section{Empirical Bayes}
+\subsection{NPMLE $G$}
+\citet{koenker2014convex} defined the primal problem as
+\begin{equation*}
+    \min_{f=dG}\set{-\sum_i \log g(y_i)\bigg |g(y_i) = T(f),\ K(f)=1,\ \forall i }
+\end{equation*}
+where $ T(f)=\int p(y_i |\theta)fd\theta $ and  $K(f)= \int f d\theta$.\\
+By discretizing the support,
+\begin{equation*}
+    \min_{f=dG}\left\{-\sum_i \log g(y_i)\bigg |g=Af,\ {1^T}f=1\right\}
+\end{equation*}
+where $A_{ij}= p(y_i|\theta_j) $ and $ f = (f(\theta_1),f(\theta_2),\ldots,f(\theta_m))$.\\
+It is straightforward to derive the dual problem
+\begin{equation*}
+    \max_{\lambda,\mu} \left\{ \sum_i \log \lambda_1(i) \bigg| A^T\lambda_1 < \lambda_2 1,\ (\lambda_1>0) \right\}
+\end{equation*}
 \end{document}
