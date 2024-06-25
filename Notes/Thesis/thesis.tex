@@ -2,7 +2,7 @@
 \usepackage{fullpage,graphicx,psfrag,amsmath,amsfonts,verbatim}
 \usepackage[small,bf]{caption}
 \usepackage{amsthm}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{bbm} % for the indicator function to look good
 \usepackage{color}
 \usepackage{mathtools}
@@ -163,10 +163,10 @@ measures as the regressors. It then applies the classical panel data estimators
 to the same specification, distinguishing between whether strict exogeneity is
 assumed. In section 3, I introduce the compound decision framework and the
 method to non parametrically estimate $G$. In section 4, I specifically define
-the selection problem following the framework of \cite{gu2023invidious}.
-Section 5 follows with a comparison of the different selection outcome. I try
-to draw preliminary conclusion on the comparative performance of public and
-private hospitals. Section 6 discusses potential issues and concludes. % need to reorganize the structure of the papaer, especially in the division of sections.
+the selection problem following the framework of \cite{gu2023invidious},
+followed by a comparison of the different selection outcome. I try to draw
+preliminary conclusion on the comparative performance of public and private
+hospitals. Section 6 discusses potential issues and concludes. % need to reorganize the structure of the papaer, especially in the division of sections.
 
 \section{Data and Estimation}
 \subsection{Data}
@@ -211,6 +211,7 @@ public hospitals and private hospitals are strong in medical sessions.
 \end{table}
 
 \begin{table}\fontsize{10pt}{12pt}\selectfont
+
     \centering
     \begin{threeparttable}[b]
 
@@ -246,26 +247,28 @@ $\log(y_{it})$ denote a vector of output levels. I estimate
 
 First, having performed the regression separately for each type of hospital, it
 is without surprise that teaching hospitals have very different coefficients,
-as shown in Table \ref{reg_sep}. In addition to the differences in descriptive
-statistics from the last section, this intrinsic difference in input demand
-functions or equivalently in production function is another sign that teaching
-hospitals may not be directly comparable to other types of hospitals. For this
-reason, I will exclude teaching hospitals from the subsequent analysis.
+as shown in Table \ref{tab:reg_sep}. In addition to the differences in
+descriptive statistics from the last section, this intrinsic difference in
+input demand functions or equivalently in production function is another sign
+that teaching hospitals may not be directly comparable to other types of
+hospitals. For this reason, I will exclude teaching hospitals from the
+subsequent analysis.
 
 \begin{table}
     \centering
     \input{../../Tables/2013-2022/reg_sep_iv.tex}
     \caption{Separate estimation of input demand function, lagged value as IV, 2013-2022}
-    \label{reg_sep}
+    \label{tab:reg_sep}
 \end{table}
 
 By excluding the teaching hospitals from estimation, it becomes more reasonable
 to assume that all hospitals share the same set of coefficients, giving rise to
-the pooled regression results shown in Table \ref{reg_dummy_iv_ex}.
+the pooled regression results shown in Table \ref{tab:reg_dummy_iv_ex}.
 \begin{table}
     \centering
     \input{../../Tables/2013-2022/reg_dummy_iv_ex.tex}
-    \label{reg_dummy_iv_ex}
+    \caption{Pooled regression with dummy variables, lagged value as IV, 2013-2022}
+    \label{tab:reg_dummy_iv_ex}
 \end{table}
 
 \paragraph{Regression with individual fixed effect}
@@ -318,16 +321,16 @@ take as given the estimation results from the last column of Table \ref{} and
 proceed to the next section.
 
 \begin{table}
-    \label{tab:reg_wg_fd_gmm}
     \input{../../Tables/2013-2022/reg_wg_fd_gmm.tex}
+    \label{tab:reg_wg_fd_gmm}
 \end{table}
 
 \begin{table}
-    \label{tab:reg_wg_fd_iv}
     \input{../../Tables/2013-2022/reg_wg_fd_iv.tex}
+    \label{tab:reg_wg_fd_iv}
 \end{table}
 
-\section{Empirical Bayes and Selection Problem}
+\section{Compound Decision and Empirical Bayes}
 
 \subsection{Compound decision framework}
 
@@ -424,7 +427,7 @@ method in convex optimization \citep{andersen2010mosek}, thus greatly improved
 the computation efficiency over the fixed point EM iteration method by
 \citet{jiang2009general}.
 
-\subsection{The selection problem}
+\section{The selection problem}
 The definition of the selection problem is taken from the work of
 \citet{gu2023invidious}. Instead of focusing on the right tail of the
 distribution, the top performers in my context corresponds to the left tail.
@@ -446,13 +449,13 @@ All in all, we can formally define the loss function of selection problem as
     L(\delta,\theta)=\sum_i h_i(1-\delta_i) +\tau_1\pa{\sum_i (1-h_i)\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n}
 \end{equation*}
 and the optimal decision rule is given by
-\begin{equation*}
+\begin{equation} \label{eq:decisionrule}
     \begin{split}
         \delta^* & =\argmin_\delta \E_G\E_{\theta|\hat{\theta}}\bra{L(\delta,\theta)}                                                                                                              \\
-                 & = \E_G \ \sum_i \E_{\theta|\hat{\theta}}(h_i)(1-\delta_i) +\tau_1\pa{\sum_i (1-\E_{\theta|\hat{\theta}}(h_i))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n} \\
-                 & =\E_G{\sum_i v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum_i (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n}}
+        & = \E_G \ \sum_i \E_{\theta|\hat{\theta}}(h_i)(1-\delta_i) +\tau_1\pa{\sum_i (1-\E_{\theta|\hat{\theta}}(h_i))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n} \\
+        & =\E_G{\sum_i v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum_i (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n}}
     \end{split}
-\end{equation*}
+\end{equation}
 Here, the term $\E_{\theta|\hat{\theta}}(h_i)$ is called \textbf{posterior tail probability}. It is the probability of $i$ being truly in the bottom $\alpha\%$ given the estimated $\hat{\theta}$.
 This is a posterior statistics different from the posterior mean $\E_{\theta|\hat{\theta}}(\theta_i)$ because the variable inside the expectation $h_i=1\set{\theta_i<G^{-1}(\alpha)}$ is specific to the capacity constraint at $\alpha$ level.
 From the previous section, we have obtained an estimate of the prior distribution $G$ so that we can derive the posterior tail probability $v_\alpha(\hat{\theta}_i)$
@@ -493,8 +496,8 @@ The two constraints can be preliminarily written out as
 \end{itemize}
 
 \paragraph{Known variance, $G(\theta)$}
-Hospital $i$ whose true efficiency value is $\theta_i$, which we don't observe.
-We only observe a sequence of $Y_{i}$ where
+The true inefficiency value of hospital $i$ is $\theta_i$, We only observe a
+sequence of $Y_{i}$ where
 \begin{equation*}
     Y_{i} = \theta_i + \varepsilon_{it} \quad \varepsilon_{it} \sim \caln(0,\sigma_i^2) \quad (\theta_i) \sim G
 \end{equation*}
@@ -546,9 +549,26 @@ defining $v_\alpha$. However, in baseball batting average
 dialysis center rating \citep{gu2023invidious}, an estimate of the variance is
 taken to be the true value. A comparison selection results under the two
 different assumptions will be presented in this section.
-\paragraph{Unknown variance, and 4 rules}
+\paragraph{Unknown variance, and TP rules} Since we only observe the sample mean
+$Y_i$ and sample variance $S_i$, the prior $G$ is a two dimensional
+distribution on $(\theta,\sigma^2)$. Without assuming independence between the
+two parameters, we can assume a two dimension gridding /discretization in the
+defining the convex objective function.
 
-\begin{figure}[h]
+\begin{equation*}
+    \hat{G}=\argmin_{G\in \mathcal{G}} \set{-\sum_{i=1}^{n}\log g(y_i,s_i)|g(y_i,s_i)=\int \int  \p(y_i,s_i |\theta,\sigma^2)dG(\theta,\sigma^2) }
+\end{equation*}
+
+This can be solved similarly by the interior point method as in the one
+dimensional case. The solution is an atomic distribution with fewer than $n$
+atoms. It is worth mentioning that the NPMLE method is self-regularizing
+because the mass points are determined by the solution without recourse to any
+tuning parameter. Further smoothing is justified by the fact that we have
+ignored the variability of $G$. The bandwidth of biweight kernel for smoothing
+was chosen as the mean absolute deviation from the median of the discrete
+$\hat{G}$.
+
+\begin{figure}[h!]
     \centering
     \begin{minipage}{0.5\textwidth}
         \centering
@@ -560,8 +580,49 @@ different assumptions will be presented in this section.
     \end{minipage}
 \end{figure}
 
-\paragraph{Known variance, and 4 rules}
-\begin{figure}[h]
+With an estimated prior, the tail probability function as well as the
+constraints are well-defined. Though, given the discrete nature of selection,
+it is similar to discrete optimization as in knapsack problem. I follow the
+approach described in \cite{basu2018weighted} and thus consider only
+sequentially selecting the units until one constraint is violated.
+
+In Figure \ref{fig:tp_0.2_0.2_2d}, I present the results of selecting the top
+20\% hospitals with or without the FDR constraint at 20\%. The selection rule
+is the posterior tail probability which is explained in the sections above,
+that is, the solution to the problem defined in \ref{eq:decisionrule}. The
+prior $G$ is taken to be the smoothed Kiefer-Wolfowitz estimate.
+
+The left-hand side corresponds to the selection outcome without imposing the
+FDR constraints while the right-hand side controls the expected FDR at 20\%. In
+the first case, there are around 10 times more private hospitals in the top
+20\% while the total number of hospitals is less than twice of the public.
+
+The FDR seems to have only impacted the private hospitals, leaving 18 out of
+the selection set. A stringent FDR constraint would lead to a smaller set as
+shown in \ref{fig:tp_0.2_0.1_2d}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf}
+    \caption{Tail probability rule, capacity 20\%, FDR 20\%, unknown variance}
+    \label{fig:tp_0.2_0.2_2d}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.1_TPKWs.pdf}
+    \caption{Tail probability rule, capacity 20\%, FDR 10\%, unknown variance}
+    \label{fig:tp_0.2_0.1_2d}
+\end{figure}
+As of other selection rules using different ranking statistics (posterior mean, MLE face value, James-Stein linear shrinkage), see appendix \ref{section:unknown} for an overview.
+\paragraph{Known variance, and TP rules} In \citet{gu2023invidious}, the authors
+apply the newly proposed selection method to the the selection of kidney
+dialysis centers studied by \citep{lin2006loss,lin2009ranking}. However, the
+focus is on the quality of service, specifically on the mortality rate.
+Secondly, they assume the predictions of expected mortality is sufficiently
+accurate such that the variance is known and independent of $\theta\sim G$.
+
+\begin{figure}[h!]
     \centering
     \begin{minipage}{0.5\textwidth}
         \centering
@@ -573,35 +634,93 @@ different assumptions will be presented in this section.
     \end{minipage}
 \end{figure}
 
+Though not desirable in the present setting, it would be interesting to see
+what the results would be if I take the $S_i$ as the $\sigma_i^2$. For the
+moment, whether this assumption would lead to a more stringent selection
+outcome is unclear. Figure \ref{fig:tp_0.2_0.2_1d} presents the outcome under
+the posterior tail probability rule with smoothed estimated prior. It seems
+that the with only the capacity constraint, the outcome does not differ much.
+However, when FDR constraint is combined, the known variance assumption becomes
+too lenient to incorporate the newly imposed constraint. At the level
+$\alpha=0.2$ and $\gamma=0.2$, the FDR constraint is not binding. While a more
+stringent FDR constraint does bind as shwon in Figure \ref{fig:tp_0.2_0.1_1d}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf}
+    \caption{Tail probability rule, capacity 20\%, FDR 20\%, known variance}
+    \label{fig:tp_0.2_0.2_1d}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.1_TPKWs.pdf}
+    \caption{Tail probability rule, capacity 20\%, FDR 10\%, known variance}
+    \label{fig:tp_0.2_0.1_1d}
+\end{figure}
+
+Appendix \ref{section:known} presents the results of other selection rule. In
+this case, a contour line can be drawn to highlight the differences between
+ranking statistics.
+
 \section{Conclusion}
 
-% If our specification and assumptions on exogeneity are correct, the consistency
-% of $\hat{\beta}$ is guaranteed by $N$'s asymptotic. However, our estimate of
-% the fixed effect is
-% \begin{align*}
-%     \hat{\theta}_i & =\frac{1}{T}\sum(\theta_i+\varepsilon_{it}+x_{it}(\beta-\hat{\beta}))              \\
-%                    & \overset{N\to \infty}{\longrightarrow} \theta_i+\frac{1}{T}\sum_t \varepsilon_{it} \\
-% \end{align*}
-% When $T$ is relatively small (or even fixed), I am not in a good position to use central limit theorem to claim that $\hat{\theta}_i \overset{d}{\to} \caln(\theta_i,\frac{\sigma_i^2}{T})$. A bold assumption that $\varepsilon_{it} \sim \caln(0,\sigma_i^2)$ will save me from the $T$ issue, which I will impose for the rest of the section (and abstract from whether that  for each $i$ is a testable/reasonable/feasible assumption).
+Exploiting the rich dataset covering all hospitals in France, I have attempted
+to estimate the fixed effect of individual hospitals, which has the
+interpretation of \textit{inefficiency index}. Based on an initial estimate, my
+goal is to select the top performing hospitals and classify them by legal
+status, thereby having a more granular view of the efficiency comparison
+between the public and private hospitals. I deliberately omit the teaching
+hospitals (~200) from the dataset because they are innately different in terms
+of its objectives. To tackle the endogeneity issue, I used lagged difference of
+the regressors as instruments for the current level, a simplified version of
+the system GMM method. The selection problem of interests falls naturally under
+the compound decision framework. Empirical Bayes ideology along with the
+developments in nonparametric maximum likelihood estimation has made the
+implementation more efficient. In addition to the artificial capacity
+constraint where only the top $\alpha\%$ units are of interests, it is an
+interesting and useful practice to incorporate the another constraint called
+False Discovery Rate constraint such that the expected number of false
+posititve is controlled at a certain level. From the application to the French
+Hospitals, it is clear that the FDR constraints shrinks the selection set by
+some amount. It is also intuitive that the the larger the capacity (larger the
+$\alpha$), the less binding the FDR constraint is. The idea is that when the
+decision maker can select more units, the probability of making mistakes
+decreases. Another observation comes from the assumption we make in the NPMLE
+of $G$. In \citet{gu2023invidious}, the authors have pointed out that the known
+variance assumption in $Y_i|\theta_i,\sigma_i$ may be plausible in some
+applications, it is more common to be faced with only an estimate the variance.
+The two assumptions give rise to a different level of \textit{stringency} in
+response to the constraints, especially when the decision maker wants to
+control for the expected false discovery rate. Assuming an unknown variance
+treat the observation as noisier, thus the probability of making mistakes is
+higher. The same level of FDR constraint of $20\%$ only binds in the unknown
+variance scenario. With respect the private public comparison, among the top
+20\% performers, there are around 10 times more private than public, while the
+ratio of total number is 5 to 3. A preliminary conclusion is in terms labor
+employment efficiency, there are more efficient private hospitals among the top
+performers. It may be of interests to the healthcare authority to perform such
+selections and take corresponding actions with respect to the selection
+outcome. From my point of view, a related report based on the ranking and
+selection results will create an incentive for the healthcare providers to
+ensure the completeness of data input. sHowever, one cautionary tale is the
+interpretation of the fixed effect estimate. Since the fixed effect captures
+all time invariant component of the unit, whether it is only the unobserved
+heterogeneity of individual hospitals or an actual measure of inefficiency is
+of question. The issue is discussed in \citet{greene2005fixed}. Lastly, despite
+the fact that it is of human nature to construct ranking and make selections,
+every step of the procedure requires attention to the specification,
+identification and justifiable assumptions. Incorporating constraints such as
+FDR in defining the problem may be helpful, but the decision is still subject
+to great uncertainty and should be made with caution and justification.
 
-% \section{Selection results}
-
-% Although \cite{gu2023invidious} has presented the decision rule when
-% $(\theta_i,\sigma_i^2)$ are unknown. The application assumes that $\sigma_i^2$
-% is known/observable. In this section, I will compare the selection results
-% under known variance $\sigma_i^2$ and estimated variance $S_i$.
-
-% \paragraph{Known variance, and 4 rules}
-% \paragraph{Unknown variance, and 4 rules}
-
-% \section{Conclusion}
-
+\pagebreak
 \newpage
 \bibliography{ref.bib}
 
 \appendix
-\section{Data}
-\subsection{Data selection}
+\section{Appendix}
+\subsection{Data}
 
 The panel is first filtered by the following criteria
 \begin{enumerate}
@@ -611,7 +730,6 @@ The panel is first filtered by the following criteria
 \end{enumerate}
 Second, I add one to every variable to avoid null value when taking log.
 
-\section{Empirical Bayes}
 \subsection{NPMLE $G$}
 \citet{koenker2014convex} defined the primal problem as
 \begin{equation*}
@@ -627,4 +745,60 @@ It is straightforward to derive the dual problem
 \begin{equation*}
     \max_{\lambda,\mu} \left\{ \sum_i \log \lambda_1(i) \bigg| A^T\lambda_1 < \lambda_2 1,\ (\lambda_1>0) \right\}
 \end{equation*}
+
+\subsection{Assumption on $\hat{\theta}_i|\theta_i,\sigma_i$}
+If our specification and assumptions on exogeneity are correct, the consistency
+of $\hat{\beta}$ is guaranteed by $N$'s asymptotic. However, our estimate of
+the fixed effect is
+\begin{align*}
+    \hat{\theta}_i & =\frac{1}{T}\sum(\theta_i+\varepsilon_{it}+x_{it}(\beta-\hat{\beta}))              \\
+                   & \overset{N\to \infty}{\longrightarrow} \theta_i+\frac{1}{T}\sum_t \varepsilon_{it} \\
+\end{align*}
+When $T$ is relatively small (or even fixed), I am not in a good position to use central limit theorem to claim that $\hat{\theta}_i \overset{d}{\to} \caln(\theta_i,\frac{\sigma_i^2}{T})$. A bold assumption that $\varepsilon_{it} \sim \caln(0,\sigma_i^2)$ will save me from the $T$ issue, which I will impose for the rest of the section (and abstract from whether that  for each $i$ is a testable/reasonable/feasible assumption).
+
+\subsection{Comparison of selection rules}
+
+\newpage
+\subsubsection{Unknown variance}
+\label{section:unknown}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf}
+    \caption{Posterior mean, capacity 20\%, FDR 20\%, unknown variance}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_JS.pdf}
+    \caption{James-Stein Linear Shrinkage, capacity 20\%, FDR 20\%, unknown variance}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_MLE.pdf}
+    \caption{MLE, capacity 20\%, FDR 20\%, known variance}
+\end{figure}
+
+\newpage
+\subsubsection{Known variance}
+\label{section:known}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf}
+    \caption{TP VS PM,  capacity 20\%, FDR 20\%, known variance}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf}
+    \caption{TP VS JS, capacity 20\%, FDR 20\%, known variance}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf}
+    \caption{TP VS MLE, capacity 20\%, FDR 20\%, unknown variance}
+\end{figure}
+
 \end{document}

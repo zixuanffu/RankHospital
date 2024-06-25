@@ -7,7 +7,14 @@ fit2d <- function(pdt, bwt = 2, rtol = 1e-20, ...) {
     #' @param rtol: relative tolerance for optimization
     #' @return: a list with the following components: the KW estimates of G, the smoothe KW estimates, the sufficient statistics S for the location parameter, the sufficient statistics s for the scale parameter, the id of the each entity
 
+    # filter the panel
+    pdt[, `:=`(Var_res1 = var(Res)), by = .(FI)]
+    pdt[, Nobs := .N, by = .(FI)]
+    pdt <- pdt[Nobs >= 6]
+    pdt <- pdt[Var_res1 > 0.001]
+    pdt[, id := as.numeric(as.factor(FI))]
     # ---- Location \theta_i and scale \sigma_i^2 parameters ---- #
+    pdt[, `:=`(y = FixedEffect + Res), by = .(FI)]
     # ---- sufficient statistics for \theta_i ---- #
     pdt[, `:=`(hat_mu = FixedEffect), by = .(FI)]
     # ---- sufficient statistics for \sigma_i^2 ---- #
@@ -18,10 +25,7 @@ fit2d <- function(pdt, bwt = 2, rtol = 1e-20, ...) {
     pdt[, `:=`(Var_res2 = var(Demeaned_res)), by = .(FI)]
     # ---- remove FI with less than 6 observations ---- #
     # this is actually already done in the preparation step in RegResults.R script
-    pdt[, Nobs := .N, by = .(FI)]
-    pdt <- pdt[Nobs >= 6]
-    pdt <- pdt[Var_res1 > 0.001]
-    pdt[, id := as.numeric(as.factor(FI))]
+
     dt2 <- pdt[, .(id = first(id), hat_mu = first(hat_mu), Var_res1 = first(Var_res1), Var_res2 = first(Var_res2), Nobs = first(Nobs)), by = .(FI)]
     # ---- Hetereogeneous unknown Variance ---- #
     f <- GLVmix(t = dt2$hat_mu, s = dt2$Var_res1, m = dt2$Nobs)
@@ -388,7 +392,7 @@ level_plot_2d <- function(Z, Selection, alpha = 0.04, gamma = 0.2, tail = "R", c
         # } else {
         #     abline(v = thresh[cindex[2], 1], lwd = 2, col = 2) # MLE rule
         # }
-        plot(NULL, xlim = xlim, ylim = log(ylim), xlab = expression(theta[i]), ylab = expression(log(S[i])))
+        plot(NULL, xlim = xlim, ylim = log(ylim), xlab = expression(Y[i]), ylab = expression(log(S[i])))
         points(Z$S[Bagree], log(Z$W[Bagree]), col = "grey", cex = 0.5)
         points(Z$S[Bdis1], log(Z$W[Bdis1]), col = 4, cex = 0.5)
         points(Z$S[Bdis2], log(Z$W[Bdis2]), col = 2, cex = 0.5)
@@ -423,7 +427,7 @@ level_plot_2d <- function(Z, Selection, alpha = 0.04, gamma = 0.2, tail = "R", c
         # } else {
         #     abline(v = thresh[cindex[2], 1], lwd = 2, col = 2)
         # }
-        plot(NULL, xlim = xlim, ylim = log(ylim), xlab = expression(theta[i]), ylab = expression(log(S[i])))
+        plot(NULL, xlim = xlim, ylim = log(ylim), xlab = expression(Y[i]), ylab = expression(log(S[i])))
         points(Z$S[Aagree], log(Z$W[Aagree]), col = "grey", cex = 0.5)
         points(Z$S[Adis1], log(Z$W[Adis1]), col = 4, cex = 0.5)
         points(Z$S[Adis2], log(Z$W[Adis2]), col = 2, cex = 0.5)
@@ -461,16 +465,16 @@ select_plot_2d <- function(Z, s, alpha, gamma, tail, rule_index, sub = FALSE, fi
     n_pri <- nrow(pri)
     B_pub <- pub[B == 1]
     B_pri <- pri[B == 1]
-    plot(NULL, xlim = c(u_min, u_max), ylim = c(log(v_min), log(v_max)), xlab = expression(theta), ylab = expression(sigma^2))
+    plot(NULL, xlim = c(u_min, u_max), ylim = c(log(v_min), log(v_max)), xlab = expression(Y[i]), ylab = expression(log(S[i])))
     points(B_pri$hat_mu, log(B_pri$Var_res1), col = 4, cex = 0.5)
     points(B_pub$hat_mu, log(B_pub$Var_res1), col = 2, cex = 0.5)
-    text <- c(paste0("Public: ", nrow(B_pub), "/", n_pub, "=", round(nrow(B_pub) / n_pub), 2), paste0("Private: ", nrow(B_pri), "/", n_pri, "=", round(nrow(B_pub) / n_pub), 2))
+    text <- c(paste0("Public: ", nrow(B_pub), "/", n_pub, "=", round(nrow(B_pub) / n_pub, 2)), paste0("Private: ", nrow(B_pri), "/", n_pri, "=", round(nrow(B_pri) / n_pri, 2)))
     legend("topright", text, col = c(2, 4), pch = 1, cex = 0.95, bty = "n")
     mtext(paste("alpha = ", alpha, "selected: ", nrow(B_pub) + nrow(B_pri)))
     title(paste("Rule: ", Rules[rule_index]))
     A_pub <- pub[A == 1]
     A_pri <- pri[A == 1]
-    plot(NULL, xlim = c(u_min, u_max), ylim = c(log(v_min), log(v_max)), xlab = expression(theta), ylab = expression(sigma^2))
+    plot(NULL, xlim = c(u_min, u_max), ylim = c(log(v_min), log(v_max)), xlab = expression(Y[i]), ylab = expression(log(S[i])))
     points(A_pri$hat_mu, log(A_pri$Var_res1), col = 4, cex = 0.5)
     points(A_pub$hat_mu, log(A_pub$Var_res1), col = 2, cex = 0.5)
 

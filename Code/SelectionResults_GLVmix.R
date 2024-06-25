@@ -12,7 +12,7 @@ source("Code/SelectX_GLVmix.R")
 pdt <- readRDS("Results/2013-2022/pdt_used_gmm_sys_m.rds")
 Z <- fit2d(pdt)
 # ---- Perform the selection ---- #
-alpha <- 0.20
+alpha <- 0.5
 gamma <- 0.20
 sL <- select2d(Z, alpha = alpha, gamma = gamma, tail = "L")
 sR <- select2d(Z, alpha = alpha, gamma = gamma, tail = "R")
@@ -28,7 +28,8 @@ require(lattice)
 pdf("Figures/2013-2022/GMM_m/GLVmix_s.pdf", width = 8, height = 5)
 pl <- cloud(fuv ~ theta * sigma,
     data = g, type = "h", lwd = 2,
-    zlim = c(0, max(g$fuv)), scales = list(
+    zlim = c(0, max(g$fuv)), xlim = c(min(g$theta), max(g$theta)),
+    ylim = c(min(g$sigma), max(g$sigma)), scales = list(
         arrows = FALSE,
         xlab = expression(theta), ylab = expression(sigma), zlab = "density",
         screen = list(z = 10, x = -70)
@@ -46,6 +47,8 @@ require(lattice)
 pdf("Figures/2013-2022/GMM_m/GLVmix.pdf", width = 8, height = 5)
 pl <- cloud(fuv ~ theta * sigma,
     data = g, type = "h", lwd = 2,
+    xlim = c(min(g$theta), max(g$theta)),
+    ylim = c(min(g$sigma), max(g$sigma)),
     zlim = c(0, max(g$fuv)), scales = list(
         arrows = FALSE,
         xlab = expression(theta), ylab = expression(sigma), zlab = "density",

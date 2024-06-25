@@ -2,7 +2,8 @@
 
 \bibitem[Aigner et~al., 1977]{aigner1977formulation}
 Aigner, D., Lovell, C.~K., and Schmidt, P. (1977).
-\newblock Formulation and estimation of stochastic frontier production function models.
+\newblock Formulation and estimation of stochastic frontier production function
+  models.
 \newblock {\em Journal of econometrics}, 6(1):21--37.
 
 \bibitem[Andersen and Andersen, 2010]{andersen2010mosek}
@@ -11,17 +12,27 @@ Andersen, E.~D. and Andersen, K.~D. (2010).
 
 \bibitem[Arellano and Bond, 1991]{arellano1991some}
 Arellano, M. and Bond, S. (1991).
-\newblock Some tests of specification for panel data: Monte carlo evidence and an application to employment equations.
+\newblock Some tests of specification for panel data: Monte carlo evidence and
+  an application to employment equations.
 \newblock {\em The review of economic studies}, 58(2):277--297.
 
 \bibitem[Arellano and Bover, 1995]{arellano1995another}
 Arellano, M. and Bover, O. (1995).
-\newblock Another look at the instrumental variable estimation of error-components models.
+\newblock Another look at the instrumental variable estimation of
+  error-components models.
 \newblock {\em Journal of econometrics}, 68(1):29--51.
+
+\bibitem[Basu et~al., 2018]{basu2018weighted}
+Basu, P., Cai, T.~T., Das, K., and Sun, W. (2018).
+\newblock Weighted false discovery rate control in large-scale multiple
+  testing.
+\newblock {\em Journal of the American Statistical Association},
+  113(523):1172--1183.
 
 \bibitem[Blundell and Bond, 1998]{blundell1998initial}
 Blundell, R. and Bond, S. (1998).
-\newblock Initial conditions and moment restrictions in dynamic panel data models.
+\newblock Initial conditions and moment restrictions in dynamic panel data
+  models.
 \newblock {\em Journal of econometrics}, 87(1):115--143.
 
 \bibitem[Charnes et~al., 1978]{charnes1978measuring}
@@ -31,12 +42,14 @@ Charnes, A., Cooper, W.~W., and Rhodes, E. (1978).
 
 \bibitem[Chetty et~al., 2014]{chetty2014measuring}
 Chetty, R., Friedman, J.~N., and Rockoff, J.~E. (2014).
-\newblock Measuring the impacts of teachers i: Evaluating bias in teacher value-added estimates.
+\newblock Measuring the impacts of teachers i: Evaluating bias in teacher
+  value-added estimates.
 \newblock {\em American economic review}, 104(9):2593--2632.
 
 \bibitem[Chetty and Hendren, 2018]{chetty2018impacts}
 Chetty, R. and Hendren, N. (2018).
-\newblock The impacts of neighborhoods on intergenerational mobility ii: County-level estimates.
+\newblock The impacts of neighborhoods on intergenerational mobility ii:
+  County-level estimates.
 \newblock {\em The Quarterly Journal of Economics}, 133(3):1163--1228.
 
 \bibitem[Croiset and Gary-Bobo, 2024]{croiset2024hospitals}
@@ -50,7 +63,8 @@ Gilraine, M., Gu, J., and McMillan, R. (2020).
 
 \bibitem[Gu and Koenker, 2017]{gu2017empirical}
 Gu, J. and Koenker, R. (2017).
-\newblock Empirical bayesball remixed: Empirical bayes methods for longitudinal data.
+\newblock Empirical bayesball remixed: Empirical bayes methods for longitudinal
+  data.
 \newblock {\em Journal of Applied Econometrics}, 32(3):575--599.
 
 \bibitem[Gu and Koenker, 2023]{gu2023invidious}
@@ -61,16 +75,19 @@ Gu, J. and Koenker, R. (2023).
 \bibitem[James and Stein, 1992]{james1992estimation}
 James, W. and Stein, C. (1992).
 \newblock Estimation with quadratic loss.
-\newblock In {\em Breakthroughs in statistics: Foundations and basic theory}, pages 443--460. Springer.
+\newblock In {\em Breakthroughs in statistics: Foundations and basic theory},
+  pages 443--460. Springer.
 
 \bibitem[Jiang and Zhang, 2009]{jiang2009general}
 Jiang, W. and Zhang, C.-H. (2009).
-\newblock {General maximum likelihood empirical Bayes estimation of normal means}.
+\newblock {General maximum likelihood empirical Bayes estimation of normal
+  means}.
 \newblock {\em The Annals of Statistics}, 37(4):1647 -- 1684.
 
 \bibitem[Kiefer and Wolfowitz, 1956]{kiefer1956consistency}
 Kiefer, J. and Wolfowitz, J. (1956).
-\newblock Consistency of the maximum likelihood estimator in the presence of infinitely many incidental parameters.
+\newblock Consistency of the maximum likelihood estimator in the presence of
+  infinitely many incidental parameters.
 \newblock {\em The Annals of Mathematical Statistics}, pages 887--906.
 
 \bibitem[Kline et~al., 2022]{kline2022systemic}
@@ -85,8 +102,20 @@ Koenker, R. and Gu, J. (2017).
 
 \bibitem[Koenker and Mizera, 2014]{koenker2014convex}
 Koenker, R. and Mizera, I. (2014).
-\newblock Convex optimization, shape constraints, compound decisions, and empirical bayes rules.
-\newblock {\em Journal of the American Statistical Association}, 109(506):674--685.
+\newblock Convex optimization, shape constraints, compound decisions, and
+  empirical bayes rules.
+\newblock {\em Journal of the American Statistical Association},
+  109(506):674--685.
+
+\bibitem[Lin et~al., 2006]{lin2006loss}
+Lin, R., Louis, T.~A., Paddock, S.~M., and Ridgeway, G. (2006).
+\newblock Loss function based ranking in two-stage, hierarchical models.
+\newblock {\em Bayesian Analysis (Online)}, 1(4):915.
+
+\bibitem[Lin et~al., 2009]{lin2009ranking}
+Lin, R., Louis, T.~A., Paddock, S.~M., and Ridgeway, G. (2009).
+\newblock Ranking usrds provider specific smrs from 1998--2001.
+\newblock {\em Health Services and Outcomes Research Methodology}, 9:22--38.
 
 \bibitem[Lindsay, 1995]{lindsay1995mixture}
 Lindsay, B.~G. (1995).
@@ -95,12 +124,14 @@ Lindsay, B.~G. (1995).
 
 \bibitem[Meeusen and van Den~Broeck, 1977]{meeusen1977efficiency}
 Meeusen, W. and van Den~Broeck, J. (1977).
-\newblock Efficiency estimation from cobb-douglas production functions with composed error.
+\newblock Efficiency estimation from cobb-douglas production functions with
+  composed error.
 \newblock {\em International economic review}, pages 435--444.
 
 \bibitem[Robbins, 1956]{robbins1956empirical}
 Robbins, H.~E. (1956).
 \newblock An empirical bayes approach to statistics.
-\newblock In {\em Proceedings of the third berkeley symposium on mathematical statistics and probability}, volume~1, pages 157--163.
+\newblock In {\em Proceedings of the third berkeley symposium on mathematical
+  statistics and probability}, volume~1, pages 157--163.
 
 \end{thebibliography}

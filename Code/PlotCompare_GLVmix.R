@@ -42,8 +42,8 @@ dev.off()
 # ---- Focus on left tail probability ---- #
 
 Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
-alpha <- 0.20
-gamma <- 0.20
+alpha <- 0.5
+gamma <- 0.10
 tail <- "L"
 Z <- fit2d(pdt)
 sL <- select2d(Z, alpha = alpha, gamma = gamma, tail = tail)

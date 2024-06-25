@@ -13,9 +13,13 @@
 \contentsline {paragraph}{Known variance, $G(\theta )$}{14}{section*.15}%
 \contentsline {paragraph}{Unknown variance, $G(\theta ,\sigma )$}{14}{section*.16}%
 \contentsline {subsection}{\numberline {3.4}Selection results}{14}{subsection.3.4}%
-\contentsline {paragraph}{Unknown variance, and 4 rules}{15}{figure.caption.18}%
-\contentsline {paragraph}{Known variance, and 4 rules}{15}{figure.caption.20}%
-\contentsline {section}{\numberline {A}Data}{17}{appendix.A}%
-\contentsline {subsection}{\numberline {A.1}Data selection}{17}{subsection.A.1}%
-\contentsline {section}{\numberline {B}Empirical Bayes}{17}{appendix.B}%
-\contentsline {subsection}{\numberline {B.1}NPMLE $G$}{17}{subsection.B.1}%
+\contentsline {paragraph}{Unknown variance, and TP rules}{15}{section*.17}%
+\contentsline {paragraph}{Known variance, and TP rules}{17}{section*.21}%
+\contentsline {section}{\numberline {4}Conclusion}{18}{section.4}%
+\contentsline {section}{\numberline {A}Appendix}{20}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}Data}{20}{subsection.A.1}%
+\contentsline {subsection}{\numberline {A.2}NPMLE $G$}{21}{subsection.A.2}%
+\contentsline {subsection}{\numberline {A.3}Assumption on $\hat {\theta }_i|\theta _i,\sigma _i$}{21}{subsection.A.3}%
+\contentsline {subsection}{\numberline {A.4}Comparison of selection rules}{21}{subsection.A.4}%
+\contentsline {subsubsection}{\numberline {A.4.1}Unknown variance}{22}{subsubsection.A.4.1}%
+\contentsline {subsubsection}{\numberline {A.4.2}Known variance}{23}{subsubsection.A.4.2}%

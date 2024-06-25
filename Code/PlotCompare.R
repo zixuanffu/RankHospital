@@ -3,8 +3,8 @@ pacman::p_load(REBayes, data.table)
 source("Code/SelectX.R")
 pdt <- readRDS("Results/2013-2022/pdt_used_gmm_sys_m.rds")
 Z <- fit1d(pdt)
-alpha <- 0.20
-gamma <- 0.20
+alpha <- 0.5
+gamma <- 0.1
 sL <- select1d(Z, alpha = alpha, gamma = gamma, "L")
 sR <- select1d(Z, alpha = alpha, gamma = gamma, "R")
 # ---- Find the min and max of the density ---- #
@@ -64,8 +64,8 @@ for (rule_index in c(2, 4, 5)) {
 # ---- Focus on left tail probability ---- #
 
 Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
-alpha <- 0.20
-gamma <- 0.20
+alpha <- 0.50
+gamma <- 0.10
 tail <- "L"
 Z <- fit1d(pdt)
 sL <- select1d(Z, alpha = alpha, gamma = gamma, tail = tail)
