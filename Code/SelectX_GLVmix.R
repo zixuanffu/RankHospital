@@ -9,7 +9,7 @@ fit2d <- function(pdt, bwt = 2, rtol = 1e-20, ...) {
 
     # ---- Location \theta_i and scale \sigma_i^2 parameters ---- #
     # ---- sufficient statistics for \theta_i ---- #
-    pdt[, `:=`(hat_mu = FixedEffect + Res), by = .(FI)]
+    pdt[, `:=`(hat_mu = FixedEffect), by = .(FI)]
     # ---- sufficient statistics for \sigma_i^2 ---- #
     pdt[, `:=`(Var_res1 = var(Res)), by = .(FI)]
     # ---- another way to estimate the variance ---- #
