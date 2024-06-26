@@ -1,0 +1,40 @@
+
+\begingroup
+\centering
+\begin{tabular}{lcccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variable:    & \multicolumn{4}{c}{Nurses}                                                  \\
+                          & Within Group               & First Difference & FD GMM       & SYS GMM      \\
+   Model:                 & (1)                        & (2)              & (3)          & (4)          \\
+   \midrule
+   \emph{Variables}                                                                                     \\
+   STAC inpatient         & $0.10^{***}$               & $0.07^{***}$     & $0.13^{***}$ & $0.48^{***}$ \\
+                          & $(0.00)$                   & $(0.01)$         & $(0.03)$     & $(0.02)$     \\
+   STAC outpatient        & $0.02^{***}$               & $0.01^{***}$     & $0.02$       & $0.05^{*}$   \\
+                          & $(0.00)$                   & $(0.00)$         & $(0.01)$     & $(0.02)$     \\
+   Medical sessions       & $0.02^{***}$               & $0.02^{***}$     & $0.02^{***}$ & $0.06^{***}$ \\
+                          & $(0.00)$                   & $(0.00)$         & $(0.00)$     & $(0.01)$     \\
+   External consultations & $0.00$                     & $0.00$           & $0.01$       & $0.07^{***}$ \\
+                          & $(0.00)$                   & $(0.00)$         & $(0.01)$     & $(0.01)$     \\
+   Emergency              & $0.01^{***}$               & $0.01$           & $0.05$       & $-0.04^{**}$ \\
+                          & $(0.00)$                   & $(0.00)$         & $(0.04)$     & $(0.01)$     \\
+   Long-term \& follow-up & $0.01^{***}$               & $0.01^{***}$     & $-0.06^{**}$ & $0.07^{***}$ \\
+                          & $(0.00)$                   & $(0.00)$         & $(0.02)$     & $(0.01)$     \\
+   Home care              & $0.01^{***}$               & $0.02^{**}$      & $-0.00$      & $0.01$       \\
+                          & $(0.00)$                   & $(0.01)$         & $(0.02)$     & $(0.02)$     \\
+   Psychiatric care       & $0.02^{***}$               & $0.01$           & $0.01$       & $0.07^{**}$  \\
+                          & $(0.00)$                   & $(0.01)$         & $(0.02)$     & $(0.02)$     \\
+   \midrule
+   \emph{Fit statistics}                                                                                \\
+   Num. obs.              & $14067$                    & $12377$          & $14067$      & $14067$      \\
+   n                      & $1690$                     & $1690$           & $1690$       & $1690$       \\
+   T                      & $9$                        & $9$              & $9$          & $9$          \\
+   Num. obs. used         & $$                         & $$               & $10929$      & $23587$      \\
+   Sargan Test: chisq     & $$                         & $$               & $128.32$     & $360.97$     \\
+   Sargan Test: df        & $$                         & $$               & $48.00$      & $104.00$     \\
+   \midrule \midrule
+   \multicolumn{5}{l}{\emph{Heteroskedasticity-robust standard-errors in parentheses}}                  \\
+   \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}                                \\
+\end{tabular}
+\par\endgroup
+

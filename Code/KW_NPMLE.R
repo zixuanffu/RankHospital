@@ -40,13 +40,13 @@ f_wtlv <- WTLVmix(y = Z$pdt$hat_mu, id = Z$pdt$id, u = 300, v = 300)
 
 X11(width = 8, height = 5)
 par(mfrow = c(1, 2))
-pdf("Figures/2013-2022/GMM_m/WTLVmix_u.pdf", width = 8, height = 5)
+pdf("Figures/2013-2022/GMM_fd/WTLVmix_u.pdf", width = 8, height = 5)
 plot(f_wtlv$u, f_wtlv$fu,
     main = expression(paste("Density of ", theta, sep = "")),
     xlab = expression(theta), ylab = expression(f(theta)), type = "l"
 )
 dev.off()
-pdf("Figures/2013-2022/GMM_m/WTLVmix_v.pdf", width = 8, height = 5)
+pdf("Figures/2013-2022/GMM_fd/WTLVmix_v.pdf", width = 8, height = 5)
 plot(f_wtlv$v, f_wtlv$fv,
     main = expression(paste("Density of ", sigma, sep = "")),
     xlab = expression(sigma), ylab = expression(f(sigma)), type = "l"
@@ -64,7 +64,7 @@ str(f_g)
 require(lattice)
 g <- expand.grid(theta = f_g$u, sigma = f_g$v)
 g$fuv <- f_g$fuv
-pdf("Figures/2013-2022/GMM_m/WGLVmix.pdf", width = 8, height = 5)
+pdf("Figures/2013-2022/GMM_fd/WGLVmix.pdf", width = 8, height = 5)
 pl <- cloud(fuv ~ theta * sigma,
     data = g, type = "h", lwd = 2,
     zlim = c(0, max(g$fuv)), scales = list(
@@ -84,7 +84,7 @@ str(fg)
 require(lattice) # a visualisation package
 g <- expand.grid(theta = fg$u, sigma = fg$v)
 g$fuv <- fg$fuv
-pdf("Figures/2013-2022/GMM_m/GLVmix.pdf", width = 8, height = 5)
+pdf("Figures/2013-2022/GMM_fd/GLVmix.pdf", width = 8, height = 5)
 pl <- cloud(fuv ~ theta * sigma,
     data = g, type = "h", lwd = 2,
     zlim = c(0, max(g$fuv)), scales = list(

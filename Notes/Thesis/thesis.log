@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.13)  25 JUN 2024 16:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.13)  26 JUN 2024 16:29
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -467,163 +467,172 @@ Non-PDF special ignored!
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.95 
+l.97 
       [1]
 
-Package natbib Warning: Citation `herbert1956empirical' on page 2 undefined on input line 124.
+Package natbib Warning: Citation `herbert1956empirical' on page 2 undefined on input line 129.
 
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.158 
-       [2] [3] (../../Tables/Descriptive/hospital_count.tex) (../../Tables/Descriptive/output_share_nonweighted.tex)
-Overfull \hbox (41.10706pt too wide) in paragraph at lines 215--221
- [] 
- []
+l.164 
+       [2] [3] (../../Tables/Descriptive/hospital_count.tex) (../../Tables/Descriptive/output_share_nonweighted.tex) (../../Tables/Descriptive/output_share.tex) [4] [5] (../../Tables/2013-2022/reg_sep_iv.tex) (../../Tables/2013-2022/reg_dummy_iv_ex.tex)
 
-(../../Tables/Descriptive/output_share.tex)
-Overfull \hbox (41.10706pt too wide) in paragraph at lines 225--235
- [] 
- []
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[4] (../../Tables/2013-2022/reg_sep_iv.tex) (../../Tables/2013-2022/reg_dummy_iv_ex.tex) [5] [6] [7]
-
-LaTeX Warning: Reference `' on page 8 undefined on input line 319.
-
-(../../Tables/2013-2022/reg_wg_fd_gmm.tex) (../../Tables/2013-2022/reg_wg_fd_iv.tex) [8] [9] [10]
+[6] [7] (../../Tables/2013-2022/reg_wg_fd_gmm_a.tex) [8] [9]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 384.
+(hyperref)                removing `math shift' on input line 466.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 384.
+(hyperref)                removing `math shift' on input line 466.
 
-[11] [12] [13] [14]
-<../../Figures/2013-2022/GMM_m/GLVmix.pdf, id=317, 578.16pt x 361.35pt>
-File: ../../Figures/2013-2022/GMM_m/GLVmix.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLVmix.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix.pdf  used on input line 574.
+[10] [11] [12] [13] [14]
+
+Package caption Warning: \label without proper reference on input line 699.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `fig:GLVmix' on page 15 undefined on input line 685.
+
+<../../Figures/2013-2022/GMM_fd/GLVmix.pdf, id=346, 578.16pt x 361.35pt>
+File: ../../Figures/2013-2022/GMM_fd/GLVmix.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLVmix.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLVmix.pdf  used on input line 693.
 (pdftex.def)             Requested size: 234.8775pt x 146.79808pt.
-<../../Figures/2013-2022/GMM_m/GLVmix_s.pdf, id=318, 578.16pt x 361.35pt>
-File: ../../Figures/2013-2022/GMM_m/GLVmix_s.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLVmix_s.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix_s.pdf  used on input line 578.
+<../../Figures/2013-2022/GMM_fd/GLVmix_s.pdf, id=347, 578.16pt x 361.35pt>
+File: ../../Figures/2013-2022/GMM_fd/GLVmix_s.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLVmix_s.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLVmix_s.pdf  used on input line 697.
 (pdftex.def)             Requested size: 234.8775pt x 146.79808pt.
- [15 <../../Figures/2013-2022/GMM_m/GLVmix.pdf> <../../Figures/2013-2022/GMM_m/GLVmix_s.pdf>]
-<../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf, id=342, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf  used on input line 605.
+<../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_TPKWs.pdf, id=353, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_TPKWs.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_TPKWs.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_TPKWs.pdf  used on input line 726.
 (pdftex.def)             Requested size: 375.80544pt x 211.38724pt.
-<../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.1_TPKWs.pdf, id=343, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.1_TPKWs.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.1_TPKWs.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.1_TPKWs.pdf  used on input line 612.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.1_TPKWs.pdf, id=354, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.1_TPKWs.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.1_TPKWs.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.1_TPKWs.pdf  used on input line 733.
 (pdftex.def)             Requested size: 375.80544pt x 211.38724pt.
- [16 <../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf> <../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.1_TPKWs.pdf>]
-<../../Figures/2013-2022/GMM_m/GLmix.pdf, id=369, 578.16pt x 361.35pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix.pdf  used on input line 628.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[15 <../../Figures/2013-2022/GMM_fd/GLVmix.pdf> <../../Figures/2013-2022/GMM_fd/GLVmix_s.pdf>]
+
+LaTeX Warning: Reference `fig:GLmix' on page 16 undefined on input line 752.
+
+<../../Figures/2013-2022/GMM_fd/GLmix.pdf, id=379, 578.16pt x 361.35pt>
+File: ../../Figures/2013-2022/GMM_fd/GLmix.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLmix.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLmix.pdf  used on input line 759.
 (pdftex.def)             Requested size: 234.8775pt x 146.79808pt.
-<../../Figures/2013-2022/GMM_m/GLmix_s.pdf, id=370, 578.16pt x 361.35pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix_s.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix_s.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix_s.pdf  used on input line 632.
+<../../Figures/2013-2022/GMM_fd/GLmix_s.pdf, id=380, 578.16pt x 361.35pt>
+File: ../../Figures/2013-2022/GMM_fd/GLmix_s.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLmix_s.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLmix_s.pdf  used on input line 763.
 (pdftex.def)             Requested size: 234.8775pt x 146.79808pt.
-<../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf, id=373, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf  used on input line 649.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[16 <../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_TPKWs.pdf> <../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.1_TPKWs.pdf>]
+<../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.2_TPKWs.pdf, id=404, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.2_TPKWs.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.2_TPKWs.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.2_TPKWs.pdf  used on input line 781.
 (pdftex.def)             Requested size: 375.80544pt x 211.38724pt.
-<../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.1_TPKWs.pdf, id=374, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.1_TPKWs.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.1_TPKWs.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.1_TPKWs.pdf  used on input line 656.
+<../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.1_TPKWs.pdf, id=405, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.1_TPKWs.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.1_TPKWs.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.1_TPKWs.pdf  used on input line 788.
 (pdftex.def)             Requested size: 375.80544pt x 211.38724pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[17 <../../Figures/2013-2022/GMM_m/GLmix.pdf> <../../Figures/2013-2022/GMM_m/GLmix_s.pdf> <../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf>] [18 <../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.1_TPKWs.pdf>] (./thesis.bbl [19])
+[17 <../../Figures/2013-2022/GMM_fd/GLmix.pdf> <../../Figures/2013-2022/GMM_fd/GLmix_s.pdf> <../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.2_TPKWs.pdf>] [18 <../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.1_TPKWs.pdf>] [19] (./thesis.bbl [20])
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 685.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 685.
-
-[20]
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 701.
+(hyperref)                removing `math shift' on input line 864.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 701.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\theta' on input line 701.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 701.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\sigma' on input line 701.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 701.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 701.
+(hyperref)                removing `math shift' on input line 864.
 
 [21]
-<../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf, id=438, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf  used on input line 719.
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 880.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 880.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\theta' on input line 880.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 880.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\sigma' on input line 880.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 880.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 880.
+
+[22]
+<../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_PMKWs.pdf, id=475, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_PMKWs.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_PMKWs.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_PMKWs.pdf  used on input line 898.
 (pdftex.def)             Requested size: 375.80544pt x 211.38724pt.
-<../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_JS.pdf, id=439, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_JS.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_JS.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_JS.pdf  used on input line 725.
+<../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_JS.pdf, id=476, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_JS.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_JS.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_JS.pdf  used on input line 904.
 (pdftex.def)             Requested size: 375.80544pt x 211.38724pt.
-<../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_MLE.pdf, id=440, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_MLE.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_MLE.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_MLE.pdf  used on input line 731.
+<../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_MLE.pdf, id=477, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_MLE.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_MLE.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_MLE.pdf  used on input line 910.
 (pdftex.def)             Requested size: 375.80544pt x 211.38724pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[22 <../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf> <../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_JS.pdf>]
-<../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf, id=461, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf  used on input line 740.
+[23 <../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_PMKWs.pdf> <../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_JS.pdf>]
+<../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_PMKWs.pdf, id=499, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_PMKWs.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_PMKWs.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_PMKWs.pdf  used on input line 919.
 (pdftex.def)             Requested size: 375.80544pt x 211.38724pt.
-<../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf, id=462, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf  used on input line 746.
+<../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_JS.pdf, id=500, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_JS.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_JS.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_JS.pdf  used on input line 925.
 (pdftex.def)             Requested size: 375.80544pt x 211.38724pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf, id=463, 578.16pt x 325.215pt>
-File: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf Graphic file (type pdf)
-<use ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf>
-Package pdftex.def Info: ../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf  used on input line 752.
+<../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_MLE.pdf, id=501, 578.16pt x 325.215pt>
+File: ../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_MLE.pdf Graphic file (type pdf)
+<use ../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_MLE.pdf>
+Package pdftex.def Info: ../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_MLE.pdf  used on input line 931.
 (pdftex.def)             Requested size: 375.80544pt x 211.38724pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
@@ -631,26 +640,26 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 Package natbib Warning: There were undefined citations.
 
-[23 <../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_MLE.pdf> <../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf>] [24 <../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf> <../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf>] (./thesis.aux)
+[24 <../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_MLE.pdf> <../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_PMKWs.pdf>] [25 <../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_JS.pdf> <../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_MLE.pdf>] (./thesis.aux)
 
 LaTeX Warning: There were undefined references.
 
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 9E5850FE02F8881E9FDFF32530716800;2312.
+(rerunfilecheck)             Checksum: 6CDA60875A77930C23F9806A48EF3548;2353.
  ) 
 Here is how much of TeX's memory you used:
- 13518 strings out of 479560
- 225698 string characters out of 5876399
- 531972 words of memory out of 5000000
- 31718 multiletter control sequences out of 15000+600000
- 482590 words of font info for 78 fonts, out of 8000000 for 9000
+ 13523 strings out of 479560
+ 225759 string characters out of 5876399
+ 527972 words of memory out of 5000000
+ 31723 multiletter control sequences out of 15000+600000
+ 482936 words of font info for 79 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 72i,18n,77p,510b,580s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{c:/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on thesis.pdf (26 pages, 795322 bytes).
+ 72i,18n,77p,898b,669s stack positions out of 10000i,1000n,20000p,200000b,200000s
+{c:/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
+Output written on thesis.pdf (27 pages, 807775 bytes).
 PDF statistics:
- 633 PDF objects out of 1000 (max. 8388607)
- 523 compressed objects within 6 object streams
- 110 named destinations out of 1000 (max. 500000)
- 207 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 674 PDF objects out of 1000 (max. 8388607)
+ 561 compressed objects within 6 object streams
+ 112 named destinations out of 1000 (max. 500000)
+ 215 words of extra memory for PDF output out of 10000 (max. 10000000)
 

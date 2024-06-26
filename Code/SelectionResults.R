@@ -8,7 +8,7 @@ source("Code/SelectX.R")
 
 
 library(data.table)
-pdt <- readRDS("Results/2013-2022/pdt_used_gmm_sys_m.rds")
+pdt <- readRDS("Results/2013-2022/pdt_used_gmm_fd.rds")
 Z <- fit1d(pdt)
 
 alpha <- 0.2
@@ -23,11 +23,11 @@ sR <- select1d(Z, alpha = alpha, gamma = gamma, "R")
 
 # ---- extra plot for estimated G ---- #
 
-pdf("Figures/2013-2022/GMM_m/GLmix.pdf", height = 5, width = 8)
+pdf("Figures/2013-2022/GMM_fd/GLmix.pdf", height = 5, width = 8)
 plot(Z$f, xlab = expression(theta), main = "Estimated Location Mixing Density with Heterogeneous Known Variance")
 dev.off()
 
-pdf("Figures/2013-2022/GMM_m/GLmix_s.pdf", height = 5, width = 8)
+pdf("Figures/2013-2022/GMM_fd/GLmix_s.pdf", height = 5, width = 8)
 plot(Z$fs, xlab = expression(theta), main = "Estimated Location smoothed G with Heterogenous Known Variance")
 dev.off()
 

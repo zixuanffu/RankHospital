@@ -2,7 +2,8 @@
 \usepackage{fullpage,graphicx,psfrag,amsmath,amsfonts,verbatim}
 \usepackage[small,bf]{caption}
 \usepackage{amsthm}
-\usepackage[hidelinks]{hyperref}
+% \usepackage[hidelinks]{hyperref}
+\usepackage{hyperref}
 \usepackage{bbm} % for the indicator function to look good
 \usepackage{color}
 \usepackage{mathtools}
@@ -15,7 +16,7 @@
 \bibliographystyle{apalike}
 % \setlength{\parindent}{0pt} % remove the automatic indentation
 
-\title{L'Hopital's (Selection) Rule:\\{\large {An Empirical Bayes Application to French Hospital Efficiency}}}
+\title{L'Hôpital's (Selection) Rule:\\{\large {An Empirical Bayes Application to French Hospital Efficiency}}}
 \author{Fu Zixuan \\{\small {Supervised by Thierry Magnac}}}
 \date{July 4, 2024}
 
@@ -23,7 +24,7 @@
 \maketitle
 \thispagestyle{empty}
 \begin{abstract}
-    \noindent  Something interesting\\
+    \noindent  There has been ongoing interest in comparing public and private hospitals. Inspired by the nascent study of \citet{croiset2024hospitals}, which investigates labor employment efficiency in four types of French hospitals, this article aims to identify the top-performing units in the same aspect. By borrowing strength from the compound decision framework and the non-parametric likelihood estimator \citep{kiefer1956consistency}, it derives the decision rule for selecting meritorious hospitals following the work of \citet{gu2023invidious}. Selection outcomes are later compared across different scenarios. A preliminary conclusion can be drawn from the selection results. Though ranking and selection are both tempting to perform, such decisions need to be made with great caution.\\
 
     % \noindent\textbf{Keywords:} \\
 
@@ -38,109 +39,115 @@
 \setcounter{page}{1}
 \section{Introduction}
 
-It is almost of human nature to compare, rank and select. And competition, be
-it good or bad, emerges in the wake. As invidious as ranking and selection can
-be, in many cases it is one of the driving forces behind improvement in
-performances. The society itself is constantly constructing league table as
-well. It rewards the meritorious and question or even punishes the
-unsatisfactory. The measure based on which rank is constructed ranges from
-teacher's evaluation \citep{chetty2014measuring}, communities' mobility index
-\citep{chetty2018impacts} to firm discrimination \citep{kline2022systemic}.
+It is almost human nature to compare, rank, and select.And competition, be it
+good or bad, emerges in its wake. As invidious as ranking and selection may be,
+they often serve as key drivers of performance improvement. Society itself
+continuously constructs league tables, rewarding the meritorious while
+questioning or even punishing the unsatisfactory. The objects of interest for
+ranking vary widely, from teacher evaluations \citep{chetty2014measuring} and
+community mobility indices \citep{chetty2018impacts} to assessments of firm
+discrimination \citep{kline2022systemic}.
 
-The present article extends the practice to the health sectors. To be more
-specific, it studies the labor efficiency across all hospitals in France. By
-exploring a comprehensive database called \textit{The Annual Statistics of
-    Health Establishments (SAE)} of French hospitals, I first construct a measure
-of labor efficiency. Then based on the estimates, we compare the public and
-private hospitals by selecting the top-performing units. I borrow from the
-recent developments in Empirical Bayes method to achieve the comparison.
+This article extends such practices to the healthcare sector. Specifically, it
+examines labor efficiency across all hospitals in France. Utilizing a
+comprehensive database, \textit{The Annual Statistics of Health Establishments
+    (SAE)}, I first construct a measure of labor efficiency. Then, using estimates
+derived from this data, I compare public and private hospitals by selecting the
+top-performing units. I leverage recent developments in the Empirical Bayes
+method to facilitate this comparison.
 
-I found that out of the top 20\% best performing hospitals, there are roughly 5
-times more private units than the public, adjusted by the number of hospitals
-in each category. The difference is more pronounced when I also control for the
-expected number of wrongly selected. The takeaway is that public hospitals are
-in general less efficient than private ones. While the conclusion is in line
-with that of \cite{croiset2024hospitals} that, now we have a granular
-perspective on the performance comparison.
+I found that among the top 20\% of best-performing hospitals, there are roughly
+six times more private units than public ones, adjusted for the number of
+hospitals in each category. The difference becomes even more pronounced when
+controlling for the expected number of incorrect selections. The conclusion is
+that public hospitals generally exhibit less efficiency than their private
+counterparts, aligning with the findings of \cite{croiset2024hospitals}.
+However, we now have a more granular perspective on the performance comparison.
 
-The article bridges two fields of interests. The first one is on productivity
-analysis. The most popular methods in the field are Data Envelopment Analysis
+The article bridges two fields of interest. The first focuses on productivity
+analysis, where the most popular methodologies are Data Envelopment Analysis
 \citep{charnes1978measuring} and Stochastic Frontier Analysis
-\citep{aigner1977formulation,meeusen1977efficiency}. Yet I abstract from both
-of them and use the \textit{conditional input demand function} specification
-stated in \cite{croiset2024hospitals}.\footnote{I refer the reader to
-    \citet{croiset2024hospitals} for detailed reasons of adopting such an
-    approach.} To put it simply, we estimate a linear function of how much labor
-input is needed to produce a give list of 8 hospital outputs. I only focus on
-the employment level of nurses because unlike medical doctors, this is a
-category that do not suffer from a shortage of labor supply.
+\citep{aigner1977formulation,meeusen1977efficiency}. However, I diverge from
+these approaches and adopt the \textit{conditional input demand function}
+specification detailed in \cite{croiset2024hospitals}.\footnote{I refer the
+    reader to \citet{croiset2024hospitals} for detailed reasons behind this
+    choice.} Simply put, we estimate a linear function that determines the
+necessary labor input to produce a given list of eight hospital outputs. My
+focus is specifically on the employment level of nurses, as unlike medical
+doctors, this category does not suffer from a shortage of labor supply.
 
-The second area of interests is the Empirical Bayes Methods. I lean on a series
-of work by Jiaying Gu and Roger Koenker, chiefly the following two papers.
-\citet{gu2017empirical} discussed the usefulness of estimating a prior
-distribution in baseball batting average prediction. And
-\citet{gu2023invidious} has formally defined the selection problem as a
-compound decision on which the estimated prior can be of help as well.
-\citet{kiefer1956consistency} has shown that non parametric maximun likelihood
-estimation of the prior is feasible and consistent. The computation of NPMLE is
-greatly improved by \citet{koenker2014convex} by leveraging the recent
-development in convex optimization \citep{andersen2010mosek}. I will be using
-the \verb+REBayes+ package \citep{koenker2017rebayes} in the estimation, which
-is based on software \verb+MOSEK+ developed by \citet{andersen2010mosek}.
+The second area of interest is Empirical Bayes Methods. I draw upon a series of
+works by Jiaying Gu and Roger Koenker, primarily the following two papers:
+\citet{gu2017empirical} discusses the usefulness of estimating a prior
+distribution in baseball batting average prediction, while
+\citet{gu2023invidious} formally defines the selection problem as a compound
+decision, where the estimated prior can be helpful. Additionally,
+\citet{kiefer1956consistency} demonstrates that non-parametric maximum
+likelihood estimation of the prior is feasible and consistent. The computation
+of NPMLE has been significantly improved by \citet{koenker2014convex},
+leveraging recent developments in convex optimization
+\citep{andersen2010mosek}. For my analysis, I will use the \verb+REBayes+
+package \citep{koenker2017rebayes}, which is based on the \verb+MOSEK+ software
+developed by \citet{andersen2010mosek}.
 
-In \cite{croiset2024hospitals}, the authors argue that public hospital is less
-efficient than private counterpart in the sense that it would need a smaller
-size of personnel if it were to use the input demand function of the private
-hospital, which is the main result of their counterfactuals.
+In \cite{croiset2024hospitals}, the authors argue that public hospitals are
+less efficient than their private counterparts, in the sense that a public
+hospital would require a smaller workforce if it adopted the input demand
+function used by private hospitals—a key finding from their counterfactual
+analysis.
 
-Having roughly replicated the results after doubling the length of the panel,
-the paper differentiates itself by utilizing classical panel data methods in
-input demand function estimation, specifically the standard fixed-effect
-estimation and GMM. Though it is straightforward to include individual fixed
-effect in specification, estimation is not without challenge. For example, as
-\citet{croiset2024hospitals} has correctly pointed out, within hospital
-variation is much smaller than between group variation. The former may be
-insufficient to obtain credible estimates. I extended the panel length in an
-attempt to mitigate the problem. Secondly, the strict exogeneity assumption
-required by the standard within group estimation is questionable. A natural way
-to relax it is to use the first difference GMM estimator proposed by
-\citet{arellano1991some}. The high persistency in the regressors poses another
-challenge of weak instruments. In response,
-\citet{arellano1995another,blundell1998initial}'s system GMM is modified and
-implemented, and the estimation results are used for the rest of the section.
+Having approximately replicated these results with an extended panel length,
+this paper differentiates itself by employing classical panel data methods for
+estimating the input demand function, specifically standard fixed-effect
+estimation and GMM. While incorporating individual fixed effects into the
+specification is straightforward, the estimation process is not without
+challenge. For instance, as \citet{croiset2024hospitals} have noted,
+within-hospital variation is much smaller than between-group variation, which
+may be insufficient for obtaining reliable estimates. To address this issue, I
+extended the panel length, aiming to enhance the robustness of the estimates.
+Furthermore, the strict exogeneity assumption required by standard within-group
+estimation is debatable. A practical solution to relax this assumption is to
+use the first difference GMM estimator, as proposed by
+\citet{arellano1991some}. Another challenge arises from the high persistency of
+the regressors, which can lead to weak instruments. In response, I adapted and
+implemented the system GMM approach, as modified by \citet{arellano1995another}
+and \citet{blundell1998initial}, using the resulting estimates for subsequent
+analyses.
 
-The benefit of the panel data estimator is that it gives us an estimate of the
-underlying heterogeneity, which opens door to individual comparisons. However,
-the fixed effect estimates are generally noisy, rendering the ensuing decision
-maker hand wavy in making choices. The EB methods are proposed in an attempt to
-rectify the situation by empirically estimating the prior distribution of the
-fixed effect.
+The advantage of the panel data estimator lies in its ability to capture the
+underlying heterogeneity, which opens the door to individual comparisons. The
+fixed effect estimates are generally noisy, rendering the ensuing
+decision-maker hand-wavy. The EB methods are proposed in an attempt to rectify
+the situation by empirically estimating the prior distribution of the fixed
+effects.
 
 For example, in \cite{gu2023invidious}, we are given the task of selecting the
-top 20\% fixed effect denoted by $\theta_i$. If the $\theta_i$ follows a
-distribution $G$, this is to say we are selecting those $\theta_i>G^{-1}(0.8)$.
-The decision rule for individual $i$ is an indicator function $\delta_i$,
-determining whether $i$ belongs to selection set. The task naturally falls
-under the compound decision framework pioneered by \cite{herbert1956empirical}
-if we define the loss function of the selection problem in such a way that
-takes into account the results of all the individual decisions $\delta_i$.
+top 20\% of fixed effects, denoted by $\theta_i$. If $\theta_i$ follows a
+distribution $G$, this implies selecting those $\theta_i$ that exceed
+$G^{-1}(0.8)$. The decision rule for an individual $i$ is represented by an
+indicator function $\delta_i$, which determines whether $i$ belongs to the
+selection set. This task aligns with the compound decision framework pioneered
+by \cite{herbert1956empirical}, especially when defining the loss function of
+the selection problem in a way that incorporates the outcomes of all individual
+decisions $\delta_i$:
 \begin{equation*}
-    \delta^* = \argmin_{\delta} \E_G\E_{\theta|\hat{\theta}}\pa{L_n}.
+    \delta^* = \argmin_{\delta} \E_G\E_{\theta|\hat{\theta}}\left(L_n\right).
 \end{equation*}
-Since we don't know the true value $\theta$, we minimize the expected compound loss  $L_n$ over the distribution of $\theta$ given the observed $\hat{\theta}$.
+Since the true value of $\theta$ is unknown, we aim to minimize the expected compound loss $L_n$ over the distribution of $\theta$ given the observed $\hat{\theta}$.
 
-In addition to the capacity constraint of the top 20\%, \citet{gu2023invidious}
-further controls for the number of Type II mistakes made in the selection
-process. The false discovery rate (FDR) constraint is imposed to ensure that
-the expected number of wrongly selected units is below a certain level. The FDR
-constraint is a measure of the proportion of false positives among all the
-selected units defined as $\p(h_i=0|\delta_i=1)\le \gamma$.
+In addition to the capacity constraint of selecting the top 20\%,
+\citet{gu2023invidious} further mitigates the number of false positive in the
+selection process. The false discovery rate (FDR) constraint is imposed to
+ensure that the expected number of incorrectly selected units remains below a
+specified threshold. The FDR is quantified as the proportion of false positives
+among all selected units, formally defined by the condition
+$\Pr(h_i=0|\delta_i=1) \leq \gamma$.
 
-Being interested in the top performing French hospitals, I define my selection
+Being interested in the top-performing French hospitals, I define my selection
 problem as \textit{Left tail selection} because the goal is to choose the
 bottom 20\% of the hospital fixed effect $\theta_i$. A smaller $\theta_i$
-indicates that less labor input is needed to produce the same amount of output,
-as compared to hospitals with higher $\theta_i$.
+indicates that less labor input is required to produce the same amount of
+output, compared to hospitals with a higher $\theta_i$.
 
 It is worth mentioning that classical empirical Bayes method assumes a
 parametric form of the prior distribution $G$ which is computationally more
@@ -156,94 +163,119 @@ that $P_{\theta}$ is normal. This kind of procedure is often questionable.
 Often times, researchers resort to asymptotics to justify the normality
 assumption, which may not be valid in small samples.
 
-The rest of the paper is organized as follows. Section 2 briefly describes the
-data and lays out the reduced form estimation of the input demand function,
-treating the number of nurses as the dependent variable and a list of 9 output
-measures as the regressors. It then applies the classical panel data estimators
-to the same specification, distinguishing between whether strict exogeneity is
-assumed. In section 3, I introduce the compound decision framework and the
-method to non parametrically estimate $G$. In section 4, I specifically define
-the selection problem following the framework of \cite{gu2023invidious},
-followed by a comparison of the different selection outcome. I try to draw
-preliminary conclusion on the comparative performance of public and private
-hospitals. Section 6 discusses potential issues and concludes. % need to reorganize the structure of the papaer, especially in the division of sections.
+It is worth mentioning that the classical empirical Bayes method assumes a
+parametric form for the prior distribution $G$, which is computationally
+attractive. However, thanks to advancements in fast convex optimization
+algorithms, non-parametric maximum likelihood estimation
+\citep{kiefer1956consistency} has become both feasible and efficient
+\citep{koenker2014convex,andersen2010mosek}. Nonetheless, we are not entirely
+free from imposing any parametric assumptions. In fact, there are two layers of
+distribution: the lower hierarchy where $\theta \sim G$, and the higher
+hierarchy where $\hat{\theta} | \theta \sim P_{\theta}$.
+\citet{lindsay1995mixture} has shown that a solution $\hat{G}$ exists and is a
+discrete probability measure, with no more than n mass points in the interval
+$[\min yi , \max yi ]$. It is when $P_{\theta}$ belongs to the exponential
+family that the \citet{lindsay1995mixture} results hold. Typically in
+applications, it is necessary to impose assumptions or perform transformations
+to make $P_{\theta}$ normal. This procedure is often questionable. Researchers
+frequently rely on asymptotic properties to justify the normality assumption,
+which may not be valid in small samples.
+
+The remainder of the paper is organized as follows: \textbf{Section 2} briefly
+describes the data and outlines the reduced form estimation of the input demand
+function, where the number of nurses serves as the dependent variable, with
+nine output measures acting as regressors. It then applies classical panel data
+estimators to the same specification, examining and later relaxing the
+assumptions of strict exogeneity. In \textbf{Section 3}, I introduce the
+compound decision framework and describe the methodology for non-parametrically
+estimating $G$. \textbf{Section 4} specifically defines the selection problem
+following the framework proposed by \cite{gu2023invidious}, and includes a
+comparison of different selection outcomes. Preliminary conclusions about the
+comparative performance of public versus private hospitals are drawn.
+\textbf{Section 5} discusses potential issues and concludes the paper.
 
 \section{Data and Estimation}
 \subsection{Data}
-The data we used is called \textit{The Annual Statistics of Health
-    Establishments
-    (SAE)}\footnote{\href{https://data.drees.solidarites-sante.gouv.fr/explore/dataset/708_bases-statistiques-sae/information/}{La
-        Statistique annuelle des établissements (SAE)}}. It is a comprehensive,
-mandatory administrative survey and the primary source of data on all health
-establishments in France. We primarily exploited the report of healthcare
-output (a list of 10 output measure) and labor input (registered and assistant
-nurses). The panel covers 9 years from 2013 to 2022, with 2020 missing due to
-the pandemic. The SAE data only distinguishes 3 types of units based on legal
-status. \textit{
-    \begin{enumerate}
-        \item Public hospitals
-        \item Private for-profit hospitals
-        \item Private non-profit hospitals
-    \end{enumerate}}
-Following \cite{croiset2024hospitals}, I further single out/distinguish the \textit{public teaching hospitals} from the public hospitals since it is intrinsically different from others in the French healthcare system.
 
-As shown in Table \ref{tab:hospital_count}, The number of hospitals in normal
-public, private for-profit, private non-profit are roughly equal and stable
-over the years. With respect to the teaching hospitals, it is worth mentioning
-that they not only provide treatments like other types of hospitals but spend a
-significant amount of resources on doctor training and research as well. Since
-teaching hospitals have more missions on top of the regular healthcare
-provision, it is natural that they are in general larger in size. This latter
-point can be seen much more clearly we present the hospital's output share.
-Despite being relatively few in number, their share of output is quite
-substantial. The difference is more pronounced after being adjusted by the
-number of hospitals as shown in Table \ref{tab:output}.
+The data utilized in this study is from The Annual Statistics of Health
+Establishments (SAE), a comprehensive and mandatory administrative survey that
+serves as the primary source of data on all health establishments in France
+\footnote{\href{https://data.drees.solidarites-sante.gouv.fr/explore/dataset/708_bases-statistiques-sae/information/}{La
+        Statistique annuelle des établissements (SAE)}}. Our analysis primarily focuses
+on healthcare outputs (across ten different measures) and labor inputs
+(specifically registered and assistant nurses). The panel data spans nine
+years, from 2013 to 2022, excluding 2020 due to disruptions caused by the
+pandemic. The SAE data categorizes establishments into three types based on
+their legal status:
 
-Moreover, we see that each type of hospital differs in terms of the mix of
-services they provide. For example, emergency care is mostly taken care of by
-public hospitals and private hospitals are strong in medical sessions.
+\begin{enumerate}
+    \item Public hospitals,
+    \item Private for-profit hospitals,
+    \item Private non-profit hospitals.
+\end{enumerate}
 
-\begin{table}
-    \centering
-    \input{../../Tables/Descriptive/hospital_count.tex}
+In alignment with the categorization used by \citet{croiset2024hospitals}, this
+study also distinguishes public teaching hospitals as a separate category,
+given their unique role within the French healthcare system.
+
+\begin{table}[h!]\fontsize{10pt}{12pt}\selectfont
+    \begin{adjustbox}{width=\textwidth,center}
+        \centering
+        \input{../../Tables/Descriptive/hospital_count.tex}
+    \end{adjustbox}
     \caption{Number of hospitals in each category, 2013-2022}
     \label{tab:hospital_count}
 \end{table}
 
+As illustrated in Table \ref{tab:hospital_count}, the distribution of
+hospitals—categorized as normal public, private for-profit, and private
+non-profit—is relatively equal and remains stable over the years. It is
+important to highlight the unique role of teaching hospitals. Unlike other
+types of hospitals, teaching hospitals allocate significant resources to doctor
+training and research activities. This additional commitment to educational and
+research missions generally results in larger institutions. This aspect becomes
+evident when examining the output shares of hospitals. Despite their limited
+number, teaching hospitals contribute a disproportionately large share of
+overall healthcare output, a disparity that becomes more pronounced when
+adjusted for the number of facilities, as detailed in Table \ref{tab:output}.
+
+Furthermore, the analysis reveals distinct differences in the mix of service
+provided by each type of hospital. Emergency care is mostly taken care of by
+public hospitals and private hospitals are strong in medical sessions.
+
 \begin{table}\fontsize{10pt}{12pt}\selectfont
+    \begin{adjustbox}{width=\textwidth,center}
+        \centering
+        \begin{threeparttable}[b]
 
-    \centering
-    \begin{threeparttable}[b]
-
-        \input{../../Tables/Descriptive/output_share_nonweighted.tex}
-        \caption{Hospital share of output, 2013-2022}
-        \label{tab:nonadjusted}
-    \end{threeparttable}
+            \input{../../Tables/Descriptive/output_share_nonweighted.tex}
+            \caption{Hospital share of output, 2013-2022}
+            \label{tab:nonadjusted}
+        \end{threeparttable}
+    \end{adjustbox}
 \end{table}
 
 \begin{table}\fontsize{10pt}{12pt}\selectfont
     \centering
-    \begin{threeparttable}[b]
-        \input{../../Tables/Descriptive/output_share.tex}
-        \caption{Hospital share of output weighted by the number of hospitals, 2013-2022}
-        \label{tab:output}
-        \begin{tablenotes}[para,flushleft]
-            \footnotesize
-            For example, the value $a_{ij}$ where $i$ is STAC inpatient and $j$ is teaching hospitals, is calculated by $a_{ij}= \frac{\text{Number of STAC inpatient  in teaching hospitals}}{\text{Share of teaching hospitals}\times \text{Total number of STAC inpatient}}$.
-        \end{tablenotes}
+    \begin{adjustbox}{width=\textwidth,center}
+        \begin{threeparttable}[b]
+            \input{../../Tables/Descriptive/output_share.tex}
+            \caption{Hospital share of output weighted by the number of hospitals, 2013-2022}
+            \label{tab:output}
+            \begin{tablenotes}[para,flushleft]
+                \footnotesize
+                \textit{Note:} For example, the value $a_{ij}$ where $i$ is STAC inpatient and $j$ is teaching hospitals, is calculated by $a_{ij}= \frac{\text{Number of STAC inpatient  in teaching hospitals}}{\text{Share of teaching hospitals}\times \text{Total number of STAC inpatient}}$.
+            \end{tablenotes}
 
-    \end{threeparttable}
+        \end{threeparttable}
+    \end{adjustbox}
+
 \end{table}
 
+% proofread until here
 \subsection{Estimation}
 
 \paragraph{Regression without individual fixed effect}
-
-Let $\log(x_{it})$ be the number of nurses in hospital $i$ at time $t$, and
-$\log(y_{it})$ denote a vector of output levels. I estimate
-\begin{equation}
-    \log(x_{it}) = \beta_0 + \beta_1 \log(y_{it}) + \varepsilon_{it}
-\end{equation}
 
 First, having performed the regression separately for each type of hospital, it
 is without surprise that teaching hospitals have very different coefficients,
@@ -254,49 +286,96 @@ that teaching hospitals may not be directly comparable to other types of
 hospitals. For this reason, I will exclude teaching hospitals from the
 subsequent analysis.
 
-\begin{table}
+In the analysis, the relationship between the number of nurses and output
+levels in hospitals is quantified via a log-log regression model as follows:
+
+\begin{equation}
+    \log(x_{it}) = \beta_0 + \beta_1 \log(y_{it}) + \varepsilon_{it}
+\end{equation}
+
+where $\log(x_{it})$ represents the log of the number of nurses at hospital $i$
+in time $t$, and $\log(y_{it})$ denotes the log of a vector of output levels
+for the same hospital at the same time.
+
+The regression analysis was conducted separately for each type of hospital, as
+detailed in Table \ref{tab:reg_sep}. The results reveal that teaching hospitals
+have significantly different coefficients compared to other hospital
+categories. This variance is consistent with the unique characteristics of
+teaching hospitals, which were previously noted in their descriptive statistics
+and operational roles.
+
+Specifically, the deviation in coefficients suggests fundamental differences in
+the input demand functions or, equivalently, in their production functions.
+These differences underscore the distinct operational and functional framework
+within which teaching hospitals operate, further evidenced by their dual focus
+on healthcare delivery and educational responsibilities.
+
+For this reason, teaching hospitals will be excluded from subsequent analyses.
+The focus will be on the remaining three categories of hospitals: ordinary
+public hospitals, private for-profit hospitals, and private non-profit
+hospitals.
+
+\begin{table}[h!]
     \centering
     \input{../../Tables/2013-2022/reg_sep_iv.tex}
     \caption{Separate estimation of input demand function, lagged value as IV, 2013-2022}
     \label{tab:reg_sep}
 \end{table}
 
-By excluding the teaching hospitals from estimation, it becomes more reasonable
-to assume that all hospitals share the same set of coefficients, giving rise to
-the pooled regression results shown in Table \ref{tab:reg_dummy_iv_ex}.
-\begin{table}
+By excluding teaching hospitals from the analysis, we can more reasonably
+assume that the remaining hospitals share a homogeneous set of coefficients.
+This assumption underpins the pooled regression model, the results of which are
+presented in Table \ref{tab:reg_dummy_iv_ex}. The model incorporates dummy
+variables and uses lagged values as instrumental variables.
+
+\begin{table}[h!]
     \centering
     \input{../../Tables/2013-2022/reg_dummy_iv_ex.tex}
     \caption{Pooled regression with dummy variables, lagged value as IV, 2013-2022}
     \label{tab:reg_dummy_iv_ex}
 \end{table}
 
+At first glance, it appears that private sectors are indeed more efficient in
+labor use. In the next section, I will delve into comparisons between
+individual hospitals and investigate their selection outcomes.
+
 \paragraph{Regression with individual fixed effect}
 
-Let $\log(x_{it})$ and $\log(y_{it})$ the same as before. In addition, let
-$\theta_i$ be the fixed effect of hospital $i$. One interpretation of
-$\theta_i$ is the measure of labor \emph{inefficiency}. The smaller the
-$\theta_i$, the more efficient the hospital is in labor use. The estimate of
-$\theta_i$ will be used to rank and select the hospitals in the next section.
-The specification now is
+Let $\log(x_{it})$ and $\log(y_{it})$ be defined as previously. Additionally,
+let $\theta_i$ represent the fixed effect for hospital $i$, where $\theta_i$
+can be interpreted as a measure of labor inefficiency. Specifically, a smaller
+$\theta_i$ indicates greater efficiency in labor use by the hospital. These
+fixed effects, $\theta_i$, will be instrumental in ranking and selecting
+hospitals in the subsequent analysis. The model can be specified as follows:
+
 \begin{equation}
-    \log(x_{it}) = \beta_0 + \beta_1 \log(y_{it}) + \theta_i+ \varepsilon_{it}
+    \log(x_{it}) = \beta_0 + \beta_1 \log(y_{it}) + \theta_i + \varepsilon_{it}
 \end{equation}
 
-I considered 5 types of estimator, within-group, first difference, fist
-difference GMM, system GMM and just identified system GMM. For the sake of
-exposition, the linear specification takes the general form \[
+I considered four types of estimator, within-group, first difference, fist
+difference GMM, system GMM. For expository purposes, the linear specification
+takes the general form of
+\begin{equation*}
     y_{it} = x_{it} \beta +\theta_i + \epsilon_{it}\quad \text{where} \quad E[\epsilon_{it}|x_{i1},\ldots, x_{it-1},\theta_i]=0.
-\]
-The system GMM makes use of two types of moment conditions. The first one is
-that from the first difference GMM estimator,
+\end{equation*}
+
+The system GMM estimator utilizes two types of moment conditions. The first
+mirrors those used in the first difference GMM estimator:
 \[E[x_{i,t-2}(\Delta y_{it}-\beta\Delta x_{it})]\]
-where lagged $x_{i,t-2}$ serves as instrument for $\Delta x_{it}$. If the
-persistency in $x_{it}$ is high, that is to say $x_{it}=\alpha
-    x_{i,t-1}+\eta_{it}$ with $\alpha$ close to 1. Then the reduced form
-relationship between $\Delta x_{it}$ and $x_{i,t-2}$ is
-\[\Delta x_{it} = (\alpha-1)\alpha x_{i,t-2}+\alpha \eta_{i,t-1}+\eta_{i,t}\]
-posing the problem of weak instrument.
+with lagged $x_{i,t-2}$ serving as an instrument for $\Delta x_{it}$.
+
+However, if there is high persistency in \( x_{it} \), such that \( x_{it} =
+\alpha x_{i,t-1} + \eta_{it} \) with \( \alpha \) close to 1, this affects the
+strength of the instruments used in the estimation. In this scenario, the
+reduced form relationship between \( \Delta x_{it} \) and \( x_{i,t-2} \) can
+be expressed as:
+
+\begin{equation*}
+    \Delta x_{it} = (\alpha-1)\alpha x_{i,t-2} + \alpha \eta_{i,t-1} + \eta_{it}
+\end{equation*}
+
+This relationship posits a challenge in GMM estimation due to the potential
+issue of weak instruments.
 
 The second moment condition makes another assumption, requiring that the
 correlation between $x_{it}$ and $\theta_i$ is the same as that between
@@ -305,86 +384,90 @@ $x_{i,t-1}$ and $\theta_i$,
     \E[\Delta x_{i,t-1}(y_{it}-\beta x_{it})] \quad \text{if}\quad \E\bra{\Delta x_{i,t-1}(\theta_i+\varepsilon_{i,t})}=0
 \end{equation*} where the current level $x_{it}$ is instrumented by lagged first difference $\Delta x_{i,t-1}$.
 
-It is obvious that there's a large difference between the first two estimators
-and the GMM ones, a sign that the exogeneity assumption may not be valid.
-Second, the first difference GMM estimates gives mull results, possibly due to
-weak instruments. Though the estimate from system GMM looks more hopeful, the
-sargan-hansen test almost rejects over-identification null hypothesis for sure,
-indicating that some moment conditions are not in accordance with each other.
-The fifth just identified GMM only makes use of the second type of moment
-conditions from system GMM, abstracting from over-identification issue. Though
-the issues of weak instrument, rejection of over-identification are intriguing
-problems, I will set them aside for future investigation since the focus of the
-paper is more empirical bayes application. Believing in the validity of the
-assumption $\E\bra{\Delta x_{i,t-1}(\theta_i+\varepsilon_{i,t})}=0$, I will
-take as given the estimation results from the last column of Table \ref{} and
-proceed to the next section.
+Table \ref{tab:reg_wg_fd_gmm} shows that there's a large difference between the
+first difference GMM and system GMM, a sign that the second moment condition
+needs more investigation. Though the estimate from first difference GMM looks
+more hopeful, the Sargan-Hansen test almost rejects the over-identification
+null hypothesis for sure, indicating that some moment conditions are not in
+accordance with each other. Though the issues of weak instruments and rejection
+of over-identification are intriguing problems, I will set them aside for
+future investigation since the focus of this paper is more on empirical Bayes
+application. I will take as given the estimation results from the third column
+of Table \ref{tab:reg_wg_fd_gmm} and proceed to the next section.
 
 \begin{table}
-    \input{../../Tables/2013-2022/reg_wg_fd_gmm.tex}
+    \input{../../Tables/2013-2022/reg_wg_fd_gmm_a.tex}
+    \caption{Estimation of input demand function with individual fixed effect, 2013-2022}
     \label{tab:reg_wg_fd_gmm}
 \end{table}
 
-\begin{table}
-    \input{../../Tables/2013-2022/reg_wg_fd_iv.tex}
-    \label{tab:reg_wg_fd_iv}
-\end{table}
+% \begin{table}
+%     \input{../../Tables/2013-2022/reg_wg_fd_iv.tex}
+%     \label{tab:reg_wg_fd_iv}
+% \end{table}
 
 \section{Compound Decision and Empirical Bayes}
 
 \subsection{Compound decision framework}
+The idea of compound decision theory was pioneered by
+\citet{robbins1956empirical}. This approach considers the consequences of all
+individual decisions collectively. Consider the scenario where each individual
+unit is associated with an unobserved parameter \( \theta_i \). We are provided
+with a list of estimates \( \hat{\theta}_i \) for each \( \theta_i \).
 
-The idea of compound decision is pioneered by \citet{robbins1956empirical},
-which takes into account the consequences of all individual decisions. Consider
-the case where each individual unit has an unobserved parameter $\theta_i$. We
-are given a list of estimates $\hat{\theta}_i$ for each $\theta_i$.
 \begin{equation*}
     \boldsymbol{\hat{\theta}}  =  (\hat{\theta}_1,\ldots, \hat{\theta}_n)\quad
     \text{where} \quad        \hat{\theta}_i | \theta_i \sim P_{\theta_i}
 \end{equation*}
-For the moment, I will be agnostic to the specific decision to make and denote the decision rule by $\delta$.
+
+For the moment, I will remain agnostic about the specific decision to make and
+denote the decision rule by \( \delta \).
 \begin{equation*}
     \delta(\boldsymbol{\hat{\theta}}) = (\delta_1(\boldsymbol{\hat{\theta}}), \ldots, \delta_n(\boldsymbol{\hat{\theta}}))
 \end{equation*}
 
 The next step is to define the loss function as the objective function to
 minimize. Since I care about the \textbf{collective performance} of my
-decision, I will define the loss function such that the attention to the
-compound decision is reflected. A natural choice would be to aggregate the
-individual losses. Therefore, the compound loss function is defined as
+decision, I will define the loss function such that it reflects attention to
+the compound decision. A natural choice would be to aggregate the individual
+losses. Therefore, the compound loss function is defined as:
+
 \begin{equation*}
     L_n(\theta, \delta(\boldsymbol{\hat{\theta}})) = \sum_{i=1}^n L(\theta_i, \delta_i(\hat{\theta})).
 \end{equation*}
-Correspondingly, the compound risk is defined as the expectation of compound loss
+
+Correspondingly, the compound risk is defined as the expectation of the
+compound loss.
 \begin{equation*}
     R_n(\theta, \delta(\boldsymbol{\hat{\theta}})) = \E_{\theta|\hat{\theta}}[L_n(\theta, \delta(\boldsymbol{\hat{\theta}}))]
 \end{equation*}
-We further restrict our attention to the separable decision rule $\delta(\boldsymbol{\hat{\theta}})=\{t(\hat{\theta}_1), \ldots, t(\hat{\theta}_n)\}$. In order to make the connection with the Bayesian view under which we assume
-that $\theta\sim G$, we can rewrite the compound risk as
+We further restrict our attention to the separable decision rule \( \delta(\boldsymbol{\hat{\theta}}) = \{t(\hat{\theta}_1), \ldots, t(\hat{\theta}_n)\} \). In order to make the connection with the Bayesian view, under which we assume that \( \theta \sim G \), we can rewrite the compound risk as:
 \begin{equation*}
     R_n(\theta, \delta(\boldsymbol{\hat{\theta}})) = \int \int L(\theta_i, t(\hat{\theta}_i))dP_{\theta_i}(\hat{\theta}_i)dG_n(\theta)
 \end{equation*}
 where $G_n(\theta)$ is the empirical distribution of $\theta$. \footnote{$E_{G_n}(f(x)) = 1/n \sum_i f(x_i)$}
 
 The Frequentist and Bayesian views differ slightly here in the definition of
-risk. The original compound decision formulation keeps the empirical
-distribution $G_n$ in compound risk while the Bayesian risk replaces it with
-the prior distribution $G$. On a side note, the two views are somewhat related
-to the two assumptions in the fixed/random effect terminology, in the sense
-that the fixed effect view treats $\theta_i$ as fixed unknown parameters while
-the random effect view treats $\boldsymbol{\theta}$ as a random draw from a
-distribution $G$. However, in our context, it has nothing to do with whether
-$\theta_i$ is correlated with $x_{it}$.
+risk. The original compound decision formulation retains the empirical
+distribution \( G_n \) in the compound risk, while the Bayesian risk replaces
+it with the prior distribution \( G \). On a side note, the two views are
+somewhat related to the fixed/random effect terminology, in the sense that the
+fixed effect view treats \( \theta_i \) as fixed unknown parameters, while the
+random effect view treats \( \boldsymbol{\theta} \) as a random draw from a
+distribution \( G \). However, in our context, this distinction has nothing to
+do with whether \( \theta_i \) is correlated with \( x_{it} \).
 
-The last step is to find the decision rule $\delta^*$ that minimizes the risk
+The final step involves identifying the decision rule \( \delta^* \) that
+minimizes the risk:
 \begin{equation}
-    \delta^*=\argmin_\delta R_n(\theta, \delta(\boldsymbol{\hat{\theta}}))
+    \delta^* = \arg \min_{\delta} R_n(\theta, \delta(\boldsymbol{\hat{\theta}}))
 \end{equation}
-subject to any constraints that we may have. Since $G$ is unknown, whether we use $G_n$ or $G$ in risk does not matter much. In the rest of the section, I adopt the Bayesian risk as the objective of minimization and impose constraints relevant to the selection problem. Now I will turn to the non-parametric estimation of the prior distribution $G$.
+subject to any constraints that we might have. Since \( G \) is unknown, the choice between using \( G_n \) or \( G \) for assessing risk is not particularly critical. For the remainder of this section, I will use the Bayesian risk as the minimization objective and apply constraints that are pertinent to the selection problem. Next, I will focus on the non-parametric estimation of the prior distribution \( G \).
 
 \subsection{Estimate $G$}
 
 \paragraph{Parametric $G$}
+
 Most literature has imposed a parametric form of $G$. In the case of a Gaussian
 $G$, recall the hierarchical model
 \begin{align*}
@@ -398,48 +481,58 @@ There are two hyperparameters to be estimated $\mu_\theta$ and $\sigma_\theta$.
 %     \hat{\sigma}_\theta^2&=\frac{1}{N} \sum_{i} \bra{(\hat{\beta}_i-\hat{\mu}_\theta)^2-\sigma_i^2}
 % \end{align*}
 
-If we compare the performance of posterior mean estimator
-$\theta^*=\E\bra{\theta|\hat{\theta}}$ with the original estimate
-$\hat{\theta}$, \citet{james1992estimation} has shown that there's always an
-improvement in the average performance if we assume $G$ is Gaussian and replace
-it with an estimate $\hat{G}$. If we relax the normality assumption on $G$ and
-adopt a NPMLE estimation as established by \citet{kiefer1956consistency}, there
-could be further improvements. For example, \citet{jiang2009general} has proven
-that a plugged in $\theta^*$ with a NPMLE $\hat{G}$ is asymptotically optimal
-among all separable estimators. A comparison between the parametric and non
-parametric $\hat{G}$ is demonstrated in \citet{gilraine2020new} on their
-teacher value added application.
+If we compare the performance of the posterior mean estimator \( \theta^* =
+\mathbb{E}[\theta | \hat{\theta}] \) with the original estimate \( \hat{\theta}
+\), \citet{james1992estimation} has shown that there is always an improvement
+in average performance if we assume \( G \) is Gaussian and replace it with an
+estimate \( \hat{G} \). If we relax the normality assumption on \( G \) and
+adopt a nonparametric maximum likelihood estimation (NPMLE) as established by
+\citet{kiefer1956consistency}, there could be further improvements. For
+example, \citet{jiang2009general} has proven that a plugged-in \( \theta^* \)
+with a NPMLE \( \hat{G} \) is asymptotically optimal among all separable
+estimators. A comparison between the parametric and non-parametric \( \hat{G}
+\) is demonstrated in \citet{gilraine2020new} on their teacher value-added
+application.
 
-\paragraph{NPMLE $G$}
+\paragraph{Nonparametric $G$}
 
-The initial NPMLE estimator defined in \citet{kiefer1956consistency} takes the
-following form
+The initial NPMLE (Nonparametric Maximum Likelihood Estimator) as defined by
+\citet{kiefer1956consistency} takes the following form:
 \begin{equation*}
-    \hat{G}=\argmin_{G\in \mathcal{G}} \set{-\sum_{i=1}^{n}\log g(y_i)|g(y_i)=\int  \p(y_i |\theta)dG(\theta) }
+    \hat{G} = \argmin_{G \in \mathcal{G}} \left\{-\sum_{i=1}^{n}\log g(y_i) \mid g(y_i) = \int \p(y_i |\theta) dG(\theta) \right\}
 \end{equation*}
-where $\p(y_i |\theta)$ is the probability density function of $y_i$ conditional on the true parameter $\theta$ $\longrightarrow$ $g(y_i)$ is the marginal pdf of $y_i$.
+where \( \p(y_i |\theta) \) represents the probability density function of \( y_i \) conditional on the true parameter \( \theta \), and \( g(y_i) \) is the marginal pdf of \( y_i \).
 
-Though this is a convex optimization problem with strictly convex objective and
-a convex constraint set, it is of infinite dimension. In order to solve the
-primal problem, it is necessary to discretize. The algorithm proposed by
-\citet{koenker2014convex} has taken advantage of the fixed point iteration
-method in convex optimization \citep{andersen2010mosek}, thus greatly improved
-the computation efficiency over the fixed point EM iteration method by
-\citet{jiang2009general}.
+This optimization problem is convex, featuring a strictly convex objective and
+a convex constraint set. However, it involves an infinite-dimensional parameter
+space. To tackle the primal problem, it is necessary to discretize it.
+
+The algorithm proposed by \citet{koenker2014convex} utilizes the interior point
+method, a technique frequently employed in convex optimization implemented by
+\verb+MOSEK+ \citep{andersen2010mosek}. This approach significantly enhances
+computational efficiency compared to the fixed point EM iteration method
+previously suggested by \citet{jiang2009general}. This advancement in
+computational strategies has made the implementation of the Nonparametric
+Maximum Likelihood Estimator (NPMLE) more practical and faster for applied
+statistical analysis, offering a robust alternative for dealing with complex
+data models where traditional methods may falter.
+
+% proofread til here
 
 \section{The selection problem}
+\subsection{Definition}
 The definition of the selection problem is taken from the work of
 \citet{gu2023invidious}. Instead of focusing on the right tail of the
-distribution, the top performers in my context corresponds to the left tail.
-The task at hand is to select the bottom 20\% of the $\theta_i$ and compare the
-share of public and private in the meritorious group. This is another
-perspective/exercises on the public and private sectors different from that of
+distribution, the top performers in my context correspond to the left tail. The
+task at hand is to select the bottom 20\% of the \( \theta_i \) and compare the
+share of public and private sectors in the meritorious group. This offers
+another perspective on the public and private sectors, different from that of
 \citet{croiset2024hospitals}.
 
-On top of the constraint on the size of the selected group (20\%), I further
-impose a constraint on the number of false positive mistakes made in the
-selection process. This leads to the false discovery constraint at level
-$\gamma$,
+In addition to the constraint on the size of the selected group (20\%), I have
+further imposed a constraint on the number of false positive mistakes made in
+the selection process. This leads to the implementation of a false discovery
+constraint at level \( \gamma \).
 \begin{equation*}
     \frac{\E_G\bra{h_i=0,\delta_i=1}}{\E_G\bra{\delta_i}} \le \gamma
 \end{equation*} where $h_i=1\set{\theta_i<\theta_\alpha}$ is the indicator function of whether the unit $i$ is truly below the threshold $\theta_\alpha$. And $\delta_i=1$ when unit $i$ is selected.
@@ -456,44 +549,60 @@ and the optimal decision rule is given by
         & =\E_G{\sum_i v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum_i (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n}}
     \end{split}
 \end{equation}
-Here, the term $\E_{\theta|\hat{\theta}}(h_i)$ is called \textbf{posterior tail probability}. It is the probability of $i$ being truly in the bottom $\alpha\%$ given the estimated $\hat{\theta}$.
-This is a posterior statistics different from the posterior mean $\E_{\theta|\hat{\theta}}(\theta_i)$ because the variable inside the expectation $h_i=1\set{\theta_i<G^{-1}(\alpha)}$ is specific to the capacity constraint at $\alpha$ level.
-From the previous section, we have obtained an estimate of the prior distribution $G$ so that we can derive the posterior tail probability $v_\alpha(\hat{\theta}_i)$
+
+Here, the term \(\E_{\theta|\hat{\theta}}(h_i)\) is called \textbf{posterior
+    tail probability}. It is the probability of \(i\) being truly in the bottom
+\(\alpha\%\) given the estimated \(\hat{\theta}\). This is a posterior
+statistic different from the posterior mean
+\(\E_{\theta|\hat{\theta}}(\theta_i)\) because the variable inside the
+expectation \(h_i = 1\{\theta_i < G^{-1}(\alpha)\}\) is specific to the
+capacity constraint at the \(\alpha\) level. From the previous section, we have
+obtained an estimate of the prior distribution \(G\) so that we can derive the
+posterior tail probability \(v_\alpha(\hat{\theta}_i)\).
+
 \begin{equation*}
     v_\alpha=P( \theta_i < \theta_{\alpha} |\hat{\theta})
 \end{equation*}
-If we know that $\hat{\theta}|\theta \sim P_\theta$ with density function $p_\theta$, the posterior tail probability can be further written down
+
+If we know that \(\hat{\theta}|\theta \sim P_\theta\) with density function
+\(p_\theta\), the posterior tail probability can be further expressed as:
 \begin{equation*}
-    v_\alpha(y_i)=\frac{{\int_{-\infty}^{\theta_{\alpha}} p_{\theta_i}(y_i) dG(\theta_i)}}
-    {{\int_{-\infty}^{\infty} p_{\theta_i}(y_i) dG(\theta_i)}}
+    v_\alpha(y_i) = \frac{\int_{-\infty}^{\theta_{\alpha}} p_{\theta_i}(y_i) dG(\theta_i)}
+    {\int_{-\infty}^{\infty} p_{\theta_i}(y_i) dG(\theta_i)}
 \end{equation*}
 
-From now on, the notation $\hat{\theta}_i$ is replaced by $y_i$. For example,
-if it follows a normal distribution $y_i|\theta_i \sim
-    \caln(\theta_i,\sigma_i)$ as is often the case in application, $v_\alpha$ takes
-the explicit form
+From now on, the notation \(\hat{\theta}_i\) is replaced by \(y_i\). For
+example, if \(y_i|\theta_i \sim \mathcal{N}(\theta_i, \sigma_i^2)\), as is
+often the case in applications, \(v_\alpha\) takes the explicit form:
 \begin{equation*}
-    = \frac{{\int_{-\infty}^{\theta_{\alpha}}\varphi(y_i|\theta_i, \sigma_i^2) dG(\theta_i)}}
-    {{\int_{-\infty}^{\infty} \varphi(y_i|\theta_i, \sigma_i^2) dG(\theta_i)}}
-\end{equation*} where $\varphi$ is the density function of $y_i$ conditional mean $\theta_i$ and variance $\sigma_i^2$.
+    = \frac{\int_{-\infty}^{\theta_{\alpha}} \varphi(y_i | \theta_i, \sigma_i^2) dG(\theta_i)}
+    {\int_{-\infty}^{\infty} \varphi(y_i | \theta_i, \sigma_i^2) dG(\theta_i)}
+\end{equation*}
+where \(\varphi\) is the density function of \(y_i\) with conditional mean \(\theta_i\) and variance \(\sigma_i^2\).
 
-Here, we have assumed that $\sigma_i$ is known meaning that $P_\theta$ only
-depends on $\theta_i$. But sometimes $\sigma_i$ is unknown meaning that
-$P_\theta$ depends on some other parameters. The two cases are distinguished
-when defining posterior tail probability and constraints.
+Here, we have assumed that \(\sigma_i\) is known, meaning that \(P_\theta\)
+only depends on \(\theta_i\). However, sometimes \(\sigma_i\) is unknown,
+meaning that \(P_\theta\) depends on additional parameters. These two cases
+must be distinguished when defining the posterior tail probability and
+constraints.
 
-The two constraints can be preliminarily written out as
+The two constraints can be preliminarily written out as follows:
 \begin{itemize}
-    \item Capacity constraint: \[ \p(v_\alpha>\lambda_1^*) \le \alpha \Rightarrow \lambda_1^* = H^{-1}(1-\alpha). \] Empirically, $\lambda_1^*$ is found by the empirical cumulative distribution
-          $H$ of $v_\alpha$.
-    \item False Discovery constraint: \[ \p(\theta<\theta_\alpha|v_\alpha>\lambda_2^*) \le \gamma \Rightarrow  \frac{\sum_i \E[(1-v_{\alpha,i})\delta_i]}{\sum_i E[ \delta_i]}\le \gamma.\] We approximate $\p(\theta<\theta_\alpha|v_\alpha>\lambda_2^*)$ by $\frac{\sum_i
-                  E[ (1-h_i)\delta_i]}{\sum_i E[ \delta_i]}$. Then it needs to be shown that $\E[
-                  (1-h_i)\delta_i]$ is equivalent to $\E[(1-v_{\alpha,i})\delta_i]$. This is
-          straightforward by the law of iterated expectation. Let $D_i =
-              (Y_i,\sigma_i^2)$ when $\sigma_i^2$ is known and $D_i = (Y_i,S_i)$ when
-          $\sigma_i^2$ is unknown.
+    \item Capacity constraint: \[ \p(v_\alpha>\lambda_1^*) \le \alpha \Rightarrow \lambda_1^* = H^{-1}(1-\alpha). \] Empirically, $\lambda_1^*$ is found by the inverse function of the empirical
+          cumulative distribution $H$ of $v_\alpha$ at $1-\alpha$.
+    \item False Discovery constraint: \[ \p(\theta<\theta_\alpha|v_\alpha>\lambda_2^*) \le \gamma \Rightarrow  \frac{\sum_i \E[(1-v_{\alpha,i})\delta_i]}{\sum_i E[ \delta_i]}\le \gamma.\] First, We approximate $\p(\theta<\theta_\alpha|v_\alpha>\lambda_2^*)$ by
+          $\frac{\sum_i E[ (1-h_i)\delta_i]}{\sum_i E[ \delta_i]}$. Then it needs to be
+          shown that $\E[ (1-h_i)\delta_i]$ is equivalent to
+          $\E[(1-v_{\alpha,i})\delta_i]$. This is straightforward by the law of iterated
+          expectation. Let $D_i = (Y_i,\sigma_i^2)$ when $\sigma_i^2$ is known and $D_i =
+              (Y_i,S_i)$ when $\sigma_i^2$ is unknown.
           \[ \E[(1-h_i)\delta_i] = \E[\E[(1-h_i)\delta_i|D_i]] = \E[\delta_i(1-\E[h_i|D_i])] = \E[\delta_i(1-v_{\alpha,i})] \]
 \end{itemize}
+These formulations allow us to control the size of the selected group while also maintaining the expected rate of false discoveries within an acceptable level \(\gamma\).
+
+Now, we will critically distinguish between the two scenarios where
+\(\sigma_i\) is known and unknown. The posterior tail probability and
+constraints are defined accordingly.
 
 \paragraph{Known variance, $G(\theta)$}
 The true inefficiency value of hospital $i$ is $\theta_i$, We only observe a
@@ -512,7 +621,7 @@ The cutoff $\lambda^*$ is determined such that the constraints are satisfied
 \end{align*}
 
 \paragraph{Unknown variance, $G(\theta,\sigma)$}
-We only a sequence of $Y_{it}$ where
+We only observe a sequence of $Y_{it}$ where
 \begin{equation*}
     Y_{it} = \theta_i + \varepsilon_{it} \quad \varepsilon_{it} \sim \caln(0,\sigma_i^2) \quad (\theta_i,\sigma_i^2) \sim G
 \end{equation*}
@@ -531,106 +640,128 @@ $s_i$
 
 The cutoff $\lambda^*$ is found in the same way as before.
 
-\subsection{Selection results}
-I have selected hospitals with than 6 years of observations. In the end, the
-sample contains 1661 hospitals, out of which 658 are public hospitals and 1003
-are private ones. The $Y_{it}$ in the last section is calculated as $
-    \log(x_{it,\text{nurses}}) - \log(y_{it,\text{output}})\hat{\beta}$. Since the
-panel is too short to invoke central limit theorem, in order to apply the
-results above, I am obliged to impose normality assumption on the error term
-$\varepsilon \sim \caln(0,\sigma_i^2)$. Thus $Y_{it}$ follows a normal
-distribution $\caln(\theta_i,\sigma_i^2)$ as the number of hospitals $N$ tends
-to infinity.
+\subsection{Results}
+
+Having defined the selection problem, I will now present the results by
+incorporating empirical estimation of the prior distribution \( G \).
+
+To ensure the variability of the data, I have selected hospitals with than 6
+years of observations. In the end, the sample contains 1661 hospitals, out of
+which 658 are public hospitals and 1003 are private ones. The $Y_{it}$ in the
+last section is calculated as $ \log(x_{it,\text{nurses}}) -
+    \log(y_{it,\text{output}})\hat{\beta}$. Since the panel is too short to invoke
+central limit theorem, I am obliged to impose normality assumption on the error
+term $\varepsilon \sim \caln(0,\sigma_i^2)$ in order to apply the results
+above. Thus, $Y_{it}$ follows a normal distribution
+$\caln(\theta_i,\sigma_i^2)$ as the number of hospitals $N$ tends to infinity.
 
 Instead of assuming that $\sigma_i^2$ (or the distribution of it) is known, in
 our setting it seems more reasonable to employ the estimates of it $S_i$ in
-defining $v_\alpha$. However, in baseball batting average
-\citep{gu2017empirical}, teacher added value \citep{gilraine2020new} and kidney
-dialysis center rating \citep{gu2023invidious}, an estimate of the variance is
-taken to be the true value. A comparison selection results under the two
-different assumptions will be presented in this section.
-\paragraph{Unknown variance, and TP rules} Since we only observe the sample mean
-$Y_i$ and sample variance $S_i$, the prior $G$ is a two dimensional
-distribution on $(\theta,\sigma^2)$. Without assuming independence between the
-two parameters, we can assume a two dimension gridding /discretization in the
-defining the convex objective function.
+defining $v_\alpha$. However, in empirical studies such as baseball batting
+averages \citep{gu2017empirical}, teacher added value \citep{gilraine2020new}
+and kidney dialysis center rating \citep{gu2023invidious}, an estimate of the
+variance is taken to be the true value. A comparison of selection results under
+the two different assumptions will be presented in this section.
+
+\paragraph{Unknown variance, and TP rules}
+
+Since we only observe the sample mean $Y_i$ and sample variance $S_i$, the
+prior $G$ is a two-dimensional distribution on $(\theta,\sigma^2)$. Without
+assuming independence between the two parameters, we can utilize a
+two-dimensional gridding strategy in defining the convex objective function:
 
 \begin{equation*}
     \hat{G}=\argmin_{G\in \mathcal{G}} \set{-\sum_{i=1}^{n}\log g(y_i,s_i)|g(y_i,s_i)=\int \int  \p(y_i,s_i |\theta,\sigma^2)dG(\theta,\sigma^2) }
 \end{equation*}
 
-This can be solved similarly by the interior point method as in the one
-dimensional case. The solution is an atomic distribution with fewer than $n$
-atoms. It is worth mentioning that the NPMLE method is self-regularizing
-because the mass points are determined by the solution without recourse to any
+This can be solved using the interior point method, similar to the
+one-dimensional case. The solution is an atomic distribution with fewer than
+$n$ atoms. It is worth mentioning that the NPMLE method is self-regularizing
+because the mass points are determined by the solution without the need for any
 tuning parameter. Further smoothing is justified by the fact that we have
-ignored the variability of $G$. The bandwidth of biweight kernel for smoothing
-was chosen as the mean absolute deviation from the median of the discrete
-$\hat{G}$.
+ignored the variability of $G$. The bandwidth of the biweight kernel for
+smoothing was chosen based on the mean absolute deviation from the median of
+the discrete $\hat{G}$.
+
+The left-hand side of Figure \ref{fig:GLVmix} shows the estimated
+$\hat{G}(\theta, \sigma^2)$ before smoothing, while the right-hand side
+displays the smoothed version.
 
 \begin{figure}[h!]
     \centering
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix.pdf}
+        \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_fd/GLVmix.pdf}
     \end{minipage}\hfill
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix_s.pdf}
+        \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_fd/GLVmix_s.pdf}
     \end{minipage}
+    \label{fig:GLVmix}
 \end{figure}
 
 With an estimated prior, the tail probability function as well as the
-constraints are well-defined. Though, given the discrete nature of selection,
-it is similar to discrete optimization as in knapsack problem. I follow the
+constraints are well-defined. However, given the discrete nature of selection,
+it resembles knapsack discrete optimization problem similar. I follow the
 approach described in \cite{basu2018weighted} and thus consider only
 sequentially selecting the units until one constraint is violated.
 
 In Figure \ref{fig:tp_0.2_0.2_2d}, I present the results of selecting the top
-20\% hospitals with or without the FDR constraint at 20\%. The selection rule
-is the posterior tail probability which is explained in the sections above,
-that is, the solution to the problem defined in \ref{eq:decisionrule}. The
-prior $G$ is taken to be the smoothed Kiefer-Wolfowitz estimate.
+20\% of hospitals with or without the FDR constraint set at 20\%. The selection
+rule is the posterior tail probability, which is explained in the sections
+above, that is, the solution to the problem defined in \ref{eq:decisionrule}.
+The prior $G$ is taken to be the smoothed Kiefer-Wolfowitz estimate.
 
 The left-hand side corresponds to the selection outcome without imposing the
-FDR constraints while the right-hand side controls the expected FDR at 20\%. In
-the first case, there are around 10 times more private hospitals in the top
-20\% while the total number of hospitals is less than twice of the public.
+FDR constraints, while the right-hand side controls the expected FDR at 20\%.
+In the first case, there are around 10 times more private hospitals in the top
+20\%, while the total number of hospitals is less than twice that of the
+public.
 
-The FDR seems to have only impacted the private hospitals, leaving 18 out of
-the selection set. A stringent FDR constraint would lead to a smaller set as
-shown in \ref{fig:tp_0.2_0.1_2d}.
+The FDR seems to have impacted only the private hospitals, leaving 18 out of
+the selection set. A more stringent FDR constraint would lead to a smaller set,
+as shown in \ref{fig:tp_0.2_0.1_2d}.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_TPKWs.pdf}
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_TPKWs.pdf}
     \caption{Tail probability rule, capacity 20\%, FDR 20\%, unknown variance}
     \label{fig:tp_0.2_0.2_2d}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.1_TPKWs.pdf}
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.1_TPKWs.pdf}
     \caption{Tail probability rule, capacity 20\%, FDR 10\%, unknown variance}
     \label{fig:tp_0.2_0.1_2d}
 \end{figure}
-As of other selection rules using different ranking statistics (posterior mean, MLE face value, James-Stein linear shrinkage), see appendix \ref{section:unknown} for an overview.
-\paragraph{Known variance, and TP rules} In \citet{gu2023invidious}, the authors
-apply the newly proposed selection method to the the selection of kidney
-dialysis centers studied by \citep{lin2006loss,lin2009ranking}. However, the
-focus is on the quality of service, specifically on the mortality rate.
-Secondly, they assume the predictions of expected mortality is sufficiently
-accurate such that the variance is known and independent of $\theta\sim G$.
+
+For an overview of other selection rules using different ranking statistics,
+such as the posterior mean, MLE face value, and James-Stein linear shrinkage,
+see Appendix \ref{section:unknown}.
+
+\
+\paragraph{Known variance, and TP rules}
+
+In \citet{gu2023invidious}, the authors apply the newly proposed selection
+method to the selection of kidney dialysis centers, a topic previously studied
+by \citet{lin2006loss, lin2009ranking}. However, their focus is on the quality
+of service, specifically on the mortality rate. Furthermore, they assume that
+the predictions of expected mortality are sufficiently accurate such that the
+variance is known, independent of $\theta \sim G$.
+
+Figure \ref{fig:GLmix} shows the estimated $\hat{G}(\theta)$ before and after
+smoothing.
 
 \begin{figure}[h!]
     \centering
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_m/GLmix.pdf}
+        \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_fd/GLmix.pdf}
     \end{minipage}\hfill
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_m/GLmix_s.pdf}
+        \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_fd/GLmix_s.pdf}
     \end{minipage}
 \end{figure}
 
@@ -638,81 +769,82 @@ Though not desirable in the present setting, it would be interesting to see
 what the results would be if I take the $S_i$ as the $\sigma_i^2$. For the
 moment, whether this assumption would lead to a more stringent selection
 outcome is unclear. Figure \ref{fig:tp_0.2_0.2_1d} presents the outcome under
-the posterior tail probability rule with smoothed estimated prior. It seems
-that the with only the capacity constraint, the outcome does not differ much.
-However, when FDR constraint is combined, the known variance assumption becomes
-too lenient to incorporate the newly imposed constraint. At the level
-$\alpha=0.2$ and $\gamma=0.2$, the FDR constraint is not binding. While a more
-stringent FDR constraint does bind as shwon in Figure \ref{fig:tp_0.2_0.1_1d}.
+the posterior tail probability rule with a smoothed estimated prior. It seems
+that with only the capacity constraint, the outcome does not differ much.
+However, when an FDR constraint is combined, the known variance assumption
+becomes too lenient to incorporate the newly imposed constraint. At the level
+$\alpha=0.2$ and $\gamma=0.2$, the FDR constraint is not binding. However, a
+more stringent FDR constraint at $\gamma=10\%$ does bind, as shown in Figure
+\ref{fig:tp_0.2_0.1_1d}.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.2_TPKWs.pdf}
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.2_TPKWs.pdf}
     \caption{Tail probability rule, capacity 20\%, FDR 20\%, known variance}
     \label{fig:tp_0.2_0.2_1d}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Left_0.2_0.1_TPKWs.pdf}
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.1_TPKWs.pdf}
     \caption{Tail probability rule, capacity 20\%, FDR 10\%, known variance}
     \label{fig:tp_0.2_0.1_1d}
 \end{figure}
 
-Appendix \ref{section:known} presents the results of other selection rule. In
+Appendix \ref{section:known} presents the results of other selection rules. In
 this case, a contour line can be drawn to highlight the differences between
 ranking statistics.
 
 \section{Conclusion}
-
 Exploiting the rich dataset covering all hospitals in France, I have attempted
 to estimate the fixed effect of individual hospitals, which has the
-interpretation of \textit{inefficiency index}. Based on an initial estimate, my
-goal is to select the top performing hospitals and classify them by legal
+interpretation of an \textit{inefficiency index}. Based on an initial estimate,
+my goal is to select the top-performing hospitals and classify them by legal
 status, thereby having a more granular view of the efficiency comparison
-between the public and private hospitals. I deliberately omit the teaching
-hospitals (~200) from the dataset because they are innately different in terms
-of its objectives. To tackle the endogeneity issue, I used lagged difference of
-the regressors as instruments for the current level, a simplified version of
-the system GMM method. The selection problem of interests falls naturally under
-the compound decision framework. Empirical Bayes ideology along with the
-developments in nonparametric maximum likelihood estimation has made the
-implementation more efficient. In addition to the artificial capacity
-constraint where only the top $\alpha\%$ units are of interests, it is an
-interesting and useful practice to incorporate the another constraint called
-False Discovery Rate constraint such that the expected number of false
-posititve is controlled at a certain level. From the application to the French
-Hospitals, it is clear that the FDR constraints shrinks the selection set by
-some amount. It is also intuitive that the the larger the capacity (larger the
+between public and private hospitals. I deliberately omit the teaching
+hospitals (approximately 200) from the dataset because they inherently differ
+in terms of objectives. To tackle the endogeneity issue, I used the lagged
+difference of the regressors as instruments for the current level, a simplified
+version of the system GMM method. The selection problem of interest falls
+naturally under the compound decision framework. The Empirical Bayes ideology,
+along with developments in nonparametric maximum likelihood estimation, has
+made the implementation more efficient. In addition to the artificial capacity
+constraint where only the top $\alpha\%$ of units are of interest, it is an
+interesting and useful practice to incorporate another constraint called the
+False Discovery Rate (FDR) constraint such that the expected number of false
+positives is controlled at a certain level. From the application to French
+hospitals, it is clear that the FDR constraint shrinks the selection set by
+some amount. It is also intuitive that the larger the capacity (the larger the
 $\alpha$), the less binding the FDR constraint is. The idea is that when the
-decision maker can select more units, the probability of making mistakes
+decision-maker can select more units, the probability of making mistakes
 decreases. Another observation comes from the assumption we make in the NPMLE
-of $G$. In \citet{gu2023invidious}, the authors have pointed out that the known
-variance assumption in $Y_i|\theta_i,\sigma_i$ may be plausible in some
-applications, it is more common to be faced with only an estimate the variance.
-The two assumptions give rise to a different level of \textit{stringency} in
-response to the constraints, especially when the decision maker wants to
-control for the expected false discovery rate. Assuming an unknown variance
-treat the observation as noisier, thus the probability of making mistakes is
-higher. The same level of FDR constraint of $20\%$ only binds in the unknown
-variance scenario. With respect the private public comparison, among the top
-20\% performers, there are around 10 times more private than public, while the
-ratio of total number is 5 to 3. A preliminary conclusion is in terms labor
-employment efficiency, there are more efficient private hospitals among the top
-performers. It may be of interests to the healthcare authority to perform such
-selections and take corresponding actions with respect to the selection
-outcome. From my point of view, a related report based on the ranking and
-selection results will create an incentive for the healthcare providers to
-ensure the completeness of data input. sHowever, one cautionary tale is the
-interpretation of the fixed effect estimate. Since the fixed effect captures
-all time invariant component of the unit, whether it is only the unobserved
-heterogeneity of individual hospitals or an actual measure of inefficiency is
-of question. The issue is discussed in \citet{greene2005fixed}. Lastly, despite
-the fact that it is of human nature to construct ranking and make selections,
-every step of the procedure requires attention to the specification,
-identification and justifiable assumptions. Incorporating constraints such as
-FDR in defining the problem may be helpful, but the decision is still subject
-to great uncertainty and should be made with caution and justification.
+of $G$. In \citet{gu2023invidious}, the authors have pointed out that while the
+known variance assumption in $Y_i|\theta_i,\sigma_i$ may be plausible in some
+applications, it is more common to be faced with only an estimate of the
+variance. The two assumptions give rise to a different level of
+\textit{stringency} in response to the constraints, especially when the
+decision-maker wants to control for the expected false discovery rate. Assuming
+an unknown variance treats the observation as noisier, thus increasing the
+probability of making mistakes. The same level of FDR constraint of 20\% only
+binds in the unknown variance scenario. With respect to the private-public
+comparison, among the top 20\% performers, there are around ten times more
+private than public hospitals, while the ratio of total number is 5 to 3. A
+preliminary conclusion is that in terms of labor employment efficiency, there
+are more efficient private hospitals among the top performers. It may be of
+interest to healthcare authorities to perform such selections and take
+corresponding actions with respect to the selection outcome. From my point of
+view, a related report based on the ranking and selection results will create
+an incentive for healthcare providers to ensure the completeness of data input.
+However, one cautionary note is the interpretation of the fixed effect
+estimate. Since the fixed effect captures all time-invariant components of the
+unit, whether it is only the unobserved heterogeneity of individual hospitals
+or an actual measure of inefficiency is questionable. This issue is discussed
+in \citet{greene2005fixed}. Lastly, despite the fact that it is human nature to
+construct rankings and make selections, every step of the procedure requires
+attention to specification, identification, and justifiable assumptions.
+Incorporating constraints such as FDR in defining the problem may be helpful,
+but the decision is still subject to great uncertainty and should be made with
+caution and justification.
 
 \pagebreak
 \newpage
@@ -764,19 +896,19 @@ When $T$ is relatively small (or even fixed), I am not in a good position to use
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_PMKWs.pdf}
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_PMKWs.pdf}
     \caption{Posterior mean, capacity 20\%, FDR 20\%, unknown variance}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_JS.pdf}
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_JS.pdf}
     \caption{James-Stein Linear Shrinkage, capacity 20\%, FDR 20\%, unknown variance}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLVmix/Left_0.2_0.2_MLE.pdf}
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_MLE.pdf}
     \caption{MLE, capacity 20\%, FDR 20\%, known variance}
 \end{figure}
 
@@ -785,20 +917,20 @@ When $T$ is relatively small (or even fixed), I am not in a good position to use
 \label{section:known}
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_PMKWs.pdf}
-    \caption{TP VS PM,  capacity 20\%, FDR 20\%, known variance}
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_PMKWs.pdf}
+    \caption{TP VS PM,  capacity 20\%, FDR 10\%, known variance}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_JS.pdf}
-    \caption{TP VS JS, capacity 20\%, FDR 20\%, known variance}
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_JS.pdf}
+    \caption{TP VS JS, capacity 20\%, FDR 10\%, known variance}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_m/GLmix/Contour_Left_0.2_0.2_TPKWs_MLE.pdf}
-    \caption{TP VS MLE, capacity 20\%, FDR 20\%, unknown variance}
+    \includegraphics[width=0.8\textwidth]{../../Figures/2013-2022/GMM_fd/GLmix/Contour_Left_0.2_0.1_TPKWs_MLE.pdf}
+    \caption{TP VS MLE, capacity 20\%, FDR 10\%, unknown variance}
 \end{figure}
 
 \end{document}

@@ -61,6 +61,11 @@ Gilraine, M., Gu, J., and McMillan, R. (2020).
 \newblock A new method for estimating teacher value-added.
 \newblock Technical report, National Bureau of Economic Research.
 
+\bibitem[Greene, 2005]{greene2005fixed}
+Greene, W. (2005).
+\newblock Fixed and random effects in stochastic frontier models.
+\newblock {\em Journal of productivity analysis}, 23:7--32.
+
 \bibitem[Gu and Koenker, 2017]{gu2017empirical}
 Gu, J. and Koenker, R. (2017).
 \newblock Empirical bayesball remixed: Empirical bayes methods for longitudinal
