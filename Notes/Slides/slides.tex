@@ -1,6 +1,6 @@
 \documentclass[10pt,mathserif,aspectratio=169]{beamer}
 
-\usepackage{graphicx,amsmath,amssymb,tikz,psfrag,booktabs,natbib}
+\usepackage{graphicx,amsmath,amssymb,tikz,psfrag,booktabs,natbib,adjustbox}
 
 \input {newcommand.tex}
 
@@ -92,7 +92,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Roadmap}
+  \frametitle{\textit{Recipe}}
   \begin{enumerate}\itemsep=12pt
     \item \textbf{Estimate the efficiency} with input demand function.
           \begin{itemize} \itemsep=8pt
@@ -137,15 +137,22 @@
   (SAE)\footnote{\href{https://data.drees.solidarites-sante.gouv.fr/explore/dataset/708_bases-statistiques-sae/information/}{La
       Statistique annuelle des établissements (SAE)}}, 2013-2022 \footnote{2020 missing due to Covid-19}.
   \begin{table}
-    \fontsize{10pt}{10pt}\selectfont
-    \input{../../Tables/Descriptive/hospital_count.tex}
+
+    \begin{adjustbox}{width=0.8\textwidth,center}
+      \centering
+      \input{../../Tables/Descriptive/hospital_count.tex}
+    \end{adjustbox}
   \end{table}
 \end{frame}
 
 \begin{frame}[label=output]
   \frametitle{Output}
-  \begin{table} \fontsize{8pt}{10pt}\selectfont
-    \input{../../Tables/Descriptive/output_share.tex}
+
+  \begin{table}
+    \begin{adjustbox}{width=0.9\textwidth,center}
+      \centering
+      \input{../../Tables/Descriptive/output_share.tex}
+    \end{adjustbox}
   \end{table}
   \note{Each value $a_{ij}$ is calculated by $a_{ij} = \frac{\text{Output i only in hospital type j}}{\text{Share of hospital type j}}/\text{Sum of output i}$}
   \begin{itemize}\itemsep = 8pt
@@ -283,7 +290,7 @@
           efficiency term $\theta_i$ at time $t$. Say $Y_{it}|\theta_i,\sigma_i \sim
             \caln(\theta_i,\sigma_i^2)$.
     \item Given a panel of $Y_{it}$, perform NPMLE to get an estimate of $G(\theta)$ or
-          $G(\theta,\sigma)$.
+          $G(\theta,\sigma^2)$.
     \item Given the estimated prior $G$, derive the explicit form of posterior tail
           probability $v_\alpha(Y_i,S_i)$ and the two constraints.
     \item Solve the selection problem and find the optimal $\delta^*$

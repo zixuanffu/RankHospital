@@ -169,13 +169,23 @@ texreg(list(reg_iv), file = "Tables/2013-2022/reg_iv.tex", custom.coef.map = var
 
 # use plm package
 var_y <- add_log(var_input)
-var_x <- paste(c(add_log(var_output)), collapse = "+")
-var_z <- paste(c(add_lag(add_log(var_output), "2")), collapse = "+")
+var_output1 <- c("SEJHC_MCO", "SEJHP_MCO", "CONSULT_EXT", "ENTSSR", "PASSU", "SEANCES_MED", "SEJ_HAD", "SEJ_PSY")
+var_x <- paste(c(add_log(var_output1)), collapse = "+")
+var_temp <- c("SEJHC_MCO", "SEJ_HAD", "SEJ_PSY", "ENTSSR")
+#  "SEJHP_MCO", "SEANCES_MED")
+var_z <- paste(c(add_lag(add_log(var_temp), "2:3")), collapse = "+")
+var_zz <- paste(c(add_lag(add_log(c("SEJHP_MCO", "SEANCES_MED")), "5")), collapse = "+")
 formula_gmm <- as.formula(paste0(var_y, "~", var_x, "|", var_z))
-reg_gmm_sys <- pgmm(formula_gmm, data = dt_inf, effect = "individual", index = c("FI", "AN"), transformation = "ld", robust = TRUE, collapse = FALSE)
-reg_gmm_fd <- pgmm(formula_gmm, data = dt_inf, effect = "individual", index = c("FI", "AN"), transformation = "d", robust = TRUE, collapse = FALSE)
-summary(reg_gmm_sys, robust = TRUE)
+# "+",var_zz))
+formula_gmm
+reg_gmm_fd <- pgmm(formula_gmm, data = dt_inf, effect = "individual", index = c("FI", "AN"), transformation = "d", robust = TRUE, collapse = TRUE, model = "twostep")
 summary(reg_gmm_fd, robust = TRUE)
+reg_gmm_fd_c <- pgmm(formula_gmm, data = dt_inf, effect = "individual", index = c("FI", "AN"), transformation = "d", robust = TRUE, collapse = FALSE)
+summary(reg_gmm_fd_c, robust = TRUE)
+str(reg_gmm_fd_c$W) # 7 (20 =7+7+6)
+reg_gmm_sys <- pgmm(formula_gmm, data = dt_inf, effect = "individual", index = c("FI", "AN"), transformation = "ld", robust = TRUE, collapse = FALSE)
+summary(reg_gmm_sys, robust = TRUE)
+
 # check moment conditions
 W <- reg_gmm_sys$W
 str(W[1]) # 15 x 16
@@ -215,6 +225,9 @@ dt_inf[, Res := residual - FixedEffect]
 pdt_used <- dt_inf[, .(AN, FI, STJR, fitted, residual, FixedEffect, Res)]
 saveRDS(pdt_used, "Data/Out/pdt_used_gmm_sys.rds")
 saveRDS(pdt_used, "Results/2013-2022/pdt_used_gmm_sys_m.rds")
+
+
+
 
 # ---- 5. Remove teaching hospitals and run regression ---- #
 # remove teaching hospitals
@@ -327,3 +340,17 @@ dt_inf[, Res := residual - FixedEffect]
 pdt_used <- dt_inf[, .(AN, FI, STJR, fitted, residual, FixedEffect, Res)]
 saveRDS(pdt_used, "Data/Out/pdt_used_gmm_fd.rds")
 saveRDS(pdt_used, "Results/2013-2022/pdt_used_gmm_fd.rds")
+
+
+coef <- reg_wg_plm$coefficients
+mat <- log(as.matrix(dt_inf[STJR != 0, ..var_output]))
+coef <- as.vector(coef)
+fitted_value <- mat %*% coef
+
+dt_inf[, fitted := fitted_value]
+dt_inf[, residual := log(ETP_INF) - fitted]
+dt_inf[, FixedEffect := mean(residual), by = (FI)]
+dt_inf[, Res := residual - FixedEffect]
+pdt_used <- dt_inf[STJR != 0, .(AN, FI, STJR, fitted, residual, FixedEffect, Res)]
+saveRDS(pdt_used, "Data/Out/pdt_used_wg.rds")
+saveRDS(pdt_used, "Results/2013-2022/pdt_used_wg.rds")
