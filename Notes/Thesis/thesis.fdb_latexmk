@@ -1,12 +1,12 @@
 # Fdb version 3
-["bibtex thesis"] 1719412174 "thesis.aux" "thesis.bbl" "thesis" 1719412178
+["bibtex thesis"] 1719815514 "thesis.aux" "thesis.bbl" "thesis" 1719815520
   "c:/texlive/2022/texmf-dist/bibtex/bst/base/apalike.bst" 1660315953 24635 604dafcc79f521a11ea73e506e1fbd98 ""
   "ref.bib" 1719319715 9746 09eacb6003cc7a6bbcbf3e1ce9f3ebb7 ""
-  "thesis.aux" 1719412177 11612 42ab3e20a54dbff34e21e9e49ffaa61a "pdflatex"
+  "thesis.aux" 1719815519 11663 d6e2f83003cd360a3586fb4287a1bac9 "pdflatex"
   (generated)
   "thesis.bbl"
   "thesis.blg"
-["pdflatex"] 1719412175 "c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Thesis/thesis.tex" "thesis.pdf" "thesis" 1719412178
+["pdflatex"] 1719815515 "c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Thesis/thesis.tex" "thesis.pdf" "thesis" 1719815520
   "../../Figures/2013-2022/GMM_fd/GLVmix.pdf" 1719410079 12798 89b70379040e46fd79fdc4d6dc79ad0b ""
   "../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.1_TPKWs.pdf" 1719410392 37801 2dc1e6796df77c3f0b565c8a222d9dc7 ""
   "../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_JS.pdf" 1719409425 41741 69e003c9ab673133dea172679f096753 ""
@@ -21,13 +21,13 @@
   "../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.1_TPKWs.pdf" 1719409146 39410 64a7d5a0257b1f4ec9c1a507d88f0e0e ""
   "../../Figures/2013-2022/GMM_fd/GLmix/Left_0.2_0.2_TPKWs.pdf" 1719409129 41719 26561cefa451413bcef36a9e3e844a6b ""
   "../../Figures/2013-2022/GMM_fd/GLmix_s.pdf" 1719410111 6623 80d361b87567bc4e089b44c512577cf9 ""
-  "../../Tables/2013-2022/reg_dummy_iv_ex.tex" 1719174553 2060 8eda164579d83c69ab25a80069f874d5 ""
+  "../../Tables/2013-2022/reg_dummy_iv_ex.tex" 1719413614 2175 8ce42b3332dffaa7e4a0ab46dc4191c1 ""
   "../../Tables/2013-2022/reg_sep_iv.tex" 1719173366 2475 3f592c7333f4bc74bd245b25a1f39808 ""
   "../../Tables/2013-2022/reg_wg_fd_gmm_a.tex" 1719402730 3301 0f3edba2c48e40c8fa59a451a2ab5ac5 ""
   "../../Tables/Descriptive/hospital_count.tex" 1719055141 667 a0fc0f10620ab498d0f6780c1144a0ad ""
   "../../Tables/Descriptive/output_share.tex" 1719151015 830 3baae0015c33fdb9da6a61fa60778671 ""
   "../../Tables/Descriptive/output_share_nonweighted.tex" 1719152205 825 90515132da741e8e3dd06a863cefb800 ""
-  "c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Thesis/thesis.tex" 1719412162 51848 4dc004efc15f446ec0626f79a2b7f8a4 ""
+  "c:/Users/16429/OneDrive/TSE/Memoire/RankHospital/Notes/Thesis/thesis.tex" 1719815508 50310 0649652784bfe2354c1b745fb79a6c6f ""
   "c:/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1660316404 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "c:/texlive/2022/texmf-dist/fonts/map/fontname/texfonts.map" 1660317858 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2022/texmf-dist/fonts/tfm/jknappen/ec/tcrm1200.tfm" 1660317222 1536 74b7293ec3713bb7fdca8dd1bd1f469c ""
@@ -170,11 +170,11 @@
   "c:/texlive/2022/texmf-var/web2c/pdftex/pdflatex.fmt" 1660323515 1512323 21a09fd4583b222baca0cb428f6b3e78 ""
   "c:/texlive/2022/texmf.cnf" 1660323382 713 e69b156964470283e0530f5060668171 ""
   "newcommand.tex" 1719174980 4404 8a0c7fb22d789b0abbdf79f2272b91e6 ""
-  "thesis.aux" 1719412177 11612 42ab3e20a54dbff34e21e9e49ffaa61a "pdflatex"
-  "thesis.bbl" 1719412175 5882 8efb87c6566163109b2b056a9fbdff9f "bibtex thesis"
-  "thesis.out" 1719412177 2353 6cda60875a77930c23f9806a48ef3548 "pdflatex"
-  "thesis.tex" 1719412162 51848 4dc004efc15f446ec0626f79a2b7f8a4 ""
-  "thesis.toc" 1719412177 2063 c48eb8826c1059c79286bd297e65e1ea "pdflatex"
+  "thesis.aux" 1719815519 11663 d6e2f83003cd360a3586fb4287a1bac9 "pdflatex"
+  "thesis.bbl" 1719815515 5882 8efb87c6566163109b2b056a9fbdff9f "bibtex thesis"
+  "thesis.out" 1719815519 2404 d8b5df16e8d60f7b72504eded66d81a1 "pdflatex"
+  "thesis.tex" 1719815508 50310 0649652784bfe2354c1b745fb79a6c6f ""
+  "thesis.toc" 1719815519 2172 fd6c87a24f7ba892dd2c126b2c511034 "pdflatex"
   (generated)
   "thesis.aux"
   "thesis.log"

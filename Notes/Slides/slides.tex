@@ -80,6 +80,27 @@
 
 \section{Introduction}
 
+\begin{frame}[label=literature]
+  \frametitle{Literature: Measuring efficiency of individual units}
+  \begin{itemize}\itemsep=12pt
+
+    \item \textit{Productivity/Efficiency}: Factories, Schools, Hospitals etc.
+    \item \textit{Ownership}: Public (Teaching, Ordinary) vs. Private (For profit, Non-profit).
+    \item \textit{Methodology}: Following \citet{croiset2024hospitals}, we use the \textit{conditional input demand function}.
+          The smaller the $\theta_i$, the less input is needed to produce the same amount
+          of output, the more efficient the hospital is.\hyperlink{inputdemand}{\beamergotobutton{Reasons}}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Literature: Invidious decision}
+  \begin{itemize}\itemsep=12pt
+    \item \textit{League table mentality}: Ranking \& Selection.\citep{gu2023invidious}
+    \item \textit{Noisy estimates}: Unobserved heterogeneity, fixed effect $\theta_i$. \citep{chetty2014measuring,kline2022systemic}
+    \item \textit{Compound Decision/ Empirical Bayesian}: Compound decision framework \citep{robbins1956empirical}, (Non-parametric) Estimation of the prior distribution of $\theta_i$. \citep{koenker2014convex, gu2017empirical}
+  \end{itemize}
+\end{frame}
+
 \begin{frame}
   \frametitle{Questions}
   \begin{itemize}\itemsep=12pt
@@ -102,30 +123,10 @@
           \begin{equation*}
             \log(x_{it,\text{nurses}}) = \log(y_{it,\text{output}})\beta +\theta_i +\varepsilon_{it} \quad \text{where}\quad \varepsilon_{it} \sim \caln(0,\sigma_i^2)
           \end{equation*}
+    \item \textbf{Estimate the prior distribution of $\theta_i$} with NPMLE.
     \item \textbf{Select the 20\% most efficient hospitals.}
 
   \end{enumerate}
-\end{frame}
-
-\begin{frame}[label=literature]
-  \frametitle{Literature: Measuring efficiency of individual units}
-  \begin{itemize}\itemsep=12pt
-
-    \item \textit{Productivity/Efficiency}: Factories, Schools, Hospitals etc.
-    \item \textit{Ownership}: Public (Teaching, Ordinary) vs. Private (For profit, Non-profit).
-    \item \textit{Methodology}: Following \citet{croiset2024hospitals}, we use the \textit{conditional input demand function}.
-          The smaller the $\theta_i$, the less input is needed to produce the same amount
-          of output, the more efficient the hospital is.\hyperlink{inputdemand}{\beamergotobutton{Reasons}}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Literature: Invidious decision}
-  \begin{itemize}\itemsep=12pt
-    \item \textit{League table mentality}: Ranking \& Selection.\citep{gu2023invidious}
-    \item \textit{Noisy estimates}: Unobserved heterogeneity, fixed effect $\theta_i$. \citep{chetty2014measuring,kline2022systemic}
-    \item \textit{Compound Decision/ Empirical Bayesian}: Compound decision framework \citep{robbins1956empirical}, (Non-parametric) Estimation of the prior distribution of $\theta_i$. \citep{koenker2014convex, gu2017empirical}
-  \end{itemize}
 \end{frame}
 
 \section{Data}
@@ -187,12 +188,12 @@
   \end{equation*}
   Risk (Expectation of loss):
   \begin{align*}
-    R_n(\theta, \delta(\boldsymbol{\hat{\theta}})) & = \E[L_n(\theta, \delta(\boldsymbol{\hat{\theta}}))]                                                                                \\
-                                                   & = \frac{1}{n}\sum_{i=1}^n \E[L(\theta_i, \delta_i(\boldsymbol{\hat{\theta}}))]         \quad \text{Separable decision rule } \delta \\
-                                                   & = \frac{1}{n}\sum_{i=1}^n \int L(\theta_i, \delta_i(\hat{\theta}_i))dP_{\theta_i}(\hat{\theta}_i)                                   \\
+    R_n(\theta, \delta(\boldsymbol{\hat{\theta}})) & = \E[L_n(\theta, \delta(\boldsymbol{\hat{\theta}}))]                                                                                                          \\
+                                                   & = \frac{1}{n}\sum_{i=1}^n \E_{\theta_i|\hat{\theta}_i}[L(\theta_i, \delta_i(\boldsymbol{\hat{\theta}}))]         \quad \text{Separable decision rule } \delta \\
+                                                   & = \frac{1}{n}\sum_{i=1}^n \int L(\theta_i, \delta_i(\hat{\theta}_i))dP_{\theta_i}(\hat{\theta}_i)                                                             \\
                                                    & = \int \int L(\theta_i, \delta(\hat{\theta}_i))dP_{\theta_i}(\hat{\theta}_i)dG_n(\theta)
   \end{align*}
-  where $G_n(\theta)$ is the empirical distribution (Frequentist View)\note{$E_{G_n}(f(x)) = 1/n \sum_i f(x_i)$} of $\theta_i \sim G$.
+  where $G_n(\theta)$ is the empirical distribution (Frequentist View)\note{$E_{G_n}(f(x)) = 1/n \sum_i f(x_i)$} of $\theta \sim G$.
   \\$\rightarrow$ Bayesian view: replace $G_n$ by a distribution $G$. $\rightarrow$ Empirical Bayes: Estimate the $G$.
 \end{frame}
 
@@ -200,7 +201,7 @@
   \frametitle{Estimate $G$}
   \citet{kiefer1956consistency} established the nonparametric maximum likelihood estimator (NPMLE)
   \begin{equation*}
-    \hat{G}=\argmin_{G\in \mathcal{G}} \set{-\sum_{i=1}^{n}\log g(y_i)|g(y_i)=\int  \p(y_i |\theta)dG(\theta) }
+    \hat{G}=\argmin_{G\in \mathcal{G}} \set{-\sum_{i=1}^{n}\log g(y_i)\bigg | g(y_i)=\int  \p(y_i |\theta)dG(\theta) }
   \end{equation*}
   where $\p(y_i |\theta)$ is the probability density function of $y_i$ conditional on the true parameter $\theta$ $\longrightarrow$ $g(y_i)$ is the marginal pdf of $y_i$.
 \end{frame}

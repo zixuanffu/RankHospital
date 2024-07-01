@@ -39,9 +39,9 @@
 \setcounter{page}{1}
 \section{Introduction}
 
-It is almost human nature to compare, rank, and select.And competition, be it
-good or bad, emerges in its wake. As invidious as ranking and selection may be,
-they often serve as key drivers of performance improvement. Society itself
+It is almost of human nature to compare, rank, and select. And competition, be
+it good or bad, emerges in its wake. As invidious as ranking and selection may
+be, they often serve as key drivers of performance improvement. Society itself
 continuously constructs league tables, rewarding the meritorious while
 questioning or even punishing the unsatisfactory. The objects of interest for
 ranking vary widely, from teacher evaluations \citep{chetty2014measuring} and
@@ -52,12 +52,12 @@ This article extends such practices to the healthcare sector. Specifically, it
 examines labor efficiency across all hospitals in France. Utilizing a
 comprehensive database, \textit{The Annual Statistics of Health Establishments
     (SAE)}, I first construct a measure of labor efficiency. Then, using estimates
-derived from this data, I compare public and private hospitals by selecting the
+derived from the data, I compare public and private hospitals by selecting the
 top-performing units. I leverage recent developments in the Empirical Bayes
-method to facilitate this comparison.
+method to improve the selection.
 
 I found that among the top 20\% of best-performing hospitals, there are roughly
-six times more private units than public ones, adjusted for the number of
+five times more private units than public ones, adjusted for the number of
 hospitals in each category. The difference becomes even more pronounced when
 controlling for the expected number of incorrect selections. The conclusion is
 that public hospitals generally exhibit less efficiency than their private
@@ -83,12 +83,12 @@ distribution in baseball batting average prediction, while
 \citet{gu2023invidious} formally defines the selection problem as a compound
 decision, where the estimated prior can be helpful. Additionally,
 \citet{kiefer1956consistency} demonstrates that non-parametric maximum
-likelihood estimation of the prior is feasible and consistent. The computation
-of NPMLE has been significantly improved by \citet{koenker2014convex},
-leveraging recent developments in convex optimization
-\citep{andersen2010mosek}. For my analysis, I will use the \verb+REBayes+
-package \citep{koenker2017rebayes}, which is based on the \verb+MOSEK+ software
-developed by \citet{andersen2010mosek}.
+likelihood (NPMLE) estimation of the prior is feasible and consistent. The
+computation of NPMLE has been significantly improved by
+\citet{koenker2014convex}, leveraging recent developments in convex
+optimization \citep{andersen2010mosek}. For my analysis, I will use the
+\verb+REBayes+ package \citep{koenker2017rebayes}, which is based on the
+\verb+MOSEK+ software developed by \citet{andersen2010mosek}.
 
 In \cite{croiset2024hospitals}, the authors argue that public hospitals are
 less efficient than their private counterparts, in the sense that a public
@@ -109,10 +109,10 @@ Furthermore, the strict exogeneity assumption required by standard within-group
 estimation is debatable. A practical solution to relax this assumption is to
 use the first difference GMM estimator, as proposed by
 \citet{arellano1991some}. Another challenge arises from the high persistency of
-the regressors, which can lead to weak instruments. In response, I adapted and
-implemented the system GMM approach, as modified by \citet{arellano1995another}
-and \citet{blundell1998initial}, using the resulting estimates for subsequent
-analyses.
+the regressors, which can lead to weak instruments. In response, I also
+experimented the system GMM method proposed by \citet{arellano1995another} and
+\citet{blundell1998initial}. However, in both GMM method, the
+over-identification test poses a particular challenge.
 
 The advantage of the panel data estimator lies in its ability to capture the
 underlying heterogeneity, which opens the door to individual comparisons. The
@@ -163,29 +163,11 @@ that $P_{\theta}$ is normal. This kind of procedure is often questionable.
 Often times, researchers resort to asymptotics to justify the normality
 assumption, which may not be valid in small samples.
 
-It is worth mentioning that the classical empirical Bayes method assumes a
-parametric form for the prior distribution $G$, which is computationally
-attractive. However, thanks to advancements in fast convex optimization
-algorithms, non-parametric maximum likelihood estimation
-\citep{kiefer1956consistency} has become both feasible and efficient
-\citep{koenker2014convex,andersen2010mosek}. Nonetheless, we are not entirely
-free from imposing any parametric assumptions. In fact, there are two layers of
-distribution: the lower hierarchy where $\theta \sim G$, and the higher
-hierarchy where $\hat{\theta} | \theta \sim P_{\theta}$.
-\citet{lindsay1995mixture} has shown that a solution $\hat{G}$ exists and is a
-discrete probability measure, with no more than n mass points in the interval
-$[\min yi , \max yi ]$. It is when $P_{\theta}$ belongs to the exponential
-family that the \citet{lindsay1995mixture} results hold. Typically in
-applications, it is necessary to impose assumptions or perform transformations
-to make $P_{\theta}$ normal. This procedure is often questionable. Researchers
-frequently rely on asymptotic properties to justify the normality assumption,
-which may not be valid in small samples.
-
 The remainder of the paper is organized as follows: \textbf{Section 2} briefly
 describes the data and outlines the reduced form estimation of the input demand
 function, where the number of nurses serves as the dependent variable, with
-nine output measures acting as regressors. It then applies classical panel data
-estimators to the same specification, examining and later relaxing the
+eight output measures acting as regressors. It then applies classical panel
+data estimators to the same specification, examining and later relaxing the
 assumptions of strict exogeneity. In \textbf{Section 3}, I introduce the
 compound decision framework and describe the methodology for non-parametrically
 estimating $G$. \textbf{Section 4} specifically defines the selection problem
@@ -202,8 +184,8 @@ Establishments (SAE), a comprehensive and mandatory administrative survey that
 serves as the primary source of data on all health establishments in France
 \footnote{\href{https://data.drees.solidarites-sante.gouv.fr/explore/dataset/708_bases-statistiques-sae/information/}{La
         Statistique annuelle des établissements (SAE)}}. Our analysis primarily focuses
-on healthcare outputs (across ten different measures) and labor inputs
-(specifically registered and assistant nurses). The panel data spans nine
+on healthcare outputs (across eight different measures) and labor inputs (the
+total number of registered and assistant nurses). The panel data spans nine
 years, from 2013 to 2022, excluding 2020 due to disruptions caused by the
 pandemic. The SAE data categorizes establishments into three types based on
 their legal status:
@@ -234,10 +216,11 @@ important to highlight the unique role of teaching hospitals. Unlike other
 types of hospitals, teaching hospitals allocate significant resources to doctor
 training and research activities. This additional commitment to educational and
 research missions generally results in larger institutions. This aspect becomes
-evident when examining the output shares of hospitals. Despite their limited
-number, teaching hospitals contribute a disproportionately large share of
-overall healthcare output, a disparity that becomes more pronounced when
-adjusted for the number of facilities, as detailed in Table \ref{tab:output}.
+evident when examining the output shares of hospitals in Table
+\ref{tab:nonadjusted}. Despite their limited number, teaching hospitals
+contribute a disproportionately large share of overall healthcare output, a
+disparity that becomes more pronounced when adjusted for the number of
+facilities, as detailed in Table \ref{tab:output}.
 
 Furthermore, the analysis reveals distinct differences in the mix of service
 provided by each type of hospital. Emergency care is mostly taken care of by
@@ -277,17 +260,8 @@ public hospitals and private hospitals are strong in medical sessions.
 
 \paragraph{Regression without individual fixed effect}
 
-First, having performed the regression separately for each type of hospital, it
-is without surprise that teaching hospitals have very different coefficients,
-as shown in Table \ref{tab:reg_sep}. In addition to the differences in
-descriptive statistics from the last section, this intrinsic difference in
-input demand functions or equivalently in production function is another sign
-that teaching hospitals may not be directly comparable to other types of
-hospitals. For this reason, I will exclude teaching hospitals from the
-subsequent analysis.
-
-In the analysis, the relationship between the number of nurses and output
-levels in hospitals is quantified via a log-log regression model as follows:
+The relationship between the number of nurses and output levels in hospitals is
+quantified via a log-log regression specification as follows:
 
 \begin{equation}
     \log(x_{it}) = \beta_0 + \beta_1 \log(y_{it}) + \varepsilon_{it}
@@ -310,9 +284,9 @@ These differences underscore the distinct operational and functional framework
 within which teaching hospitals operate, further evidenced by their dual focus
 on healthcare delivery and educational responsibilities.
 
-For this reason, teaching hospitals will be excluded from subsequent analyses.
-The focus will be on the remaining three categories of hospitals: ordinary
-public hospitals, private for-profit hospitals, and private non-profit
+For this reason, \textbf{teaching hospitals will be excluded from subsequent
+    analyses}. The focus will be on the remaining three categories of hospitals:
+ordinary public hospitals, private for-profit hospitals, and private non-profit
 hospitals.
 
 \begin{table}[h!]
@@ -391,9 +365,9 @@ more hopeful, the Sargan-Hansen test almost rejects the over-identification
 null hypothesis for sure, indicating that some moment conditions are not in
 accordance with each other. Though the issues of weak instruments and rejection
 of over-identification are intriguing problems, I will set them aside for
-future investigation since the focus of this paper is more on empirical Bayes
-application. I will take as given the estimation results from the third column
-of Table \ref{tab:reg_wg_fd_gmm} and proceed to the next section.
+future investigation as time allows. I will take as given the estimation
+results from the third column of Table \ref{tab:reg_wg_fd_gmm} and proceed to
+the next section.
 
 \begin{table}
     \input{../../Tables/2013-2022/reg_wg_fd_gmm_a.tex}
@@ -545,8 +519,8 @@ and the optimal decision rule is given by
 \begin{equation} \label{eq:decisionrule}
     \begin{split}
         \delta^* & =\argmin_\delta \E_G\E_{\theta|\hat{\theta}}\bra{L(\delta,\theta)}                                                                                                              \\
-                 & = \E_G \ \sum_i \E_{\theta|\hat{\theta}}(h_i)(1-\delta_i) +\tau_1\pa{\sum_i (1-\E_{\theta|\hat{\theta}}(h_i))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n} \\
-                 & =\E_G{\sum_i v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum_i (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n}}
+        & = \E_G \ \sum_i \E_{\theta|\hat{\theta}}(h_i)(1-\delta_i) +\tau_1\pa{\sum_i (1-\E_{\theta|\hat{\theta}}(h_i))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n} \\
+        & =\E_G{\sum_i v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum_i (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum_i \delta_i -\alpha n}}
     \end{split}
 \end{equation}
 
@@ -646,8 +620,8 @@ Having defined the selection problem, I will now present the results by
 incorporating empirical estimation of the prior distribution \( G \).
 
 To ensure the variability of the data, I have selected hospitals with than 6
-years of observations. In the end, the sample contains 1661 hospitals, out of
-which 658 are public hospitals and 1003 are private ones. The $Y_{it}$ in the
+years of observations. In the end, the sample contains 1580 hospitals, out of
+which 604 are public hospitals and 976 are private ones. The $Y_{it}$ in the
 last section is calculated as $ \log(x_{it,\text{nurses}}) -
     \log(y_{it,\text{output}})\hat{\beta}$. Since the panel is too short to invoke
 central limit theorem, I am obliged to impose normality assumption on the error
@@ -740,7 +714,6 @@ For an overview of other selection rules using different ranking statistics,
 such as the posterior mean, MLE face value, and James-Stein linear shrinkage,
 see Appendix \ref{section:unknown}.
 
-\
 \paragraph{Known variance, and TP rules}
 
 In \citet{gu2023invidious}, the authors apply the newly proposed selection
@@ -803,43 +776,43 @@ my goal is to select the top-performing hospitals and classify them by legal
 status, thereby having a more granular view of the efficiency comparison
 between public and private hospitals. I deliberately omit the teaching
 hospitals (approximately 200) from the dataset because they inherently differ
-in terms of objectives. To tackle the endogeneity issue, I used the lagged
-difference of the regressors as instruments for the current level, a simplified
-version of the system GMM method. The selection problem of interest falls
-naturally under the compound decision framework. The Empirical Bayes ideology,
-along with developments in nonparametric maximum likelihood estimation, has
-made the implementation more efficient. In addition to the artificial capacity
-constraint where only the top $\alpha\%$ of units are of interest, it is an
-interesting and useful practice to incorporate another constraint called the
-False Discovery Rate (FDR) constraint such that the expected number of false
-positives is controlled at a certain level. From the application to French
-hospitals, it is clear that the FDR constraint shrinks the selection set by
-some amount. It is also intuitive that the larger the capacity (the larger the
-$\alpha$), the less binding the FDR constraint is. The idea is that when the
-decision-maker can select more units, the probability of making mistakes
-decreases. Another observation comes from the assumption we make in the NPMLE
-of $G$. In \citet{gu2023invidious}, the authors have pointed out that while the
-known variance assumption in $Y_i|\theta_i,\sigma_i$ may be plausible in some
-applications, it is more common to be faced with only an estimate of the
-variance. The two assumptions give rise to a different level of
-\textit{stringency} in response to the constraints, especially when the
-decision-maker wants to control for the expected false discovery rate. Assuming
-an unknown variance treats the observation as noisier, thus increasing the
-probability of making mistakes. The same level of FDR constraint of 20\% only
-binds in the unknown variance scenario. With respect to the private-public
-comparison, among the top 20\% performers, there are around ten times more
-private than public hospitals, while the ratio of total number is 5 to 3. A
-preliminary conclusion is that in terms of labor employment efficiency, there
-are more efficient private hospitals among the top performers. It may be of
-interest to healthcare authorities to perform such selections and take
-corresponding actions with respect to the selection outcome. From my point of
-view, a related report based on the ranking and selection results will create
-an incentive for healthcare providers to ensure the completeness of data input.
-However, one cautionary note is the interpretation of the fixed effect
-estimate. Since the fixed effect captures all time-invariant components of the
-unit, whether it is only the unobserved heterogeneity of individual hospitals
-or an actual measure of inefficiency is questionable. This issue is discussed
-in \citet{greene2005fixed}. Lastly, despite the fact that it is human nature to
+in terms of objectives. To tackle the endogeneity problem, I used the first
+difference GMM method, though subject to overidentification issue. The
+selection problem of interest falls naturally under the compound decision
+framework. The Empirical Bayes ideology, along with developments in
+non-parametric maximum likelihood estimation, has made the implementation more
+efficient. In addition to the artificial capacity constraint where only the top
+$\alpha\%$ of units are of interest, it is an interesting and useful practice
+to incorporate another constraint called the False Discovery Rate (FDR)
+constraint such that the expected number of false positives is controlled at a
+certain level. From the application to French hospitals, it is clear that the
+FDR constraint shrinks the selection set by some amount. It is also intuitive
+that the larger the capacity (the larger the $\alpha$), the less binding the
+FDR constraint is. The idea is that when the decision-maker can select more
+units, the probability of making mistakes decreases. Another observation comes
+from the assumption we make in the NPMLE of $G$. In \citet{gu2023invidious},
+the authors have pointed out that while the known variance assumption in
+$Y_i|\theta_i,\sigma_i$ may be plausible in some applications, it is more
+common to be faced with only an estimate of the variance. The two assumptions
+give rise to a different level of \textit{stringency} in response to the
+constraints, especially when the decision-maker wants to control for the
+expected false discovery rate. Assuming an unknown variance treats the
+observation as noisier, thus increasing the probability of making mistakes. The
+same level of FDR constraint of 20\% only binds in the unknown variance
+scenario. With respect to the private-public comparison, among the top 20\%
+performers, there are around ten times more private than public hospitals,
+while the ratio of total number is 5 to 3. A preliminary conclusion is that in
+terms of labor employment efficiency, there are more efficient private
+hospitals among the top performers. It may be of interest to healthcare
+authorities to perform such selections and take corresponding actions with
+respect to the selection outcome. From my point of view, a related report based
+on the ranking and selection results will create an incentive for healthcare
+providers to ensure the completeness of data input. However, one cautionary
+note is the interpretation of the fixed effect estimate. Since the fixed effect
+captures all time-invariant components of the unit, whether it is only the
+unobserved heterogeneity of individual hospitals or an actual measure of
+inefficiency is questionable. This issue is discussed in
+\citet{greene2005fixed}. Lastly, despite the fact that it is human nature to
 construct rankings and make selections, every step of the procedure requires
 attention to specification, identification, and justifiable assumptions.
 Incorporating constraints such as FDR in defining the problem may be helpful,
@@ -852,15 +825,28 @@ caution and justification.
 
 \appendix
 \section{Appendix}
-\subsection{Data}
+\subsection{Data and Code}
 
-The panel is first filtered by the following criteria
+\paragraph{Data} The panel is first filtered by the following criteria
 \begin{enumerate}
     \item the number of nurses is positive,
     \item at least one of STAC inpatient, STAC outpatient, Sessions is positive,
-    \item the number of observations is larger than 6
+    \item the number of observations is larger than 6.
 \end{enumerate}
-Second, I add one to every variable to avoid null value when taking log.
+Second, I add one to every variable to avoid null value when taking log. Third, I only consider units where the estimated variance of the fixed effect is larger than 0.001.
+
+\paragraph{Code} All implementation details can be found in
+\href{https://github.com/zfuak/RankHospital}{this repository}.
+
+\subsection{Assumption on $\hat{\theta}_i|\theta_i,\sigma_i$}
+If our specification and assumptions on exogeneity are correct, the consistency
+of $\hat{\beta}$ is guaranteed by $N$'s asymptotic. However, our estimate of
+the fixed effect is
+\begin{align*}
+    \hat{\theta}_i & =\frac{1}{T}\sum(\theta_i+\varepsilon_{it}+x_{it}(\beta-\hat{\beta}))              \\
+                   & \overset{N\to \infty}{\longrightarrow} \theta_i+\frac{1}{T}\sum_t \varepsilon_{it} \\
+\end{align*}
+When $T$ is relatively small (or even fixed), I am not in a good position to use central limit theorem to claim that $\hat{\theta}_i \overset{d}{\to} \caln(\theta_i,\frac{\sigma_i^2}{T})$. A bold assumption that $\varepsilon_{it} \sim \caln(0,\sigma_i^2)$ will save me from the $T$ issue, which I will impose for the rest of the section (and abstract from whether that  for each $i$ is a testable/reasonable/feasible assumption).
 
 \subsection{NPMLE $G$}
 \citet{koenker2014convex} defined the primal problem as
@@ -877,16 +863,6 @@ It is straightforward to derive the dual problem
 \begin{equation*}
     \max_{\lambda,\mu} \left\{ \sum_i \log \lambda_1(i) \bigg| A^T\lambda_1 < \lambda_2 1,\ (\lambda_1>0) \right\}
 \end{equation*}
-
-\subsection{Assumption on $\hat{\theta}_i|\theta_i,\sigma_i$}
-If our specification and assumptions on exogeneity are correct, the consistency
-of $\hat{\beta}$ is guaranteed by $N$'s asymptotic. However, our estimate of
-the fixed effect is
-\begin{align*}
-    \hat{\theta}_i & =\frac{1}{T}\sum(\theta_i+\varepsilon_{it}+x_{it}(\beta-\hat{\beta}))              \\
-                   & \overset{N\to \infty}{\longrightarrow} \theta_i+\frac{1}{T}\sum_t \varepsilon_{it} \\
-\end{align*}
-When $T$ is relatively small (or even fixed), I am not in a good position to use central limit theorem to claim that $\hat{\theta}_i \overset{d}{\to} \caln(\theta_i,\frac{\sigma_i^2}{T})$. A bold assumption that $\varepsilon_{it} \sim \caln(0,\sigma_i^2)$ will save me from the $T$ issue, which I will impose for the rest of the section (and abstract from whether that  for each $i$ is a testable/reasonable/feasible assumption).
 
 \subsection{Comparison of selection rules}
 
