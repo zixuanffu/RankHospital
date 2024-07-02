@@ -1,23 +1,30 @@
+rm(list = ls())
 pacman::p_load(sf, ggplot2, data.table, REBayes)
 source("Code/SelectX_GLVmix.R")
-# library(dplyr, warn.conflicts = FALSE)
-# pacman::p_load(tidygeocoder, ggmap)
+
 dt <- read.csv("Data/In/Raw/finess_b.csv", header = FALSE, sep = ";")
 setDT(dt)
-colnames(dt)
-dt <- dt[V1 == "geolocalisation"]
-dt <- dt[, .(V2, V3, V4)]
-View(dt)
-setnames(dt, c("V2", "V3", "V4"), c("FI", "coorx", "coory"))
+dt1 <- dt[V1 == "structureet"]
+dt2 <- dt[V1 == "geolocalisation"]
+rm(dt)
+
+dt1 <- dt1[, .(V2, V3, V4, V5, V20, V22, V26)]
+dt2 <- dt2[, .(V2, V3, V4)]
+setnames(dt1, new = c("FI", "FI_EJ", "NAME", "NAME_L", "TYPE1", "TYPE2", "TYPE3"))
+setnames(dt2, new = c("FI", "coorx", "coory"))
+dt <- merge(dt1, dt2, on = "FI")
+saveRDS(dt, "Data/Out/geo.rds")
 
 status <- readRDS("Data/Out/status_stable_2013_2022.rds")
 colnames(status)
-dt <- dt[FI %in% status$FI]
-saveRDS(dt, "Data/Out/FI_GEO.rds")
 
+dt <- readRDS("Data/Out/geo.rds")
 pdt <- readRDS("Data/Out/pdt_used_gmm_fd.rds")
-dt <- dt[FI %in% unique(pdt$FI)]
+status_not <- unique(status[!(FI %in% unique(dt$FI))]$FI)
+pdt_not <- unique(pdt[!(FI %in% unique(dt$FI))]$FI)
+dt <- dt[FI %in% unique(status$FI), ]
 
+# ---- selection outcome ---- #
 Rules <- c("TPKW", "TPKWs", "PMKW", "PMKWs", "MLE", "JS")
 rule_index <- 2
 Z <- fit2d(pdt)
@@ -32,28 +39,38 @@ B <- s$B[, rule_index]
 
 selection <- cbind(dt2, A, B)
 selection <- merge(selection, dt, by = "FI")
-View(selection)
 colnames(selection)
 
+#---- plot the selected on the map ----#
+
 # Load France map
-france_map <- st_read("Data/Out/georef-france-departement-millesime.shx")
-# france_map <- st_transform("Data/Out/regions_2015_metropole_region.shp")
+france_map <- st_read("Data/Out/map_fr.shp")
+france_map_shx <- st_read("Data/Out/map_fr.shx")
 str(france_map)
-# View(france_map)
 st_crs(france_map) <- 4326
 
 # Set the CRS to Lambert 93
 france_map <- st_transform(france_map, 2154)
+france_map <- st_crop(france_map, xmin = -378305.81, xmax = 6005281.2, ymin = 1320649.57, ymax = 7235612.72)
+# -378305.81 6005281.2
+# 1320649.57 7235612.72
 
 # Create a data frame for the point
 point <- selection[A == 1, .(x = coorx, y = coory, STJR, FI)]
 point <- st_as_sf(point, coords = c("x", "y"), crs = 2154)
-points_in_france <- st_join(point, france_map, join = st_within)
+str(point)
+str(france_map)
 
-dim(points_in_france)
-colnames(points_in_france)
+france_box <- st_as_sfc(st_bbox(france_map))
+str(france_box)
+
+logi_point <- st_intersects(point, france_box, sparse = FALSE)
+point_in_france <- point[logi_point, ]
+str(point_in_france)
+
 # Plot the map and the point
 p <- ggplot() +
     geom_sf(data = france_map) +
-    geom_sf(data = points_in_france, aes(color = STJR), size = 0.0001)
-ggsave("Figures/Map.pdf", plot = p)
+    geom_point(data = point_in_france, aes(color = STJR, geometry = geometry), size = 0.5, stat = "sf_coordinates")
+
+ggsave("Figures/Maps/Map.pdf", plot = p)
