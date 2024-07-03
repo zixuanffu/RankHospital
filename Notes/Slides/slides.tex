@@ -87,7 +87,7 @@
     \item \textit{Productivity/Efficiency}: Factories, Schools, Hospitals etc.
     \item \textit{Ownership}: Public (Teaching, Ordinary) vs. Private (For profit, Non-profit).
     \item \textit{Methodology}: Following \citet{croiset2024hospitals}, we use the \textit{conditional input demand function}.
-          The smaller the $\theta_i$, the less input is needed to produce the same amount
+          The less input is needed to produce the same amount
           of output, the more efficient the hospital is.\hyperlink{inputdemand}{\beamergotobutton{Reasons}}
   \end{itemize}
 \end{frame}
@@ -96,7 +96,7 @@
   \frametitle{Literature: Invidious decision}
   \begin{itemize}\itemsep=12pt
     \item \textit{League table mentality}: Ranking \& Selection.\citep{gu2023invidious}
-    \item \textit{Noisy estimates}: Unobserved heterogeneity, fixed effect $\theta_i$. \citep{chetty2014measuring,kline2022systemic}
+    \item \textit{Noisy estimates}: e.g. estimated fixed effect $\hat{\theta}_i$. \citep{chetty2014measuring,kline2022systemic}
     \item \textit{Compound Decision/ Empirical Bayesian}: Compound decision framework \citep{robbins1956empirical}, (Non-parametric) Estimation of the prior distribution of $\theta_i$. \citep{koenker2014convex, gu2017empirical}
   \end{itemize}
 \end{frame}
@@ -113,7 +113,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{\textit{Recipe}}
+  \frametitle{Recap}
   \begin{enumerate}\itemsep=12pt
     \item \textbf{Estimate the efficiency} with input demand function.
           \begin{itemize} \itemsep=8pt
@@ -123,8 +123,8 @@
           \begin{equation*}
             \log(x_{it,\text{nurses}}) = \log(y_{it,\text{output}})\beta +\theta_i +\varepsilon_{it} \quad \text{where}\quad \varepsilon_{it} \sim \caln(0,\sigma_i^2)
           \end{equation*}
-    \item \textbf{Estimate the prior distribution of $\theta_i$} with NPMLE.
-    \item \textbf{Select the 20\% most efficient hospitals.}
+    \item \textbf{Estimate the prior distribution $G$ of $\theta_i$} with nonparametric maximum likelihood estimator (NPMLE).
+    \item \textbf{Select the 20\% most efficient hospitals} utilizing the estimated $G$.
 
   \end{enumerate}
 \end{frame}
@@ -152,7 +152,7 @@
   \begin{table}
     \begin{adjustbox}{width=0.9\textwidth,center}
       \centering
-      \input{../../Tables/Descriptive/output_share.tex}
+      \input{../../Tables/Descriptive/output_share_nonweighted.tex}
     \end{adjustbox}
   \end{table}
   \note{Each value $a_{ij}$ is calculated by $a_{ij} = \frac{\text{Output i only in hospital type j}}{\text{Share of hospital type j}}/\text{Sum of output i}$}
@@ -197,16 +197,15 @@
   \\$\rightarrow$ Bayesian view: replace $G_n$ by a distribution $G$. $\rightarrow$ Empirical Bayes: Estimate the $G$.
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Estimate $G$}
+\begin{frame}[fragile]\frametitle{Estimate $G$}
   \citet{kiefer1956consistency} established the nonparametric maximum likelihood estimator (NPMLE)
   \begin{equation*}
-    \hat{G}=\argmin_{G\in \mathcal{G}} \set{-\sum_{i=1}^{n}\log g(y_i)\bigg | g(y_i)=\int  \p(y_i |\theta)dG(\theta) }
+    \hat{G}=\argmin_{G\in \mathcal{G}} \set{-\sum_{i=1}^{n}\log g(\hat{\theta}_i)\bigg | g(\hat{\theta}_i)=\int  \p(\hat{\theta}_i |\theta)dG(\theta) }
   \end{equation*}
-  where $\p(y_i |\theta)$ is the probability density function of $y_i$ conditional on the true parameter $\theta$ $\longrightarrow$ $g(y_i)$ is the marginal pdf of $y_i$.
+  where $\p(\hat{\theta}_i |\theta)$ is the probability density function of $\hat{\theta}_i$ conditional on the true parameter $\theta$ $\longrightarrow$ $g(\hat{\theta}_i)$ is the marginal pdf of $\hat{\theta}_i$.
 \end{frame}
 
-\begin{frame}{Estimate $G$}
+\begin{frame}[fragile]{Estimate $G$}
   This is an \textbf{infinite-dimensional} convex optimization problem with a strictly convex objective subject to linear constraints.
   \begin{equation*}
     \min_{f=dG}\set{-\sum_i \log g(y_i)\bigg |g(y_i) = T(f),\ K(f)=1,\ \forall i }
@@ -214,7 +213,7 @@
   where $ T(f)=\int \p(y_i |\theta)f d\theta $ and  $K(f)= \int f d\theta$.\\
 
   Consistency is proven by \citet{kiefer1956consistency}. Efficient computation
-  method introduced by \citet{koenker2014convex}. Implemented with \textit{Mosek}
+  method introduced by \citet{koenker2014convex}. Implemented with \verb+MOSEK+
   created by \citet{andersen2010mosek}.
 \end{frame}
 
@@ -454,6 +453,13 @@
           treats time invariant components as only unobserved heterogeneity.
     \item Specification, endogeneity, normality assumption on
           $\varepsilon_{it}$.\textit{etc.} \hyperlink{normality}{\beamergotobutton{Next}} \end{itemize}
+\end{frame}
+
+\begin{frame}{Thanks}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/Maps/Map.pdf}
+  \end{figure}
 \end{frame}
 
 \begin{frame}[allowframebreaks]

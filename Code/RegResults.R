@@ -307,9 +307,16 @@ summary(reg_iv)
 var_y <- add_log(var_input)
 var_x <- paste(c(add_log(var_output)), collapse = "+")
 var_z <- paste(c(add_lag(add_log(var_output), "2")), collapse = "+")
+# deal with moment condition
+var_output
+var_output_b <- c(
+    "SEJHC_MCO", "PASSU",
+    "ENTSSR", "SEJ_HAD", "SEJ_PSY"
+)
+var_z <- paste(c(add_lag(add_log(var_output_b), "2:3")), collapse = "+")
 formula_gmm <- as.formula(paste0(var_y, "~", var_x, "|", var_z))
 formula_gmm
-reg_gmm_sys <- pgmm(formula_gmm, data = pd_inf_ex, effect = "individual", index = c("FI", "AN"), transformation = "ld", robust = TRUE)
+reg_gmm_sys <- pgmm(formula_gmm, data = pd_inf_ex, effect = "individual", index = c("FI", "AN"), transformation = "ld", robust = TRUE, collapse = TRUE)
 reg_gmm_fd <- pgmm(formula_gmm, data = pd_inf_ex, effect = "individual", index = c("FI", "AN"), transformation = "d", robust = TRUE)
 # reg_gmm_fd_c<- pgmm(formula_gmm, data = pd_inf_ex, effect = "individual", index = c("FI", "AN"), transformation = "d", robust = TRUE, collapse = TRUE)
 summary(reg_gmm_fd, robust = TRUE)
