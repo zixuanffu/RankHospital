@@ -143,12 +143,16 @@
       \centering
       \input{../../Tables/Descriptive/hospital_count.tex}
     \end{adjustbox}
+    \begin{itemize}\itemsep = 8pt
+      \item Teaching hospitals may be innately very different from others (training,
+            research). \\ \hyperlink{reg_sep}{\beamergotobutton{Appendix}}
+    \end{itemize}
   \end{table}
 \end{frame}
 
 \begin{frame}[label=output]
   \frametitle{Output}
-
+  The list of 8 medical output.
   \begin{table}
     \begin{adjustbox}{width=0.9\textwidth,center}
       \centering
@@ -159,10 +163,9 @@
   \begin{itemize}\itemsep = 8pt
     \item Hospitals differ not only in efficiency but also in the mix of services they
           provide.
-    \item Teaching hospitals may be innately very different from others (training,
-          research).
+
   \end{itemize}
-  \hyperlink{reg_sep}{\beamergotobutton{Appendix}}
+
 \end{frame}
 
 \section{Compound decision and Empirical Bayes}
@@ -252,7 +255,7 @@
 
 \begin{frame}[label=observation]
   \frametitle{Derive tail probability $v_\alpha$}
-  Pick hospital $i$ whose true efficiency value is $\theta_i$, which we don't observe. We only observe a sequence of $Y_{it}$ where
+  Pick hospital $i$ whose true inefficiency value is $\theta_i$, which we don't observe. We only observe a sequence of $Y_{it}$ where
   \begin{equation*}
     Y_{it} = \theta_i + \varepsilon_{it} \quad \varepsilon_{it} \sim \caln(0,\sigma_i^2) \quad (\theta_i,\sigma_i^2) \sim G
   \end{equation*}
@@ -287,9 +290,9 @@
 
   \begin{enumerate}
     \item We have a $N\times T$ panel. $Y_{it}$ is an observation of hospital $i$'s
-          efficiency term $\theta_i$ at time $t$. Say $Y_{it}|\theta_i,\sigma_i \sim
+          inefficiency term $\theta_i$ at time $t$. Say $Y_{it}|\theta_i,\sigma_i \sim
             \caln(\theta_i,\sigma_i^2)$.
-    \item Given a panel of $Y_{it}$, perform NPMLE to get an estimate of $G(\theta)$ or
+    \item Given a panel of $Y_{it}$, perform NPMLE to get an estimate of
           $G(\theta,\sigma^2)$.
     \item Given the estimated prior $G$, derive the explicit form of posterior tail
           probability $v_\alpha(Y_i,S_i)$ and the two constraints.
@@ -297,7 +300,7 @@
           \begin{equation*}
             \min_{\delta}\E_G{\sum v_\alpha(\hat{\theta})(1-\delta_i) +\tau_1\pa{\sum (1-v_\alpha(\hat{\theta}))\delta_i -\gamma \delta_i} + \tau_2 \pa{\sum \delta_i -\alpha n}}
           \end{equation*}
-    \item The decision rule is defined by the cutoff $\lambda$
+    \item The decision rule is defined by the cutoff $\lambda^*$
           \[\delta^*(y_i,s_i)=1\set{v_\alpha(y_i,s_i)>\lambda^*}\]
   \end{enumerate}
 \end{frame}
@@ -306,7 +309,7 @@
   \frametitle{The estimated $\hat{G}$}
   \begin{columns}[T,onlytextwidth]
     \column{0.5\textwidth}
-    Case 1: $G(\theta,\sigma)$ for $v_\alpha(Y_i,S_i)$
+    Case 1: $G(\theta,\sigma^2)$ for $v_\alpha(Y_i,S_i)$
     \begin{figure}
       \centering
       \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_fd/GLVmix.pdf}
@@ -325,7 +328,7 @@
   \frametitle{The estimated $\hat{G}$}
   \begin{columns}[T,onlytextwidth]
     \column{0.5\textwidth}
-    Case 1: $G(\theta,\sigma)$ for $v_\alpha(Y_i,S_i)$
+    Case 1: $G(\theta,\sigma^2)$ for $v_\alpha(Y_i,S_i)$
     \begin{figure}
       \centering
       \includegraphics[width=\textwidth]{../../Figures/2013-2022/GMM_fd/GLVmix_s.pdf}
@@ -341,7 +344,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{$G(\theta,\sigma)$: Posterior Tail probability (0.2,0.2)}
+  \frametitle{$G(\theta,\sigma^2)$: Posterior Tail probability (0.2,0.2)}
   \begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/GMM_fd/GLVmix/Left_0.2_0.2_TPKWs.pdf}
@@ -437,12 +440,12 @@
 
 \begin{frame}{Conclusion}
   \begin{itemize}
-    \item Whether to control for \textbf{False discovery rate}$\to$Control for FDR
-          shrinks the selection set.
-    \item Whether to assume known $\sigma_i$ makes a difference$\to$ Assume unknown
-          $\sigma_i$ makes the FDR constraints bind, thus less selected than assuming
-          $\sigma_i$ known.
-    \item Private (FP and NP) hospitals are indeed more "efficient"$\to$ Caution.
+    \item Whether to control for \textbf{False discovery rate}$\rightarrow$Control for
+          FDR shrinks the selection set.
+    \item Whether to assume known $\sigma_i$ makes a difference$\rightarrow$ Assume
+          unknown $\sigma_i$ makes the FDR constraints bind, thus less selected than
+          assuming $\sigma_i$ known.
+    \item Private (FP and NP) hospitals are indeed more "efficient"$\rightarrow$ Caution.
   \end{itemize}
 \end{frame}
 
@@ -458,7 +461,8 @@
 \begin{frame}{Thanks}
   \begin{figure}
     \centering
-    \includegraphics[width=0.9\textwidth]{../../Figures/2013-2022/Maps/Map.pdf}
+    \includegraphics[width=0.6\textwidth]{../../Figures/2013-2022/Maps/Map.pdf}
+    \caption{Just for fun:)}
   \end{figure}
 \end{frame}
 

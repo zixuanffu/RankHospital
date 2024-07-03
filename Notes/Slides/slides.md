@@ -53,7 +53,7 @@ A recap.
 # Results
 What would it be like in the hospital application?
 
-Previously, I have stated the most general case where either theta_i nor sigma_i is known. An estimate gives me the LHS. In many of the literature reference, due to the difference in data and model, they assume that sigma is known. I also apply it by setting the the estimated s_i as the true value, which gives me the RHS.
+Previously, I have stated the most general case where either theta_i nor sigma_i is known. An estimate gives me the LHS. In many of the literature reference, due to the difference in data and model, they assume that sigma is known. I also apply it by setting the estimated s_i as the true value, which gives me the RHS.
 
 I can also smooth it by kernel smoothing. (biweight kernel with kernal width)
 
@@ -62,7 +62,7 @@ The private are x times more than public.
 Imposing FDR cst shrinks the selected set by a dozen.
 What if we take sigma as known? Then surprisingly, the FDR is not binding.
 (Intuition)
-This is not the same as taking the face value of sigma hat and select. As we can see from the figure. For MLE, the cutoff is a staightline, while in TP, it is curved. 
+This is not the same as taking the face value of theta hat and select. As we can see from the figure. For MLE, the cutoff is a staightline, while in TP, it is curved. 
 
 # Estimation
 WG FD estimation. First Difference GMM. But the overidentification is rejected. However when I assume that some regressors are exogenous but still overidentified moment condition, overidentification test is not rejected. Statistically I can do that, but it doesn't make economics sense to me why some regressors are exogenous while some are not... For future exploration.

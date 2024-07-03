@@ -67,10 +67,13 @@ str(france_box)
 logi_point <- st_intersects(point, france_box, sparse = FALSE)
 point_in_france <- point[logi_point, ]
 str(point_in_france)
-
+level_order <- c(1, 2, 3)
+point_in_france$STJR <- factor(point_in_france$STJR, levels = level_order, label = c("Ordinary Public", "Private FP", "Private NP"))
+setnames(point_in_france, old = "STJR", new = "Legal status")
+View(point_in_france)
 # Plot the map and the point
 p <- ggplot() +
     geom_sf(data = france_map) +
-    geom_point(data = point_in_france, aes(color = STJR, geometry = geometry), size = 0.5, stat = "sf_coordinates")
+    geom_point(data = point_in_france, aes(color = `Legal status`, geometry = geometry), size = 2, stat = "sf_coordinates")
 
-ggsave("Figures/Maps/Map.pdf", plot = p)
+ggsave("Figures/2013-2022/Maps/Map.pdf", plot = p, width = 8, height = 6)
