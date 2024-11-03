@@ -2,8 +2,6 @@
 rm(list = ls())
 pacman::p_load(data.table, ggplot2, xtable)
 
-(296 / 1003) / (36 / 658)
-(176 / 1003) / (15 / 658)
 # ---- Set the color for each legal status ---- #
 color_value <- c("red", "orange", "blue", "darkgreen")
 legal <- c("Teaching", "Normal Public", "Private For Profit", "Private Non Profit")

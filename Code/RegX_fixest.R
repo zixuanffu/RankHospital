@@ -82,7 +82,6 @@ plot_FE <- function(reg_res, cluster, dt_status, year_start, year_end, filename,
         setkey(dt_status, FI_EJ)
         dt_FE_status <- dt_FE[dt_status, on = .(cluster = FI_EJ), nomatch = 0]
     }
-    reg_name <- deparse(substitute(reg_res))
     p <- ggplot(dt_FE_status, aes(x = Rank, y = FixedEffect)) +
         geom_point(aes(color = STJR_LABEL), size = 1) +
         theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5)) +

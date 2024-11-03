@@ -1,3 +1,4 @@
+rm(list = ls())
 pacman::p_load(data.table, archive, readxl)
 
 # ---- Collect the urls of the data files
@@ -8,12 +9,10 @@ colnames(links)
 colnames(links) <- c("year", "type", "url")
 unique(links$type)
 
-# links <- links[type %in% c("Formats SAS", "Formats SAS-CSV"), ]
-links <- links[type == "Formats SAS" | type == "Formats SAS-CSV", ] # before 2016 there's no csv format
-
+links <- links[type %in% c("Formats SAS", "Formats SAS-CSV"), ] # before 2016 there's no csv format
 links <- links[order(year), ]
 
-# from 2017 onwards, the url are broken
+# fix the url (from 2017 onwards, the url are broken)
 for (i in 2008:2012) {
     links[year == i]$url <- paste0("https://data.drees.solidarites-sante.gouv.fr/api/v2/catalog/datasets/708_bases-statistiques-sae/attachments/sae_", i, "_base_statistique_format_sas_7z")
 }
@@ -33,7 +32,7 @@ for (i in 2008:2016) {
     )
 }
 
-# ---- SAE: Select the sheets of interests and save them as Rds ---- #
+# ---- SAE: Select the sheets of interests and save them as rds ---- #
 # SYGEN.csv contains a synthetic overview of the hospital
 for (i in 2016:2022) {
     zipfilename <- paste0("Data/In/Raw/sae_stat_", i, ".7z")
