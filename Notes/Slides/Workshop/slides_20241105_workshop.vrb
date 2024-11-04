@@ -1,0 +1,13 @@
+\frametitle{Estimate $G$}
+
+  \begin{block}{Convex optimization}
+    This is an \alert{infinite-dimensional} convex optimization problem with a strictly convex objective subject to linear constraints.
+    \begin{equation*}
+      \min_{f=dG}\set{-\sum_i \log g(y_i)\bigg |g(y_i) = T(f),\ K(f)=1,\ \forall i }
+    \end{equation*}
+    where $ T(f)=\int \p(y_i |\theta)f d\theta $ and  $K(f)= \int f d\theta$.
+  \end{block}
+
+  Consistency is proven by \citet{kiefer1956consistency}. Efficient computation
+  method introduced by \citet{koenker2014convex}. Implemented with \verb|MOSEK|
+  created by \citet{andersen2010mosek}.
