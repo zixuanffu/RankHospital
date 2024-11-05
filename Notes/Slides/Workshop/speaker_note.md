@@ -23,6 +23,11 @@ Turn to the output of each type of hospitals. We can see that each type of hospi
 public hospitals and private hospitals are strong in medical sessions and outpatient stays.
 As can be reconfirmed, the teaching is quite different (large). I will exclude them from estimation so that it is more reasonable to assume that all hospitals have similar input demand function.
 
+
+# Estimation
+
+Now I may talk about the first step which is estimating the fixed effect. The standard method is WG FD estimation. Yet, the medical output is exogenous is a questionable assumption not to mention the strict exogeneity. Therefore, in order to relax it, I use the first difference GMM. The system GMM is also feasible if I impose further assumptions. But the overidentification hypothesis is rejected. However, when I assume that some regressors are exogenous but I still overidentified moment condition, the sargan test is not rejecting the null hypothesis. Statistically I can do that, but it doesn't make economics sense to me why some regressors are exogenous while some are not. Due to the fact that I spent most time learning the empirical bayes, I am obliged to save it for future exploration.
+
 #  Compound decision framework
 
 Now Let's jump to the main sections. Selection as compound decision. Let's say we observe a vector of estimate of the true parameter $\theta$. Each estimate conditional on the true parameter follows a certain distribution of P.  The delta is my decision based on the observed estimate. For example, in selection problem, delta is 1 or 0, indicating whether i is selected or not. included in the selection set or not.
@@ -73,9 +78,6 @@ What if we take sigma as known? Then surprisingly, the FDR is not binding.
 (Intuition) is that when sigma is assumed to be known, the estimate theta hat is less noisy, giving rise to a lower chance of making mistakes, thus FDR is less likely to bind.
 This approach is not the same as taking the face value of sigma hat and select. As we can see from the figure. For MLE, we are selecting based on the theta hat. while in the compound decision approach, we are selecting based on the posterior tail probability.
 
-# Estimation
-
-Now I may talk about the first step which is estimating the fixed effect. The standard method is WG FD estimation. Yet, the medical output is exogenous is a questionable assumption not to mention the strict exogeneity. Therefore, in order to relax it, I use the first difference GMM. The system GMM is also feasible if I impose further assumptions. But the overidentification hypothesis is rejected. However, when I assume that some regressors are exogenous but I still overidentified moment condition, the sargan test is not rejecting the null hypothesis. Statistically I can do that, but it doesn't make economics sense to me why some regressors are exogenous while some are not. Due to the fact that I spent most time learning the empirical bayes, I am obliged to save it for future exploration.
 
 # Conclusion
 
